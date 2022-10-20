@@ -1,12 +1,8 @@
 <!--- # NOTE: Modify sections marked with `TODO` and then rename the file.-->
 
-# TODO Project Name
+# eCQM Dedupe
 
-TODO: Project Description (could match GitHub.com Repo Description)
-
-## Getting Started
-
-TODO: Example Sections
+ Prototype for basic deduplication and aggregation of eCQM data 
 
 ### Agency Mission
 
@@ -35,34 +31,36 @@ TODO: Example Sections
 
 ### Installation
 
-<!--- Example Install Instructions
+```
+make install
+```
 
-1. Clone the repo
+## Steps
 
-    `git clone https://github.com/cmsgov/PROJECT_REPO.git`
+- Add files to `input/patients.json` and `input/measures.json`
+- Convert Patient FHIR JSON bundle to CSV of relevant fields
+- Run `csvdedupe` on Patient CSV
+- Group `csvdedupe` output into a mapping of IDs that need to be converted
+- Drop patients with IDs in `from` column from FHIR JSON bundle
+- Convert all IDs in FHIR measure bundle that are in `from` column to `to` value
+- Run `fqm-execution` calculations on cleaned bundles
 
-1. Setup your development environment
+## TODO:
 
-    `python -m venv venv`
+- Figure out schema used for patient and measure/valueset bundles
+- [Patient/measure exammple?](https://github.com/projecttacoma/fqm-execution/blob/3767d19700a48baa1609257033e4179eea485aba/test/fixtures/elm/CMS13v2.json)
+- [Patient bundle example](https://github.com/projecttacoma/fqm-execution/blob/4738f84b72290c2d715c902163043674213fe837/test/fixtures/EXM111-9.1.000/Armando772_Almanza534_08fc9439-b7ff-4309-b409-4d143388594c.json)
 
-1. Install project dependencies
+## Questions
 
-    `pip install -r requirements.txt`
+- Are measures just instructions and patient bundles contain actual information?
+  - If so, should run everything on patient bundle
+- Should we pre-generate weights rather than training?
 
-    `yarn install package.json`
+## References
 
-1. Run the test suite
-    
-    `pytest tests/tox.ini`
-
-1. Start the webserver
-
-    `make start`
-
-1. Visit [localhost:9001](https://localhost:9001) to view the server
--->
-
-### Testing
+- http://hl7.org/fhir/us/identity-matching/2022May/
+- [Northwestern notes](https://docs.google.com/document/d/1sQPz6golYBLg3KIFmAUGzkxc7IQVFHacP1pBxQecO8M/edit#heading=h.wpfu2n41bod5)
 
 ## Contributing
 
