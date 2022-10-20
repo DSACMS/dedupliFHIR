@@ -42,11 +42,12 @@ if __name__ == "__main__":
     writer = csv.DictWriter(
         sys.stdout,
         fieldnames=[
+            "id",
             "family_name",
             "given_name",
-            "phone",
             "gender",
             "birth_date",
+            "phone",
             "street_address",
             "city",
             "state",

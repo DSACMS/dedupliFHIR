@@ -1,3 +1,5 @@
+DEDUPE_FIELDS = family_name given_name gender birth_date phone street_address city state postal_code
+
 all: output/reports.json
 
 .PRECIOUS: input/patients.json input/measures.json
@@ -18,7 +20,7 @@ input/cluster-mapping.csv: input/clustered-patients.csv
 
 # TODO: Pre-assign weights?
 input/clustered-patients.csv: input/patients.csv
-	poetry run python csvdedupe $< --field_names $(FIELD_NAMES) --output_file $@
+	poetry run python csvdedupe $< --field_names $(DEDUPE_FIELDS) --output_file $@
 
 input/patients.csv: input/patients.json
 	cat $< | poetry run python scripts/patient_fhir_to_csv.py > $@ 

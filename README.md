@@ -35,7 +35,17 @@
 make install
 ```
 
-## Steps
+## Setup
+
+Add FHIR JSON bundle files to `input/patients.json` and `input/measures.json` and then run:
+
+```
+make all
+```
+
+You'll be prompted to train the deduplication model using the CLI for [`csvdedupe`](https://github.com/dedupeio/csvdedupe)
+
+### Details
 
 - Add files to `input/patients.json` and `input/measures.json`
 - Convert Patient FHIR JSON bundle to CSV of relevant fields
