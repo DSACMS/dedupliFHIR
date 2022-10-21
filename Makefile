@@ -20,7 +20,7 @@ input/cluster-mapping.csv: input/clustered-patients.csv
 
 # TODO: Pre-assign weights?
 input/clustered-patients.csv: input/patients.csv
-	poetry run python csvdedupe $< --field_names $(DEDUPE_FIELDS) --output_file $@
+	poetry run csvdedupe $< --field_names $(DEDUPE_FIELDS) --output_file $@
 
 input/patients.csv: input/patients.json
 	cat $< | poetry run python scripts/patient_fhir_to_csv.py > $@ 
