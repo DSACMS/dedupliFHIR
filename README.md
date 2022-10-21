@@ -58,7 +58,7 @@ You'll be prompted to train the deduplication model using the CLI for [`csvdedup
 ## TODO:
 
 - Figure out schema used for patient and measure/valueset bundles
-- [Patient/measure exammple?](https://github.com/projecttacoma/fqm-execution/blob/3767d19700a48baa1609257033e4179eea485aba/test/fixtures/elm/CMS13v2.json)
+- [Patient/measure example?](https://github.com/projecttacoma/fqm-execution/blob/3767d19700a48baa1609257033e4179eea485aba/test/fixtures/elm/CMS13v2.json)
 - [Patient bundle example](https://github.com/projecttacoma/fqm-execution/blob/4738f84b72290c2d715c902163043674213fe837/test/fixtures/EXM111-9.1.000/Armando772_Almanza534_08fc9439-b7ff-4309-b409-4d143388594c.json)
 
 ## Questions
