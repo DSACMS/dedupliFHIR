@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content">
+    <h1>{{ slug }}</h1>
+
+    <div>
+        <p>{{ pair.0.given_name }}</p>
+        <p>{{ pair.0.family_name }}</p>
+    </div>
+    <div>
+        <p>{{ pair.1.given_name }}</p>
+        <p>{{ pair.1.family_name }}</p>
+    </div>
+    <form action="/imports/{{ slug }}/train" method="POST">
+        <textarea name="data" hidden>{{ pair_json|safe }}</textarea>
+        <input type="submit" name="same" value="Same">
+        <input type="submit" name="different" value="Different">
+    </form>
+    
+    <form action="/imports/{{ slug }}/preview" method="POST">
+        <input type="submit" value="Preview">
+    </form>
+</div>
+{% endblock %}

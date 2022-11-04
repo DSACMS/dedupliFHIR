@@ -9,10 +9,14 @@ install:
 	poetry install
 	npm install
 
-output/reports.json: input/clean-patients.json input/measures.json
-	npx fqm-execution reports -p $< -m $(filter $<,$^) > $@
+.PHONY:
+start:
+	poetry run flask --app app/__init__.py --debug run
 
-input/clean-patients.json: input/clustered-mapping.csv input/patients.json
+output/reports.json: input/clean-patients.json input/measures.json
+	npx fqm-execution reports -p $< -m $(filter-out $<,$^) > $@
+
+input/clean-patients.json: input/cluster-mapping.csv input/patients.json
 	poetry run python scripts/clean_patients.py $^ > $@
 
 input/cluster-mapping.csv: input/clustered-patients.csv

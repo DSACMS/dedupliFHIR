@@ -1,0 +1,36 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 400;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, Ubuntu, avenir next, avenir,
+    segoe ui, helvetica neue, helvetica, roboto, noto, arial, sans-serif;
+}
+
+html {
+  min-height: 100vh;
+}
+
+main {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.content {
+  max-width: 750px;
+  width: 100%;
+  background-color: steelblue;
+  padding: 0 6px;
+}

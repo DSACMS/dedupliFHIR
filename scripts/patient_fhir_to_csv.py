@@ -35,7 +35,7 @@ if __name__ == "__main__":
             patient["street_address"] = " ".join(resource["address"][0]["line"])
             patient["city"] = resource["address"][0]["city"]
             patient["state"] = resource["address"][0]["state"]
-            patient["postal_code"] = resource["address"][0]["postalCode"]
+            patient["postal_code"] = resource["address"][0].get("postalCode")
 
         patients.append(patient)
 
