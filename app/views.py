@@ -2,11 +2,17 @@ import json
 import os
 
 import dedupe
-from flask import Blueprint, redirect, request, render_template
+from flask import Blueprint, redirect, request, render_template, Response
 from werkzeug.utils import secure_filename
 
 from . import base_dir
-from .utils import get_slugs, prepare_patient_data, slugify, use_deduper
+from .utils import (
+    get_fhir_filename,
+    get_slugs,
+    prepare_patient_data,
+    slugify,
+    use_deduper,
+)
 
 views = Blueprint("views", __name__, url_prefix="")
 
@@ -48,7 +54,20 @@ def imports():
 
 @views.route("/imports/<slug>", methods=["GET"])
 def import_detail(slug):
-    return render_template("detail.html", slug=slug)
+    data_dir = os.path.join(base_dir, ".data", slug)
+    data_path = os.path.join(data_dir, "data.json")
+    training_path = os.path.join(data_dir, "training.json")
+    with open(data_path, "r") as f:
+        count_records = len(json.load(f).keys())
+    with open(training_path, "r") as f:
+        training_data = json.load(f)
+        count_training = len(training_data["distinct"]) + len(training_data["match"])
+    return render_template(
+        "detail.html",
+        slug=slug,
+        count_records=count_records,
+        count_training=count_training,
+    )
 
 
 # Also include input/hidden textarea with full labeled pair data
@@ -104,12 +123,46 @@ def import_preview(slug):
         for cluster, _ in clustered_dupes:
             if len(cluster) > 1:
                 record_groups.append([data[i] for i in cluster])
-        return render_template("preview.html", record_groups=record_groups, slug=slug)
+        count_groups = len(record_groups)
+        count_matches = sum([len(g) for g in record_groups])
+        return render_template(
+            "preview.html",
+            record_groups=record_groups,
+            slug=slug,
+            count_groups=count_groups,
+            count_matches=count_matches,
+        )
 
 
 @views.route("/imports/<slug>/download", methods=["GET"])
 def import_download(slug):
-    # TODO: Run dedupe, replace patient IDs
-    if not os.path.exists(base_dir, ".data", slug, "dedupe.settings"):
+    # TODO: abstract into separate utility function
+    if not os.path.exists(os.path.join(base_dir, ".data", slug, "dedupe.settings")):
+        # TODO: 404
         return
-    # deduper = dedupe.StaticDeduper
+
+    with open(os.path.join(base_dir, ".data", slug, "dedupe.settings"), "rb") as f:
+        deduper = dedupe.StaticDedupe(f, num_cores=4)
+
+    with open(os.path.join(base_dir, ".data", slug, "data.json"), "r") as f:
+        data_map = json.load(f)
+
+    clustered_dupes = deduper.partition(data_map, threshold=0.5)
+    record_groups = []
+    for cluster, _ in clustered_dupes:
+        if len(cluster) > 1:
+            record_groups.append([data_map[i] for i in cluster])
+
+    with open(get_fhir_filename(slug), "r") as f:
+        fhir_str = f.read()
+
+    for group in record_groups:
+        to_id = group[0]
+        for from_id in group[1:]:
+            fhir_str = fhir_str.replace(f'"Patient/{from_id}"', f'"Patient/{to_id}"')
+
+    return Response(
+        fhir_str,
+        mimetype="application/json",
+        headers={"Content-Disposition": f"attachment;filename={slug}-dedupe.json"},
+    )

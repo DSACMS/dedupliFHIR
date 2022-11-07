@@ -3,18 +3,27 @@
 {% block content %}
 <div class="content">
     <h1>{{ slug }}</h1>
-    <ul>
-        {% for record_group in record_groups %}
-            <div>
-                {% for record in record_group %}
-                <p>{{ record.given_name }} {{ record.family_name }}</p>
-                <p>{{ record.street_address }}</p>
-                <hr>
-                {% endfor %}
+    <div class="download-details">
+        <p>
+            {{ count_groups }} groups of duplicates combining {{ count_matches }} records
+        </p>
+        <br>
+        <p>
+            <a href="/imports/{{ slug }}/download">
+                Download
+            </a>
+        </p>
+    </div>
+    <br><br>
+    {% for record_group in record_groups %}
+        <div class="record-group">
+            <h2>{{ record_group.0.given_name }} {{ record_group.0.family_name }}</h2>
+            <div class="training-row">
+            {% for record in record_group %}
+                {% include "partials/training-record.html" %}
+            {% endfor %}
             </div>
-            <hr><hr>
-        {% endfor %}
-
-    </ul>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}

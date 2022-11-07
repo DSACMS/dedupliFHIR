@@ -4,22 +4,23 @@
 <div class="content">
     <h1>{{ slug }}</h1>
 
-    <div>
-        <p>{{ pair.0.given_name }}</p>
-        <p>{{ pair.0.family_name }}</p>
+    <div class="training-row">
+        {% with record=pair.0 %}
+            {% include "partials/training-record.html" %}
+        {% endwith %}
+        {% with record=pair.1 %}
+            {% include "partials/training-record.html" %}
+        {% endwith %}
     </div>
-    <div>
-        <p>{{ pair.1.given_name }}</p>
-        <p>{{ pair.1.family_name }}</p>
-    </div>
-    <form action="/imports/{{ slug }}/train" method="POST">
+
+    <form action="/imports/{{ slug }}/train" method="POST" class="training-form">
         <textarea name="data" hidden>{{ pair_json|safe }}</textarea>
         <input type="submit" name="same" value="Same">
         <input type="submit" name="different" value="Different">
     </form>
-    
-    <form action="/imports/{{ slug }}/preview" method="POST">
-        <input type="submit" value="Preview">
+
+    <form action="/imports/{{ slug }}/preview" method="POST" class="preview-form">
+        <input type="submit" name="preview" value="Preview">
     </form>
 </div>
 {% endblock %}

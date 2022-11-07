@@ -34,7 +34,6 @@ def use_deduper(*args, **kwargs):
     # settings/training if exist
     # args[0] is slug
     data_dir = os.path.join(base_dir, ".data", args[0])
-    # TODO: needs to be created on post
     data_path = os.path.join(data_dir, "data.json")
     training_path = os.path.join(data_dir, "training.json")
     with open(data_path, "r") as f:
@@ -91,6 +90,16 @@ def get_slugs():
             slugs.append(list_path)
 
     return slugs
+
+
+def get_fhir_filename(slug):
+    return os.path.join(
+        base_dir,
+        ".data",
+        slug,
+        "fhir",
+        os.listdir(os.path.join(base_dir, ".data", slug, "fhir"))[0],
+    )
 
 
 def get_patient(entry):

@@ -2,15 +2,19 @@
 
 {% block content %}
 <div class="content">
-    <h1>Test</h1>
-    <form action="/imports" enctype="multipart/form-data" method="POST">
-        <input type="file" name="upload" required>
-        <button type="submit">Submit</button>
-    </form>
+    <h1>DedupliFHIR</h1>
+
+    <h2>Imports</h2>
     <ul>
         {% for slug in slugs %}
         <li><a href="/imports/{{ slug }}">{{ slug }}</a></li>
         {% endfor %}
     </ul>
+    <br>
+    <h2>Upload</h2>
+    <form action="/imports" enctype="multipart/form-data" method="POST">
+        <input type="file" name="upload" required>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 {% endblock %}
