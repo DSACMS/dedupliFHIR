@@ -35,25 +35,7 @@
 make install
 ```
 
-## Setup
-
-Add FHIR JSON bundle files to `input/patients.json` and `input/measures.json` and then run:
-
-```
-make all
-```
-
-You'll be prompted to train the deduplication model using the CLI for [`csvdedupe`](https://github.com/dedupeio/csvdedupe)
-
-### Details
-
-- Add files to `input/patients.json` and `input/measures.json`
-- Convert Patient FHIR JSON bundle to CSV of relevant fields
-- Run `csvdedupe` on Patient CSV
-- Group `csvdedupe` output into a mapping of IDs that need to be converted
-- Drop patients with IDs in `from` column from FHIR JSON bundle
-- Convert all IDs in FHIR measure bundle that are in `from` column to `to` value
-- Run `fqm-execution` calculations on cleaned bundles
+Run `make start` to start a Flask server at [http://localhost:5000](http://localhost:5000).
 
 ## TODO:
 
