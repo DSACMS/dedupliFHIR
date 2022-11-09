@@ -29,15 +29,13 @@ DEDUPE_VARS = [
 # TODO: Should this be a decorator?
 @contextmanager
 def use_deduper(*args, **kwargs):
-    # TODO: should handle wrapping directory for storage, just needs slug
-    # TODO: Take a name/slug (created from filename), load data including
-    # settings/training if exist
     # args[0] is slug
     data_dir = os.path.join(base_dir, ".data", args[0])
     data_path = os.path.join(data_dir, "data.json")
     training_path = os.path.join(data_dir, "training.json")
     with open(data_path, "r") as f:
         dedupe_data = json.load(f)
+
     # TODO: Dynamically pull cores
     deduper = dedupe.Dedupe(DEDUPE_VARS, num_cores=4)
     if os.path.exists(training_path):
@@ -46,21 +44,11 @@ def use_deduper(*args, **kwargs):
     else:
         deduper.prepare_training(dedupe_data)
 
-    # https://github.com/dedupeio/dedupe/blob/main/dedupe/convenience.py#L123
-    # TODO: Pull from this for an example
-    # GET
-    # deduper.uncertain_pairs(), pull record_pair from that
-    # load from training pairs the number of same
-
-    # POST
-    # mark_pairs should be called from POST
-
     try:
         yield deduper
     finally:
         with open(training_path, "w") as f:
             deduper.write_training(f)
-        # TODO: save settings?
 
 
 # Pulled from Django

@@ -31,6 +31,8 @@
 
 ### Installation
 
+You'll need poetry installed.
+
 ```
 make install
 ```
