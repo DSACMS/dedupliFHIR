@@ -59,9 +59,14 @@ def import_detail(slug):
     training_path = os.path.join(data_dir, "training.json")
     with open(data_path, "r") as f:
         count_records = len(json.load(f).keys())
-    with open(training_path, "r") as f:
-        training_data = json.load(f)
-        count_training = len(training_data["distinct"]) + len(training_data["match"])
+    if os.path.exists(training_path):
+        with open(training_path, "r") as f:
+            training_data = json.load(f)
+            count_training = len(training_data["distinct"]) + len(
+                training_data["match"]
+            )
+    else:
+        count_training = 0
     return render_template(
         "detail.html",
         slug=slug,
@@ -74,6 +79,7 @@ def import_detail(slug):
 # <input type="submit" name="button_1" value="Click me">
 @views.route("/imports/<slug>/train", methods=["GET", "POST"])
 def training(slug):
+    # TODO: Why is this pulling repeats?
     with use_deduper(slug) as deduper:
         if request.method == "GET":
             # Load most recent training
@@ -153,13 +159,27 @@ def import_download(slug):
         if len(cluster) > 1:
             record_groups.append([data_map[i] for i in cluster])
 
-    with open(get_fhir_filename(slug), "r") as f:
-        fhir_str = f.read()
-
+    patient_id_map = {}
     for group in record_groups:
-        to_id = group[0]
+        to_id = group[0]["id"]
         for from_id in group[1:]:
-            fhir_str = fhir_str.replace(f'"Patient/{from_id}"', f'"Patient/{to_id}"')
+            patient_id_map[from_id["id"]] = to_id
+
+    with open(get_fhir_filename(slug), "r") as f:
+        fhir_obj = json.load(f)
+
+    fhir_obj["entry"] = [
+        entry
+        for entry in fhir_obj["entry"]
+        if (
+            entry["resource"]["resourceType"] != "Patient"
+            or entry["resource"]["id"] not in patient_id_map
+        )
+    ]
+
+    fhir_str = json.dumps(fhir_obj)
+    for from_id, to_id in patient_id_map.items():
+        fhir_str = fhir_str.replace(f'"Patient/{from_id}"', f'"Patient/{to_id}"')
 
     return Response(
         fhir_str,
