@@ -39,6 +39,8 @@ make install
 
 Run `make start` to start a Flask server at [http://localhost:5000](http://localhost:5000).
 
+Use the [sample data file](https://drive.google.com/file/d/1T5I9ySPET_stsXBAUERUOWzdmow6rbjN/view?usp=sharing) to test out functionality.
+
 ## TODO:
 
 - Figure out schema used for patient and measure/valueset bundles
