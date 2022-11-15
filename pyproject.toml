@@ -7,8 +7,6 @@ authors = ["Pat Sier <patrick.sier@cms.hhs.gov>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 dedupe = "^2.0.19"
-splink = "^3.4.2"
-pandas = "^1.5.1"
 Flask = "^2.2.2"
 
 [tool.poetry.dev-dependencies]
