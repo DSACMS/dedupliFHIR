@@ -2,7 +2,7 @@
 
 # eCQM Dedupe
 
- Prototype for basic deduplication and aggregation of eCQM data 
+Prototype for basic deduplication and aggregation of eCQM data
 
 ### Agency Mission
 
@@ -11,6 +11,7 @@
 ### Project Vision
 
 ### Project Information
+
 <!-- Example Innersource Project Info
  * [Project Website](https://cms.gov/digital-service-cms)
  * [Project Documentation:](https://confluence.cms.gov/)
@@ -31,7 +32,7 @@
 
 ### Installation
 
-You'll need poetry installed.
+You'll need poetry installed (see [installation instructions](https://python-poetry.org/docs/#installation)).
 
 ```
 make install
