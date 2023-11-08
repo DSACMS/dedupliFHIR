@@ -36,21 +36,22 @@ settings = {
     ],
 }
 
-#DuckDBLinker just defines the Pandas Dataframe format as using
-#DuckDB style formatting
-linker = DuckDBLinker(df, settings)
-linker.estimate_u_using_random_sampling(max_pairs=1e6)
-
-blocking_rule_for_training = block_on(["first_name", "surname"])
-
-linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-blocking_rule_for_training = block_on("substr(dob, 1, 4)")  # block on year
-linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-
-pairwise_predictions = linker.predict()
-
-clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-
-print(clusters.as_pandas_dataframe(limit=25))
+if __name__ == "__main__":
+    #DuckDBLinker just defines the Pandas Dataframe format as using
+    #DuckDB style formatting
+    linker = DuckDBLinker(df, settings)
+    linker.estimate_u_using_random_sampling(max_pairs=1e6)
+    
+    blocking_rule_for_training = block_on(["first_name", "surname"])
+    
+    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
+    
+    blocking_rule_for_training = block_on("substr(dob, 1, 4)")  # block on year
+    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
+    
+    
+    pairwise_predictions = linker.predict()
+    
+    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
+    
+    print(clusters.as_pandas_dataframe(limit=25))
