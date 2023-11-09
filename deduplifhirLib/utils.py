@@ -2,6 +2,7 @@ import os
 from os import walk
 import json
 import pandas as pd
+from multiprocessing import Pool
 from splink.duckdb.linker import DuckDBLinker
 import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
@@ -9,41 +10,29 @@ from splink.duckdb.blocking_rule_library import block_on
 from splink.datasets import splink_datasets
 
 from contextlib import contextmanager
-from deduplifhirLib.settings import settings, DEDUPE_VARS
+from settings import settings, DEDUPE_VARS, read_fhir_data
 
-from . import base_dir
+from __init__ import base_dir
+
+
 
 #Fhir stores patient data in directories of json
-def parse_fhir_data(path):
+def parse_fhir_data(path, cpu_cores=4):
     #Get all files in path with fhir data.
     all_patient_records = [
         os.path.join(dirpath,f) for (dirpath, dirnames, filenames)
-         in os.walk(path) for f in filenames]
+         in os.walk(path) for f in filenames if f.split(".")[-1] == "json"]
     
+    print(len(all_patient_records))
     list_of_patient_record_dicts = []
 
-    for patient_record in all_patient_records:
-        with open(patient_record, "r") as f:
-            patient_json_record = json.load(f)
-        
-        patient_dict = {
-            "family_name": patient_json_record['entry'][0]['resource']['name'][0]['family'],
-            "given_name": patient_json_record['entry'][0]['resource']['name'][0]['given'][0],
-            "gender": patient_json_record['entry'][0]['resource']['gender'],
-            "birth_date": patient_json_record['entry'][0]['resource']['birthDate'],
-            "phone": patient_json_record['entry'][0]['resource']['telecom'][0]['value'],
-            "street_address": patient_json_record['entry'][0]['resource']['address'][0]['line'][0],
-            "city": patient_json_record['entry'][0]['resource']['address'][0]['city'],
-            "state": patient_json_record['entry'][0]['resource']['address'][0]['state'],
-            "postal_code": patient_json_record['entry'][0]['resource']['address'][0]['postalCode']
-        }
-        list_of_patient_record_dicts.append(patient_dict)
-    
-    if len(list_of_patient_record_dicts) == 0:
-        return pd.DataFrame(list_of_patient_record_dicts)
-    else:
-        return []
+    #Load files concurrently via multiprocessing
+    print(f"Reading files with {cpu_cores} cores...")
+    pool = Pool(cpu_cores)
+    df_list = pool.map(read_fhir_data, all_patient_records)
 
+    print("Done parsing fhir data.")
+    return pd.concat(df_list)
 
 @contextmanager
 def use_linker(*args, **kwargs):
