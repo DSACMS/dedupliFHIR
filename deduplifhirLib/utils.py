@@ -47,3 +47,21 @@ def use_linker(*args, **kwargs):
     linker.estimate_u_using_random_sampling(max_pairs=5e6)
 
     yield linker
+
+if __name__ == "__main__":
+    linker = DuckDBLinker(parse_fhir_data('/Users/murt/Downloads/synthea_1m_fhir_1_8/output_1/fhir'), settings)
+    linker.estimate_u_using_random_sampling(max_pairs=1e6)
+    
+    blocking_rule_for_training = block_on(["given_name", "family_name"])
+    
+    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
+    
+    blocking_rule_for_training = block_on("birth_date(dob, 1, 4)")  # block on year
+    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
+    
+    
+    pairwise_predictions = linker.predict()
+    
+    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
+    
+    print(clusters.as_pandas_dataframe(limit=25))

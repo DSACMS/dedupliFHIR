@@ -5,6 +5,7 @@ from splink.duckdb.blocking_rule_library import block_on
 from splink.datasets import splink_datasets
 import json
 import pandas as pd
+import uuid
 
 DEDUPE_VARS = [
     {"field": "family_name", "type": "String"},
@@ -20,10 +21,25 @@ DEDUPE_VARS = [
     {"field": "postal_code", "type": "ShortString"},
 ]
 
+settings = {
+    "link_type": "dedupe_only",
+    "blocking_rules_to_generate_predictions": [
+        block_on("given_name"),
+        block_on("family_name"),
+    ],
+    "comparisons": [
+        ctl.name_comparison("given_name"),
+        ctl.name_comparison("family_name"),
+        ctl.date_comparison("birth_date", cast_strings_to_date=True),
+        cl.exact_match("city", term_frequency_adjustments=True),
+    ],
+}
+
+
 
 splink_test_df = splink_datasets.fake_1000
 
-settings = {
+testSettings = {
     "link_type": "dedupe_only",
     "blocking_rules_to_generate_predictions": [
         block_on("first_name"),
@@ -48,6 +64,7 @@ def read_fhir_data(patient_record_path):
         raise e
     
     patient_dict = {
+        "unique_id": uuid.uuid4,
         "family_name": [patient_json_record['entry'][0]['resource']['name'][0]['family']],
         "given_name": [patient_json_record['entry'][0]['resource']['name'][0]['given'][0]],
         "gender": [patient_json_record['entry'][0]['resource']['gender']],
@@ -66,7 +83,7 @@ def read_fhir_data(patient_record_path):
 if __name__ == "__main__":
     #DuckDBLinker just defines the Pandas Dataframe format as using
     #DuckDB style formatting
-    linker = DuckDBLinker(splink_test_df, settings)
+    linker = DuckDBLinker(splink_test_df, testSettings)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
     
     blocking_rule_for_training = block_on(["first_name", "surname"])
