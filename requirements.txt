@@ -1,4 +1,0 @@
-splink
-click
-altair
-pandas
