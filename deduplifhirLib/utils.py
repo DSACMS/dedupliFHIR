@@ -1,6 +1,7 @@
 import os
 from os import walk
 import json
+import sys
 import pandas as pd
 from multiprocessing import Pool
 from splink.duckdb.linker import DuckDBLinker
@@ -75,7 +76,9 @@ def use_linker(*args, **kwargs):
     yield linker
 
 if __name__ == "__main__":
-    linker = DuckDBLinker(parse_fhir_data('/Users/murt/Downloads/synthea_1m_fhir_1_8/output_1/fhir'), SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
+
+    path = sys.argv[1]
+    linker = DuckDBLinker(parse_fhir_data(path), SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
     
     blocking_rule_for_training = block_on(["given_name", "family_name"])
