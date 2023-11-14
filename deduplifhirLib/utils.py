@@ -10,7 +10,7 @@ from splink.duckdb.blocking_rule_library import block_on
 from splink.datasets import splink_datasets
 
 from contextlib import contextmanager
-from settings import settings, DEDUPE_VARS, read_fhir_data
+from settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
 
 from __init__ import base_dir
 
@@ -18,6 +18,21 @@ from __init__ import base_dir
 
 #Fhir stores patient data in directories of json
 def parse_fhir_data(path, cpu_cores=4):
+    """
+    This function parses all json files in a given path structure as FHIR data. It walks
+    through the given path and parses each json file it finds into a pandas Dataframe.
+
+    The process of parsing the files is done through a number of processes that each read the
+    JSON and output the Dataframe in parallel. The master process then returns the result of 
+    concatenating each dataframe into a full record of FHIR data.
+
+    Arguments:
+        path: Directory path to walk through to look for JSON FHIR data
+        cpu_cores: Number of processes to use at once to parse the JSON FHIR data
+    
+    Returns:
+        Dataframe containing all patient FHIR data
+    """
     #Get all files in path with fhir data.
     all_patient_records = [
         os.path.join(dirpath,f) for (dirpath, dirnames, filenames)
@@ -36,6 +51,17 @@ def parse_fhir_data(path, cpu_cores=4):
 
 @contextmanager
 def use_linker(*args, **kwargs):
+    """
+    A contextmanager that is used to obtain a linker object with which to dedupe patient 
+    records with. Automatically reads in the FHIR data for the requested dataset marked 
+    by a slug.
+
+    Arguments:
+        slug: ID for the dataset to dedupe
+    
+    Returns:
+        linker: the linker object to use for deduplication. 
+    """
 
     slug = args[0]
 
@@ -43,13 +69,13 @@ def use_linker(*args, **kwargs):
 
     df = parse_fhir_data(data_dir)
 
-    linker = DuckDBLinker(df, settings)
+    linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=5e6)
 
     yield linker
 
 if __name__ == "__main__":
-    linker = DuckDBLinker(parse_fhir_data('/Users/murt/Downloads/synthea_1m_fhir_1_8/output_1/fhir'), settings)
+    linker = DuckDBLinker(parse_fhir_data('/Users/murt/Downloads/synthea_1m_fhir_1_8/output_1/fhir'), SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
     
     blocking_rule_for_training = block_on(["given_name", "family_name"])

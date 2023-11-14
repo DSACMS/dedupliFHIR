@@ -7,21 +7,20 @@ import json
 import pandas as pd
 import uuid
 
-DEDUPE_VARS = [
-    {"field": "family_name", "type": "String"},
-    {"field": "family_name", "type": "Exact"},
-    {"field": "given_name", "type": "String"},
-    {"field": "gender", "type": "String"},
-    {"field": "gender", "type": "Exact"},
-    {"field": "birth_date", "type": "ShortString"},
-    {"field": "phone", "type": "ShortString"},
-    {"field": "street_address", "type": "String", "has_missing": True},
-    {"field": "city", "type": "String"},
-    {"field": "state", "type": "ShortString"},
-    {"field": "postal_code", "type": "ShortString"},
-]
+"""
+Below is the definition of the settings for the splink linker object
 
-settings = {
+These settings control the way that spink trains its model in order to
+find duplicates.
+
+The blocking rules determine the preliminary records to match to each other in 
+order to train the model, for this to work the data needs a couple records with the
+same first and last name in the input in order to find confirmed matches 
+
+The comparisons list defines the way the model will compare the data in order to find
+the probability that records are duplicates of each other. 
+"""
+SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = {
     "link_type": "dedupe_only",
     "blocking_rules_to_generate_predictions": [
         block_on("given_name"),
@@ -39,7 +38,8 @@ settings = {
 
 splink_test_df = splink_datasets.fake_1000
 
-testSettings = {
+#This is the same as the above settings object, but for the test fake data.
+SPLINK_LINKER_SETTINGS_TEST_DEDUPE = {
     "link_type": "dedupe_only",
     "blocking_rules_to_generate_predictions": [
         block_on("first_name"),
@@ -54,7 +54,19 @@ testSettings = {
     ],
 }
 
+#NOTE: The only reason this function is defined outside utils.py is because of a known bug with
+#python multiprocessing: https://bugs.python.org/issue25053
 def read_fhir_data(patient_record_path):
+    """
+    This function reads fhir data for a single patient and expresses the record as a dataframe
+    with one record.
+
+    Arguments:
+        patient_record_path: The path to a single FHIR patient record, a JSON file.
+    
+    Returns:
+        A dataframe holding FHIR data for a single patient.
+    """
     try:
         with open(patient_record_path, "r") as f:
             patient_json_record = json.load(f)
@@ -83,7 +95,7 @@ def read_fhir_data(patient_record_path):
 if __name__ == "__main__":
     #DuckDBLinker just defines the Pandas Dataframe format as using
     #DuckDB style formatting
-    linker = DuckDBLinker(splink_test_df, testSettings)
+    linker = DuckDBLinker(splink_test_df, SPLINK_LINKER_SETTINGS_TEST_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
     
     blocking_rule_for_training = block_on(["first_name", "surname"])
