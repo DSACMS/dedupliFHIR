@@ -1,4 +1,5 @@
 import os
+import time
 from os import walk
 import json
 import sys
@@ -44,9 +45,11 @@ def parse_fhir_data(path, cpu_cores=4):
 
     #Load files concurrently via multiprocessing
     print(f"Reading files with {cpu_cores} cores...")
+    start = time.time()
     pool = Pool(cpu_cores)
     df_list = pool.map(read_fhir_data, all_patient_records)
 
+    print(f"Read fhir data in {time.time() - start} seconds")
     print("Done parsing fhir data.")
     return pd.concat(df_list)
 
