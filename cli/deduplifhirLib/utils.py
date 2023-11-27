@@ -5,6 +5,7 @@ import json
 import sys
 import pandas as pd
 from multiprocessing import Pool
+from functools import wraps
 from splink.duckdb.linker import DuckDBLinker
 import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
@@ -12,10 +13,13 @@ from splink.duckdb.blocking_rule_library import block_on
 from splink.datasets import splink_datasets
 
 from contextlib import contextmanager
-from settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
+from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
 
-from __init__ import base_dir
+from . import base_dir
 
+
+def parse_qrda_data(path,cpu_cores=4):
+    raise NotImplementedError
 
 
 #Fhir stores patient data in directories of json
@@ -53,8 +57,7 @@ def parse_fhir_data(path, cpu_cores=4):
     print("Done parsing fhir data.")
     return pd.concat(df_list)
 
-@contextmanager
-def use_linker(*args, **kwargs):
+def use_linker(func):
     """
     A contextmanager that is used to obtain a linker object with which to dedupe patient 
     records with. Automatically reads in the FHIR data for the requested dataset marked 
@@ -67,16 +70,26 @@ def use_linker(*args, **kwargs):
         linker: the linker object to use for deduplication. 
     """
 
-    slug = args[0]
+    @wraps(func)
+    def wrapper(*args,**kwargs):
+        format = kwargs['format']
+        data_dir = kwargs['bad_data_path']
 
-    data_dir = os.path.join(base_dir, "_data", slug)
+        print(f"Format is {format}")
+        print(f"Data dir is {data_dir}")
 
-    df = parse_fhir_data(data_dir)
+        if format == "FHIR":
+            df = parse_fhir_data(data_dir)
+        elif format == "QRDA":
+            df = parse_qrda_data(data_dir)
+        
+        linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
+        linker.estimate_u_using_random_sampling(max_pairs=5e6)
 
-    linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-    linker.estimate_u_using_random_sampling(max_pairs=5e6)
-
-    yield linker
+        kwargs['linker'] = linker
+        return func(*args,**kwargs)
+    
+    return wrapper
 
 if __name__ == "__main__":
 
