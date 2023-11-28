@@ -3,6 +3,9 @@ import time
 from os import walk
 import json
 import sys
+from pathlib import Path
+import csv
+import datetime
 import pandas as pd
 from multiprocessing import Pool
 from functools import wraps
@@ -11,11 +14,13 @@ import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
 from splink.datasets import splink_datasets
-
+import uuid
 from contextlib import contextmanager
-from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
+from settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
+from duplicate_data_generator import generate_dup_data
 
-from . import base_dir
+
+base_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 def parse_qrda_data(path,cpu_cores=4):
@@ -23,7 +28,7 @@ def parse_qrda_data(path,cpu_cores=4):
 
 
 #Fhir stores patient data in directories of json
-def parse_fhir_data(path, cpu_cores=4):
+def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
     """
     This function parses all json files in a given path structure as FHIR data. It walks
     through the given path and parses each json file it finds into a pandas Dataframe.
@@ -45,17 +50,50 @@ def parse_fhir_data(path, cpu_cores=4):
          in os.walk(path) for f in filenames if f.split(".")[-1] == "json"]
     
     print(len(all_patient_records))
-    list_of_patient_record_dicts = []
 
     #Load files concurrently via multiprocessing
     print(f"Reading files with {cpu_cores} cores...")
     start = time.time()
     pool = Pool(cpu_cores)
-    df_list = pool.map(read_fhir_data, all_patient_records)
+    df_list = pool.map(parse_function, all_patient_records)
 
     print(f"Read fhir data in {time.time() - start} seconds")
     print("Done parsing fhir data.")
     return pd.concat(df_list)
+
+def parse_test_data(path):
+
+    df_list = []
+    # reading csv file
+    with open(path, 'r') as csvfile:
+        # creating a csv reader object
+        csvreader = csv.reader(csvfile)
+
+        fields = next(csvreader)
+
+
+        for row in csvreader:
+            #print(row[2])
+            dob = datetime.datetime.strptime(row[5], '%m/%d/%Y').strftime('%Y-%m-%d')
+            patient_dict = {
+                "unique_id": uuid.uuid4().int,
+                "family_name": [row[2]],
+                "given_name": [row[3]],
+                "gender": [row[4]],
+                "birth_date": [dob],
+                "phone": [row[6]],
+                "street_address": [row[7]],
+                "city": [row[8]],
+                "state": [row[9]],
+                "postal_code": [row[10]],
+                "ssn": [row[11]]
+            }
+
+            df_list.append(pd.DataFrame(patient_dict))
+    
+    return pd.concat(df_list)
+    
+
 
 def use_linker(func):
     """
@@ -93,15 +131,25 @@ def use_linker(func):
 
 if __name__ == "__main__":
 
-    path = sys.argv[1]
-    linker = DuckDBLinker(parse_fhir_data(path), SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
+    testPath = (Path(__file__).parent).resolve()
+    print(testPath)
+
+    csvPath = str(testPath) + "/test_data.csv"
+    column_path = str(testPath) + "/test_data_columns.json"
+
+    #Create test data
+    generate_dup_data(column_path, csvPath, 10000, 0.20)
+
+    df = parse_test_data(csvPath)
+
+    linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
     
     blocking_rule_for_training = block_on(["given_name", "family_name"])
     
     linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
     
-    blocking_rule_for_training = block_on("birth_date(dob, 1, 4)")  # block on year
+    blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
     linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
     
     

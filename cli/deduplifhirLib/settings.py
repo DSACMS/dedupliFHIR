@@ -65,7 +65,7 @@ def read_fhir_data(patient_record_path):
         patient_record_path: The path to a single FHIR patient record, a JSON file.
     
     Returns:
-        A dataframe holding FHIR data for a single patient.
+        A dataf`rame holding FHIR data for a single patient.
     """
     try:
         with open(patient_record_path, "r") as f:
@@ -76,7 +76,7 @@ def read_fhir_data(patient_record_path):
         raise e
     
     patient_dict = {
-        "unique_id": uuid.uuid4,
+        "unique_id": uuid.uuid4().int,
         "family_name": [patient_json_record['entry'][0]['resource']['name'][0]['family']],
         "given_name": [patient_json_record['entry'][0]['resource']['name'][0]['given'][0]],
         "gender": [patient_json_record['entry'][0]['resource']['gender']],
@@ -85,7 +85,8 @@ def read_fhir_data(patient_record_path):
         "street_address": [patient_json_record['entry'][0]['resource']['address'][0]['line'][0]],
         "city": [patient_json_record['entry'][0]['resource']['address'][0]['city']],
         "state": [patient_json_record['entry'][0]['resource']['address'][0]['state']],
-        "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']]
+        "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']],
+        "ssn": [patient_json_record['entry'][0]['resource']['identifier'][1]['value']]
     }
     #print(patient_dict)
     
