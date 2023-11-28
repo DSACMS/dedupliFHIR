@@ -16,8 +16,8 @@ from splink.duckdb.blocking_rule_library import block_on
 from splink.datasets import splink_datasets
 import uuid
 from contextlib import contextmanager
-from settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
-from duplicate_data_generator import generate_dup_data
+from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
+from deduplifhirLib.duplicate_data_generator import generate_dup_data
 
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
