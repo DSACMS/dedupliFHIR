@@ -66,7 +66,7 @@ def read_fhir_data(patient_record_path):
         patient_record_path: The path to a single FHIR patient record, a JSON file.
     
     Returns:
-        A dataf`rame holding FHIR data for a single patient.
+        A dataframe holding FHIR data for a single patient.
     """
     try:
         with open(patient_record_path, "r") as f:

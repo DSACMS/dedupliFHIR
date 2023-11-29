@@ -97,6 +97,7 @@ def create_fake_data_file(config, fake_gen, tmp_dir, batch_size, remaining_rows)
         fake_data.to_csv(temp_file_name, header=False)
     except Exception as e:
         print('Unexpected error: {}'.format(e))
+        raise e
 
 
 def create_temp_directory(tmp_dir):
