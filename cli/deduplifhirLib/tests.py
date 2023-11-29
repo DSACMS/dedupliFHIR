@@ -16,7 +16,7 @@ def test_generate_data_and_dedup():
     column_path = str(testPath) + "/test_data_columns.json"
 
     #Create test data
-    generate_dup_data(column_path, csvPath, 10000, 0.20)
+    generate_dup_data(column_path, csvPath, 10000, 0.70)
 
     df = parse_test_data(csvPath)
 
@@ -35,4 +35,5 @@ def test_generate_data_and_dedup():
     
     clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
     
-    print(clusters.as_pandas_dataframe(limit=25))
+    #clusters.as_pandas_dataframe().to_csv(csvPath)
+    print(clusters.as_pandas_dataframe())
