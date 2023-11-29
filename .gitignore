@@ -58,9 +58,6 @@ coverage.xml
 # pyenv
 .python-version
 
-# dotenv
-.env
-
 # IDEs and editors
 /.idea
 .vscode

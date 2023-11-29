@@ -4,6 +4,7 @@ Module to define cli for ecqm-deduplifhir library.
 import click
 from splink.duckdb.blocking_rule_library import block_on
 from deduplifhirLib.utils import parse_fhir_data, use_linker
+from deduplifhirLib.tests import test_generate_data_and_dedup
 
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
 @click.group()
@@ -34,9 +35,13 @@ def dedupe_data(format,bad_data_path, output_path,linker=None):
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
 
+@click.command()
+def run_tests():
+    test_generate_data_and_dedup()
 
 
 cli.add_command(dedupe_data)
+cli.add_command(run_tests)
 
 if __name__ == "__main__":
     cli()

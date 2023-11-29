@@ -203,6 +203,3 @@ def combine(chars):
     for char in chars:
         new_str += char
     return new_str
-
-if __name__ == '__main__':
-    main()
