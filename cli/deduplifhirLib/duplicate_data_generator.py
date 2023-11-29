@@ -2,7 +2,6 @@
 # Taken from https://github.com/thomaswyrick/duplicate-data-generator
 
 #This is a modified wrapper script to generate data using the Faker library
-import argparse
 import json
 import os
 import glob
@@ -67,7 +66,7 @@ def generate_temp_files(config, fake_gen):
     num_batches = ceil(config['total_row_cnt']/batch_size)
     remaining_rows = config['total_row_cnt']
 
-    for i in range(num_batches):
+    for _ in range(num_batches):
         pool.apply_async(create_fake_data_file, args = (config, fake_gen, tmp_dir, batch_size, remaining_rows))
     pool.close()
     pool.join()
@@ -121,7 +120,7 @@ def get_fake_data(num_of_initial_rows, num_duplicated_rows, columns, fake_gen):
 
     for column in columns:
         if 'transposition_chars' in column and column['transposition_chars'] > 0:
-            for i in range(column['transposition_chars']):
+            for _ in range(column['transposition_chars']):
                 known_duplicates[column['name']] = known_duplicates[column['name']].apply(transposition_chars)
         if 'mistype_chars' in column and column['mistype_chars'] > 0:
             for i in range(column['mistype_chars']):

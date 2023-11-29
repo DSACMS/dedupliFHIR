@@ -3,7 +3,7 @@ Module to define cli for ecqm-deduplifhir library.
 """
 import click
 from splink.duckdb.blocking_rule_library import block_on
-from deduplifhirLib.utils import parse_fhir_data, use_linker
+from deduplifhirLib.utils import use_linker
 from deduplifhirLib.tests import test_generate_data_and_dedup
 
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
