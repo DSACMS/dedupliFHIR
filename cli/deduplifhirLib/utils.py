@@ -134,8 +134,8 @@ if __name__ == "__main__":
     testPath = (Path(__file__).parent).resolve()
     print(testPath)
 
-    csvPath = str(testPath) + "/test_data.csv"
-    column_path = str(testPath) + "/test_data_columns.json"
+    csvPath = os.path.join(str(testPath),"test_data.csv")#str(testPath) + "/test_data.csv"
+    column_path = os.path.join(str(testPath),"test_data_columns.json") #str(testPath) + "/test_data_columns.json"
 
     #Create test data
     generate_dup_data(column_path, csvPath, 10000, 0.20)
