@@ -8,6 +8,7 @@ from deduplifhirLib.duplicate_data_generator import generate_dup_data
 from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
 from deduplifhirLib.utils import parse_test_data
 
+@pytest.fixture
 def test_generate_data_and_dedup():
     testPath = (Path(__file__).parent).resolve()
     print(testPath)
@@ -36,4 +37,7 @@ def test_generate_data_and_dedup():
     clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
     
     #clusters.as_pandas_dataframe().to_csv(csvPath)
-    print(clusters.as_pandas_dataframe())
+    return clusters.as_pandas_dataframe()
+
+def test_if_deduped_data_is_present(test_generate_data_and_dedup):
+    assert len(test_generate_data_and_dedup) != 0
