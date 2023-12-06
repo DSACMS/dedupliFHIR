@@ -1,12 +1,3 @@
-from splink.duckdb.linker import DuckDBLinker
-import splink.duckdb.comparison_library as cl
-import splink.duckdb.comparison_template_library as ctl
-from splink.duckdb.blocking_rule_library import block_on
-from splink.datasets import splink_datasets
-import json
-import pandas as pd
-import uuid
-
 """
 Below is the definition of the settings for the splink linker object
 
@@ -20,6 +11,16 @@ same first and last name in the input in order to find confirmed matches
 The comparisons list defines the way the model will compare the data in order to find
 the probability that records are duplicates of each other. 
 """
+import json
+import uuid
+import pandas as pd
+from splink.duckdb.linker import DuckDBLinker
+import splink.duckdb.comparison_library as cl
+import splink.duckdb.comparison_template_library as ctl
+from splink.duckdb.blocking_rule_library import block_on
+from splink.datasets import splink_datasets
+
+
 SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = {
     "link_type": "dedupe_only",
     "blocking_rules_to_generate_predictions": [
@@ -76,7 +77,7 @@ def read_fhir_data(patient_record_path):
         raise e
     
     patient_dict = {
-        "unique_id": uuid.uuid4,
+        "unique_id": uuid.uuid4().int,
         "family_name": [patient_json_record['entry'][0]['resource']['name'][0]['family']],
         "given_name": [patient_json_record['entry'][0]['resource']['name'][0]['given'][0]],
         "gender": [patient_json_record['entry'][0]['resource']['gender']],
@@ -85,7 +86,8 @@ def read_fhir_data(patient_record_path):
         "street_address": [patient_json_record['entry'][0]['resource']['address'][0]['line'][0]],
         "city": [patient_json_record['entry'][0]['resource']['address'][0]['city']],
         "state": [patient_json_record['entry'][0]['resource']['address'][0]['state']],
-        "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']]
+        "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']],
+        "ssn": [patient_json_record['entry'][0]['resource']['identifier'][1]['value']]
     }
     #print(patient_dict)
     
