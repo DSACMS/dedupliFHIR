@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ecqm-dedupe"
+name = "cli"
 version = "0.1.0"
 description = ""
 authors = ["Pat Sier <patrick.sier@cms.hhs.gov>"]
