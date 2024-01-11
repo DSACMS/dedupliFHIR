@@ -1,11 +1,15 @@
 async function onOpenFileClick() {
   const filePath = await window.electronAPI.openFile()
-  console.log(filePath, "filePath!")
-  return filePath
+  document.getElementById("file_path").innerHTML = "File Path: " + filePath
 }
 
 const setButton = document.getElementById("btn")
 setButton.addEventListener("click", () => {
-  console.log("is this being clicked?")
   const filePath = onOpenFileClick()
+})
+
+const submitButton = document.getElementById("submit")
+submitButton.addEventListener("click", () => {
+  console.log("submit has been pressed")
+  // const filePath = runProgram()
 })
