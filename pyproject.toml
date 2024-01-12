@@ -2,7 +2,8 @@
 name = "cli"
 version = "0.1.0"
 description = ""
-authors = ["Pat Sier <patrick.sier@cms.hhs.gov>"]
+authors = ["Pat Sier <patrick.sier@cms.hhs.gov>",
+    "Isaac Milarsky <imilarsky@gmail.com>" ]
 
 [tool.poetry.dependencies]
 python = "^3.10"
