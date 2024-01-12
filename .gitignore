@@ -76,7 +76,6 @@ ENV/
 # Data files
 input/*.json
 output/*.json
-*.csv
 node_modules/
 learned_settings
 training.json
