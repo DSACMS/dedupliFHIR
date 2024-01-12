@@ -59,6 +59,7 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
 
     print(f"Read fhir data in {time.time() - start} seconds")
     print("Done parsing fhir data.")
+
     return pd.concat(df_list)
 
 def parse_test_data(path):
@@ -120,6 +121,8 @@ def use_linker(func):
             df = parse_fhir_data(data_dir)
         elif format == "QRDA":
             df = parse_qrda_data(data_dir)
+        elif format == "CSV":
+            df = parse_test_data(data_dir)
         
         linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
         linker.estimate_u_using_random_sampling(max_pairs=5e6)

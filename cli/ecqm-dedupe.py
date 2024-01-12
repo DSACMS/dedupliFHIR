@@ -4,7 +4,6 @@ Module to define cli for ecqm-deduplifhir library.
 import click
 from splink.duckdb.blocking_rule_library import block_on
 from deduplifhirLib.utils import use_linker
-from deduplifhirLib.tests import test_generate_data_and_dedup
 
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
 @click.group()
@@ -23,7 +22,7 @@ def dedupe_data(format,bad_data_path, output_path,linker=None):
     blocking_rule_for_training = block_on(["given_name", "family_name"])
     linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
 
-    blocking_rule_for_training = block_on("birth_date(dob, 1, 4)")  # block on year
+    blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
     linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
 
     pairwise_predictions = linker.predict()
@@ -35,13 +34,8 @@ def dedupe_data(format,bad_data_path, output_path,linker=None):
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
 
-@click.command()
-def run_tests():
-    test_generate_data_and_dedup()
-
 
 cli.add_command(dedupe_data)
-cli.add_command(run_tests)
 
 if __name__ == "__main__":
     cli()
