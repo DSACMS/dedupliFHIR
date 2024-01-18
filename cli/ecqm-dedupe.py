@@ -30,6 +30,7 @@ def dedupe_data(format,bad_data_path, output_path,linker=None):
     clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
 
     deduped_record_mapping = clusters.as_pandas_dataframe()
+    deduped_record_mapping = deduped_record_mapping.drop(deduped_record_mapping[deduped_record_mapping.path == "TRAINING"].index)
 
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
