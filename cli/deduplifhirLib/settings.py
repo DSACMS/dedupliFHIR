@@ -87,7 +87,8 @@ def read_fhir_data(patient_record_path):
         "city": [patient_json_record['entry'][0]['resource']['address'][0]['city']],
         "state": [patient_json_record['entry'][0]['resource']['address'][0]['state']],
         "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']],
-        "ssn": [patient_json_record['entry'][0]['resource']['identifier'][1]['value']]
+        "ssn": [patient_json_record['entry'][0]['resource']['identifier'][1]['value']],
+        "path": patient_record_path
     }
     #print(patient_dict)
 

@@ -64,7 +64,7 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
 
     return pd.concat(df_list)
 
-def parse_test_data(path):
+def parse_test_data(path,marked=False):
     """
     This function parses a csv file in a given path structure as patient data. It
     parses through the csv and creates a dataframe from it. 
@@ -98,7 +98,8 @@ def parse_test_data(path):
                 "city": [row[8]],
                 "state": [row[9]],
                 "postal_code": [row[10]],
-                "ssn": [row[11]]
+                "ssn": [row[11]],
+                "path": ["TRAINING" if marked else ""]
             }
 
             df_list.append(pd.DataFrame(patient_dict))
@@ -128,12 +129,16 @@ def use_linker(func):
         print(f"Format is {fmt}")
         print(f"Data dir is {data_dir}")
 
+        training_df = parse_test_data('cli/deduplifhirLib/test_data.csv',marked=True)
         if fmt == "FHIR":
-            train_frame = parse_fhir_data(data_dir)
+            train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
         elif fmt == "QRDA":
-            train_frame = parse_qrda_data(data_dir)
+            train_frame = pd.concat([parse_qrda_data(data_dir),training_df])
         elif fmt == "CSV":
-            train_frame = parse_test_data(data_dir)
+            train_frame = pd.concat([parse_test_data(data_dir),training_df])
+        elif fmt == "TEST":
+            train_frame = training_df
+
 
         lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
         lnkr.estimate_u_using_random_sampling(max_pairs=5e6)
