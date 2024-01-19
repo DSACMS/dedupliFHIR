@@ -20,10 +20,12 @@ def dedupe_data(format,bad_data_path, output_path,linker=None):
 
     #linker is created by use_linker decorator
     blocking_rule_for_training = block_on(["given_name", "family_name"])
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
 
     blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
 
     pairwise_predictions = linker.predict()
 

@@ -17,14 +17,14 @@ import numpy as np
 from faker import Faker
 
 
-def generate_dup_data(column_file,output_name,rows,duprate,localization='en_US',cpus=1,batchsize=10000):
+def generate_dup_data(column_file,output_name,rows,duprate,localization='en_US',batchsize=10000):
     config = {
         'column_file_path': column_file,
         'output_file': output_name,
         'total_row_cnt': rows,
         'duplication_rate': duprate,
         'localization': localization,
-        'cpus': cpus,
+        'cpus': 1,
         'batch_size': batchsize
     }
     #vars(parser.parse_args())
@@ -33,7 +33,7 @@ def generate_dup_data(column_file,output_name,rows,duprate,localization='en_US',
         col_config = json.load(column_file)
 
     config.update(col_config) # append column settings to main config dict
-    
+
     start = time.time()
     fake_gen = Faker(config['localization'])
     tmp_dir = generate_temp_files(config, fake_gen)
@@ -42,7 +42,7 @@ def generate_dup_data(column_file,output_name,rows,duprate,localization='en_US',
     fix_aggregated_files(config)
     shutil.rmtree(tmp_dir)
     end = time.time()
-    print('Elapsed time (sec) : {}'.format(end-start))
+    print(f"Elapsed time (sec) : {end-start}")
     print('Fin!')
 
 def fix_aggregated_files(config):
@@ -59,7 +59,7 @@ def fix_aggregated_files(config):
 def generate_temp_files(config, fake_gen):
     pool = Pool(config['cpus'])
 
-    tmp_dir = './temp' 
+    tmp_dir = './temp'
     create_temp_directory(tmp_dir)
 
     batch_size = config['batch_size']
@@ -67,7 +67,8 @@ def generate_temp_files(config, fake_gen):
     remaining_rows = config['total_row_cnt']
 
     for _ in range(num_batches):
-        pool.apply_async(create_fake_data_file, args = (config, fake_gen, tmp_dir, batch_size, remaining_rows))
+        pool.apply_async(
+            create_fake_data_file, args = (config, fake_gen, tmp_dir, batch_size, remaining_rows))
     pool.close()
     pool.join()
     return tmp_dir
@@ -88,15 +89,17 @@ def create_fake_data_file(config, fake_gen, tmp_dir, batch_size, remaining_rows)
     else:
         rows_to_process = remaining_rows
     remaining_rows = remaining_rows - rows_to_process
-    
-    num_of_initial_rows, num_duplicated_rows = get_row_counts(rows_to_process, config['duplication_rate'])
+
+    num_of_initial_rows, num_duplicated_rows = get_row_counts(
+        rows_to_process, config['duplication_rate'])
     try:
-        fake_data = get_fake_data(num_of_initial_rows, num_duplicated_rows, config['columns'], fake_gen)
+        fake_data = get_fake_data(
+            num_of_initial_rows, num_duplicated_rows, config['columns'], fake_gen)
         temp_file_name = tmp_dir + '/' + str(uuid.uuid4())
-        print('Writing {} rows to file'.format(rows_to_process))
+        print(f"Writing {rows_to_process} rows to file")
         fake_data.to_csv(temp_file_name, header=False)
     except Exception as e:
-        print('Unexpected error: {}'.format(e))
+        print(f"Unexpected error: {e}")
         raise e
 
 
@@ -112,7 +115,11 @@ def get_fake_data(num_of_initial_rows, num_duplicated_rows, columns, fake_gen):
         fill_rate = 100
         if 'fill_rate' in column:
             fill_rate = column['fill_rate'] * 100
-        initial_fake_data[column['name']] = [get_fake_string(column['type'], fake_gen, fill_rate) for x in range(num_of_initial_rows)]
+
+        fake_strings = [
+            get_fake_string(column['type'], fake_gen, fill_rate) for x in range(num_of_initial_rows)
+        ]
+        initial_fake_data[column['name']] = fake_strings
 
     initial_fake_data.insert(0, 'truth_value', '')
     initial_fake_data['truth_value'] = [uuid.uuid4() for _ in range(len(initial_fake_data.index))]
@@ -122,10 +129,12 @@ def get_fake_data(num_of_initial_rows, num_duplicated_rows, columns, fake_gen):
     for column in columns:
         if 'transposition_chars' in column and column['transposition_chars'] > 0:
             for _ in range(column['transposition_chars']):
-                known_duplicates[column['name']] = known_duplicates[column['name']].apply(transposition_chars)
+                known_duplicates[column['name']] = known_duplicates[column['name']].apply(
+                    transposition_chars)
         if 'mistype_chars' in column and column['mistype_chars'] > 0:
             for i in range(column['mistype_chars']):
-                known_duplicates[column['name']] = known_duplicates[column['name']].apply(transposition_chars)
+                known_duplicates[column['name']] = known_duplicates[column['name']].apply(
+                    transposition_chars)
 
     output_data = pd.concat([initial_fake_data, known_duplicates])
     return output_data
@@ -174,7 +183,7 @@ def get_fake_string(fake_type, fake_gen, fill_rate):
         return fake_gen.date_of_birth(minimum_age=18, maximum_age=95).strftime('%m/%d/%Y')
 
 def transposition_chars(str_to_alter):
-    if  str_to_alter == None or len(str_to_alter) < 1:
+    if  str_to_alter is None or len(str_to_alter) < 1:
         return str_to_alter
     first_char = random.randrange(len(str_to_alter)-1)
     second_char = first_char + 1
@@ -186,7 +195,7 @@ def transposition_chars(str_to_alter):
     return str_to_alter
 
 def mistype_chars(str_to_alter):
-    if len(str_to_alter) < 1 or str_to_alter == None:
+    if len(str_to_alter) < 1 or str_to_alter is None:
         return str_to_alter
 
     char_to_alter = random.randrange(len(str_to_alter))

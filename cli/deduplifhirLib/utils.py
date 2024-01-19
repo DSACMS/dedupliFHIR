@@ -1,21 +1,16 @@
 import os
 import time
-from os import walk
-import json
-import sys
 from pathlib import Path
 import csv
 import datetime
-import pandas as pd
+import uuid
 from multiprocessing import Pool
 from functools import wraps
+import pandas as pd
 from splink.duckdb.linker import DuckDBLinker
-import splink.duckdb.comparison_library as cl
-import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
-from splink.datasets import splink_datasets
-import uuid
-from contextlib import contextmanager
+
+
 from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
 from deduplifhirLib.duplicate_data_generator import generate_dup_data
 
@@ -48,7 +43,7 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
     all_patient_records = [
         os.path.join(dirpath,f) for (dirpath, dirnames, filenames)
          in os.walk(path) for f in filenames if f.split(".")[-1] == "json"]
-    
+
     print(len(all_patient_records))
 
     #Load files concurrently via multiprocessing
@@ -91,9 +86,9 @@ def parse_test_data(path):
             }
 
             df_list.append(pd.DataFrame(patient_dict))
-    
+
     return pd.concat(df_list)
-    
+
 
 
 def use_linker(func):
@@ -123,13 +118,13 @@ def use_linker(func):
             df = parse_qrda_data(data_dir)
         elif format == "CSV":
             df = parse_test_data(data_dir)
-        
+
         linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
         linker.estimate_u_using_random_sampling(max_pairs=5e6)
 
         kwargs['linker'] = linker
         return func(*args,**kwargs)
-    
+
     return wrapper
 
 if __name__ == "__main__":
@@ -137,8 +132,8 @@ if __name__ == "__main__":
     testPath = (Path(__file__).parent).resolve()
     print(testPath)
 
-    csvPath = os.path.join(str(testPath),"test_data.csv")#str(testPath) + "/test_data.csv"
-    column_path = os.path.join(str(testPath),"test_data_columns.json") #str(testPath) + "/test_data_columns.json"
+    csvPath = os.path.join(str(testPath),"test_data.csv")
+    column_path = os.path.join(str(testPath),"test_data_columns.json")
 
     #Create test data
     generate_dup_data(column_path, csvPath, 10000, 0.20)
@@ -147,17 +142,19 @@ if __name__ == "__main__":
 
     linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
-    
+
     blocking_rule_for_training = block_on(["given_name", "family_name"])
-    
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-    
+
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
+
     blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-    
-    
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
+
+
     pairwise_predictions = linker.predict()
-    
+
     clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-    
+
     print(clusters.as_pandas_dataframe(limit=25))
