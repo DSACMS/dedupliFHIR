@@ -1,21 +1,23 @@
+"""
+Below are the definition of the utils used by the dedupliFHR tool.
+
+The most important of these data structures is the context manager for linker 
+generation for Splink. 
+
+"""
 import os
 import time
-from os import walk
-import json
-import sys
 from pathlib import Path
 import csv
 import datetime
-import pandas as pd
+import uuid
 from multiprocessing import Pool
 from functools import wraps
+import pandas as pd
 from splink.duckdb.linker import DuckDBLinker
-import splink.duckdb.comparison_library as cl
-import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
-from splink.datasets import splink_datasets
-import uuid
-from contextlib import contextmanager
+
+
 from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
 from deduplifhirLib.duplicate_data_generator import generate_dup_data
 
@@ -48,7 +50,7 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
     all_patient_records = [
         os.path.join(dirpath,f) for (dirpath, dirnames, filenames)
          in os.walk(path) for f in filenames if f.split(".")[-1] == "json"]
-    
+
     print(len(all_patient_records))
 
     #Load files concurrently via multiprocessing
@@ -63,14 +65,23 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
     return pd.concat(df_list)
 
 def parse_test_data(path,marked=False):
+    """
+    This function parses a csv file in a given path structure as patient data. It
+    parses through the csv and creates a dataframe from it. 
+
+    Arguments:
+        path: Path of CSV file
+    Returns:
+        Dataframe containing all patient data
+    """
 
     df_list = []
     # reading csv file
-    with open(path, 'r') as csvfile:
+    with open(path, 'r',encoding="utf-8") as csvfile:
         # creating a csv reader object
         csvreader = csv.reader(csvfile)
 
-        fields = next(csvreader)
+        _ = next(csvreader)
 
 
         for row in csvreader:
@@ -92,9 +103,9 @@ def parse_test_data(path,marked=False):
             }
 
             df_list.append(pd.DataFrame(patient_dict))
-    
+
     return pd.concat(df_list)
-    
+
 
 
 def use_linker(func):
@@ -112,56 +123,59 @@ def use_linker(func):
 
     @wraps(func)
     def wrapper(*args,**kwargs):
-        format = kwargs['format']
+        fmt = kwargs['fmt']
         data_dir = kwargs['bad_data_path']
 
-        print(f"Format is {format}")
+        print(f"Format is {fmt}")
         print(f"Data dir is {data_dir}")
 
         training_df = parse_test_data('cli/deduplifhirLib/test_data.csv',marked=True)
-        if format == "FHIR":
-            df = pd.concat([parse_fhir_data(data_dir),training_df])
-        elif format == "QRDA":
-            df = pd.concat([parse_qrda_data(data_dir),training_df])
-        elif format == "CSV":
-            df = pd.concat([parse_test_data(data_dir),training_df])
-        elif format == "TEST":
-            df = training_df
-        
-        linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-        linker.estimate_u_using_random_sampling(max_pairs=5e6)
+        if fmt == "FHIR":
+            train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
+        elif fmt == "QRDA":
+            train_frame = pd.concat([parse_qrda_data(data_dir),training_df])
+        elif fmt == "CSV":
+            train_frame = pd.concat([parse_test_data(data_dir),training_df])
+        elif fmt == "TEST":
+            train_frame = training_df
 
-        kwargs['linker'] = linker
+
+        lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
+        lnkr.estimate_u_using_random_sampling(max_pairs=5e6)
+
+        kwargs['linker'] = lnkr
         return func(*args,**kwargs)
-    
+
     return wrapper
 
 if __name__ == "__main__":
 
-    testPath = (Path(__file__).parent).resolve()
-    print(testPath)
+    test_path = (Path(__file__).parent).resolve()
+    print(test_path)
 
-    csvPath = os.path.join(str(testPath),"test_data.csv")#str(testPath) + "/test_data.csv"
-    column_path = os.path.join(str(testPath),"test_data_columns.json") #str(testPath) + "/test_data_columns.json"
+    csv_path = os.path.join(str(test_path),"test_data.csv")
+    column_path = os.path.join(str(test_path),"test_data_columns.json")
 
     #Create test data
-    generate_dup_data(column_path, csvPath, 10000, 0.20)
+    generate_dup_data(column_path, csv_path, 10000, 0.20)
 
-    df = parse_test_data(csvPath)
+    df = parse_test_data(csv_path)
 
     linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
-    
+
     blocking_rule_for_training = block_on(["given_name", "family_name"])
-    
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-    
+
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
+
     blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-    
-    
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
+
+
     pairwise_predictions = linker.predict()
-    
+
     clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-    
+
     print(clusters.as_pandas_dataframe(limit=25))
