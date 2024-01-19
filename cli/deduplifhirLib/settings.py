@@ -37,7 +37,7 @@ SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = {
 
 
 
-splink_test_df = splink_datasets.fake_1000
+splink_test_df = splink_datasets.fake_1000 # pylint: disable=no-member
 
 #This is the same as the above settings object, but for the test fake data.
 SPLINK_LINKER_SETTINGS_TEST_DEDUPE = {
@@ -69,7 +69,7 @@ def read_fhir_data(patient_record_path):
         A dataframe holding FHIR data for a single patient.
     """
     try:
-        with open(patient_record_path, "r") as f:
+        with open(patient_record_path, "r", encoding="utf-8") as f:
             patient_json_record = json.load(f)
     except Exception as e:
         print(e)

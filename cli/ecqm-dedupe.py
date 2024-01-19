@@ -10,12 +10,13 @@ from deduplifhirLib.utils import use_linker
 def cli():
     pass
 
+#seemlingly unused arguments are likely used by the use_linker cm -IM
 @click.command()
-@click.option('--format', default="FHIR", help='Format of patient data')
+@click.option('--fmt', default="FHIR", help='Format of patient data')
 @click.argument('bad_data_path')
 @click.argument('output_path')
 @use_linker
-def dedupe_data(format,bad_data_path, output_path,linker=None):
+def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=unused-argument
     """Program to dedupe patient data in many formats namely FHIR and QRDA"""
 
     #linker is created by use_linker decorator

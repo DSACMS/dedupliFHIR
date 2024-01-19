@@ -1,7 +1,9 @@
-#Copyright (c) 2021 Thomas Wyrick
-# Taken from https://github.com/thomaswyrick/duplicate-data-generator
+"""
+Copyright (c) 2021 Thomas Wyrick
+Taken from https://github.com/thomaswyrick/duplicate-data-generator
 
-#This is a modified wrapper script to generate data using the Faker library
+This is a modified wrapper script to generate data using the Faker library
+"""
 import json
 import os
 import glob
@@ -29,7 +31,7 @@ def generate_dup_data(column_file,output_name,rows,duprate,localization='en_US',
     }
     #vars(parser.parse_args())
 
-    with open(config['column_file_path']) as column_file:
+    with open(config['column_file_path'],encoding="utf-8") as column_file:
         col_config = json.load(column_file)
 
     config.update(col_config) # append column settings to main config dict
@@ -132,7 +134,7 @@ def get_fake_data(num_of_initial_rows, num_duplicated_rows, columns, fake_gen):
                 known_duplicates[column['name']] = known_duplicates[column['name']].apply(
                     transposition_chars)
         if 'mistype_chars' in column and column['mistype_chars'] > 0:
-            for i in range(column['mistype_chars']):
+            for _ in range(column['mistype_chars']):
                 known_duplicates[column['name']] = known_duplicates[column['name']].apply(
                     transposition_chars)
 

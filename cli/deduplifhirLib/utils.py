@@ -61,11 +61,11 @@ def parse_test_data(path):
 
     df_list = []
     # reading csv file
-    with open(path, 'r') as csvfile:
+    with open(path, 'r',encoding="utf-8") as csvfile:
         # creating a csv reader object
         csvreader = csv.reader(csvfile)
 
-        fields = next(csvreader)
+        _ = next(csvreader)
 
 
         for row in csvreader:
@@ -106,39 +106,39 @@ def use_linker(func):
 
     @wraps(func)
     def wrapper(*args,**kwargs):
-        format = kwargs['format']
+        fmt = kwargs['fmt']
         data_dir = kwargs['bad_data_path']
 
-        print(f"Format is {format}")
+        print(f"Format is {fmt}")
         print(f"Data dir is {data_dir}")
 
-        if format == "FHIR":
-            df = parse_fhir_data(data_dir)
-        elif format == "QRDA":
-            df = parse_qrda_data(data_dir)
-        elif format == "CSV":
-            df = parse_test_data(data_dir)
+        if fmt == "FHIR":
+            train_frame = parse_fhir_data(data_dir)
+        elif fmt == "QRDA":
+            train_frame = parse_qrda_data(data_dir)
+        elif fmt == "CSV":
+            train_frame = parse_test_data(data_dir)
 
-        linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-        linker.estimate_u_using_random_sampling(max_pairs=5e6)
+        lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
+        lnkr.estimate_u_using_random_sampling(max_pairs=5e6)
 
-        kwargs['linker'] = linker
+        kwargs['linker'] = lnkr
         return func(*args,**kwargs)
 
     return wrapper
 
 if __name__ == "__main__":
 
-    testPath = (Path(__file__).parent).resolve()
-    print(testPath)
+    test_path = (Path(__file__).parent).resolve()
+    print(test_path)
 
-    csvPath = os.path.join(str(testPath),"test_data.csv")
-    column_path = os.path.join(str(testPath),"test_data_columns.json")
+    csv_path = os.path.join(str(test_path),"test_data.csv")
+    column_path = os.path.join(str(test_path),"test_data_columns.json")
 
     #Create test data
-    generate_dup_data(column_path, csvPath, 10000, 0.20)
+    generate_dup_data(column_path, csv_path, 10000, 0.20)
 
-    df = parse_test_data(csvPath)
+    df = parse_test_data(csv_path)
 
     linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
