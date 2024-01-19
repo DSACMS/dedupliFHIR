@@ -1,4 +1,0 @@
-name: "run-linting-checks"
-on:
-  pull_request:
-    branches: [main, dev]
