@@ -1,0 +1,31 @@
+name: "run-linting-checks"
+on:
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  run-pylint:
+    name: runner / pylint
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dciborow/action-pylint@0.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: warning
+          glob_pattern: "**/*.py"
+          filter_mode: "file"
+
+  misspell:
+    name: runner / misspell
+    runs-on: ubuntu-latest
+    steps:
+      - name: Highlight any misspellings in changes.
+        uses: actions/checkout@v4
+      - name: misspell
+        uses: reviewdog/action-misspell@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          locale: "US"
