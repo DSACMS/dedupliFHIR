@@ -31,6 +31,9 @@ def dedupe_data(format,bad_data_path, output_path,linker=None):
 
     deduped_record_mapping = clusters.as_pandas_dataframe()
 
+    if format != "TEST":
+        deduped_record_mapping = deduped_record_mapping.drop(deduped_record_mapping[deduped_record_mapping.path == "TRAINING"].index)
+
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
 
