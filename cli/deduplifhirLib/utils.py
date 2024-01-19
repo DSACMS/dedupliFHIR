@@ -1,3 +1,10 @@
+"""
+Below are the definition of the utils used by the dedupliFHR tool.
+
+The most important of these data structures is the context manager for linker 
+generation for Splink. 
+
+"""
 import os
 import time
 from pathlib import Path
@@ -58,6 +65,15 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
     return pd.concat(df_list)
 
 def parse_test_data(path):
+    """
+    This function parses a csv file in a given path structure as patient data. It
+    parses through the csv and creates a dataframe from it. 
+
+    Arguments:
+        path: Path of CSV file
+    Returns:
+        Dataframe containing all patient data
+    """
 
     df_list = []
     # reading csv file
