@@ -37,7 +37,7 @@ SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = {
 
 
 
-splink_test_df = splink_datasets.fake_1000
+splink_test_df = splink_datasets.fake_1000 # pylint: disable=no-member
 
 #This is the same as the above settings object, but for the test fake data.
 SPLINK_LINKER_SETTINGS_TEST_DEDUPE = {
@@ -69,13 +69,13 @@ def read_fhir_data(patient_record_path):
         A dataframe holding FHIR data for a single patient.
     """
     try:
-        with open(patient_record_path, "r") as f:
+        with open(patient_record_path, "r", encoding="utf-8") as f:
             patient_json_record = json.load(f)
     except Exception as e:
         print(e)
         print(f"File: {patient_record_path}")
         raise e
-    
+
     patient_dict = {
         "unique_id": uuid.uuid4().int,
         "family_name": [patient_json_record['entry'][0]['resource']['name'][0]['family']],
@@ -91,7 +91,7 @@ def read_fhir_data(patient_record_path):
         "path": patient_record_path
     }
     #print(patient_dict)
-    
+
     return pd.DataFrame(patient_dict)
 
 
@@ -100,17 +100,19 @@ if __name__ == "__main__":
     #DuckDB style formatting
     linker = DuckDBLinker(splink_test_df, SPLINK_LINKER_SETTINGS_TEST_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
-    
+
     blocking_rule_for_training = block_on(["first_name", "surname"])
-    
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-    
+
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
+
     blocking_rule_for_training = block_on("substr(dob, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(blocking_rule_for_training, estimate_without_term_frequencies=True)
-    
-    
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training, estimate_without_term_frequencies=True)
+
+
     pairwise_predictions = linker.predict()
-    
+
     clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-    
+
     print(clusters.as_pandas_dataframe(limit=25))
