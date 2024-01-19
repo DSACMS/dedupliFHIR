@@ -243,32 +243,32 @@ def get_fake_string(fake_type, fake_gen, fill_rate):
     if fake_type == 'first_name':
         return fake_gen.first_name_male() if gender=="M" else fake_gen.first_name_female()
         #return fake_gen.first_name()
-    elif fake_type == 'last_name':
+    if fake_type == 'last_name':
         return fake_gen.last_name()
-    elif fake_type == 'street_address':
+    if fake_type == 'street_address':
         return fake_gen.street_address()
-    elif fake_type == 'secondary_address':
+    if fake_type == 'secondary_address':
         return fake_gen.secondary_address()
-    elif fake_type == 'city':
+    if fake_type == 'city':
         return fake_gen.city()
-    elif fake_type == 'state':
+    if fake_type == 'state':
         return fake_gen.state()
-    elif fake_type == 'postcode':
+    if fake_type == 'postcode':
         return fake_gen.postcode()
-    elif fake_type == 'current_country':
+    if fake_type == 'current_country':
         return fake_gen.current_country()
-    elif fake_type == 'phone_number':
+    if fake_type == 'phone_number':
         t = fake_gen.phone_number()
         if 'x' in t:
             t = None
         return t
-    elif fake_type == 'email':
+    if fake_type == 'email':
         return fake_gen.email()
-    elif fake_type == 'ssn':
+    if fake_type == 'ssn':
         return fake_gen.ssn()
-    elif fake_type == 'gender':
+    if fake_type == 'gender':
         return gender
-    elif fake_type == 'date_of_birth':
+    if fake_type == 'date_of_birth':
         return fake_gen.date_of_birth(minimum_age=18, maximum_age=95).strftime('%m/%d/%Y')
 
 def transposition_chars(str_to_alter):
