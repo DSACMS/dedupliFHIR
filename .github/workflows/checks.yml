@@ -11,8 +11,8 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Install poetry
+        run: pipx install poetry
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
