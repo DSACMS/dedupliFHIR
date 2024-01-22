@@ -19,7 +19,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'poetry'
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --no-interaction
       - name: Run tests
         run: cd cli; poetry run python -m pytest deduplifhirLib/tests.py
   run-pylint:
