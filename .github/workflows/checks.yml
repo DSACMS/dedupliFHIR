@@ -48,3 +48,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           locale: "US"
+          exclude: |
+            ./cli/deduplifhirLib/test_data.csv
