@@ -19,6 +19,9 @@ This project originated from the CMS Open Source Community as a resource ACOs ca
 
 ### Project Vision
 
+A CLI bundled with an electron front-end that provides data-linkage and AI deduplication for reported
+ACO data at scale.
+
 ### Project Information
 
 <!-- Example Innersource Project Info
@@ -31,6 +34,9 @@ This project originated from the CMS Open Source Community as a resource ACOs ca
  * Project Members:
     * Team Lead, PO, Delivery Lead, Approvers, Trusted Committers etc.
 -->
+
+ * Project Members:
+    * Pat Sier, Natalia Luzuriaga, Isaac Milarsky, Remy DeCausemaker 
 
 <!-- Example Open Source Info
  * [Project Website](https://cms.gov/digital-service-cms)
