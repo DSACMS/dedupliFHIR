@@ -10,6 +10,7 @@ from deduplifhirLib.utils import use_linker
 def cli():
     """ Defines the click cli object """
 
+#TODO: CACHE THIS
 #seemlingly unused arguments are likely used by the use_linker cm -IM
 @click.command()
 @click.option('--fmt', default="FHIR", help='Format of patient data')
@@ -40,8 +41,38 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
 
+@click.command()
+@click.option('--fmt', default="CSV", help="format of deduped data result")
+@click.argument('good_data_path', default=None, help="Optional path of processed data output file mapping")
+@click.argument('output_path')
+def gen_diff(fmt, good_data_path,output_path):
+    """
+    dedupliFHIR cli command to generate diffs between duplicate patients and save them
+
+    Arguments:
+        fmt: Format of output data from dedupe-data
+        good_data_path: path of output data, when left as default uses cache
+        output_path: path to save diff files to.
+    """
+
+
+@click.command()
+def clear_cache():
+    """Clear cache of dedupliFHIED patient data"""
+
+@click.command()
+def status():
+    """Output status of cache as well as result and stats of last run"""
+
+@click.command()
+def help():
+    """Output information and statistics about dedupliFHIR"""
 
 cli.add_command(dedupe_data)
+cli.add_command(gen_diff)
+cli.add_command(clear_cache)
+cli.add_command(status)
+cli.add_command(help)
 
 if __name__ == "__main__":
     cli()
