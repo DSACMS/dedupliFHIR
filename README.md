@@ -95,7 +95,7 @@ An up-to-date list of core team members can be found in [MAINTAINERS.md](MAINTAI
 - github/workflows
    - Directory containing GitHub Actions workflows for automating CI/CD processes.
 - cli
-   - Command line tool for
+   - Command line tool for data linkage and deduplication of ACO patient data.
 - frontend
    - Native desktop app frontend built using Electron. 
 - profile
@@ -127,6 +127,17 @@ This project uses **continuous deployment** using [Github Actions](https://githu
 
 Pull-requests are merged to `main` and the changes are immediately deployed to the development environment. Releases are created to push changes to production.
 -->
+
+We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow/)
+
+1.  Fork the project 
+2.  Check out the `main` branch 
+3.  Create a feature branch
+4.  Write code and tests for your change 
+5.  From your branch, make a pull request against `dev` if you have a feature change and `main` if it is a hotfix 
+6.  Work with repo maintainers to get your change reviewed and resolve git history if needed
+7.  Wait for your change to be pulled into `dev` and later released into `main`
+8.  Delete your feature branch
 
 ## Contributing
 Thank you for considering contributing to an Open Source project of the US Government! For more information about our contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
