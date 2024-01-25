@@ -80,21 +80,32 @@ poetry run python cli/ecqm-dedupe.py <command> [--fmt] [<args>]
 
 - http://hl7.org/fhir/us/identity-matching/2022May/
 
-
-
 ## Core Team
 An up-to-date list of core team members can be found in [MAINTAINERS.md](MAINTAINERS.md). At this time, the project is still building the core team and defining roles and responsibilities. We are eagerly seeking individuals who would like to join the community and help us define and fill these roles.
 
 ## Documentation Index 
-**{list of .md at top directory and descriptions}**
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [MAINTAINERS.md](./MAINTAINERS.md)
+- [CODEOWNERS.md](./CODEOWNERS.md)
+- [GOVERNANCE.md](./GOVERNANCE.md)
+- [SECURITY.md](./SECURITY.md)
+- [LICENSE](./LICENSE)
 
 ## Repository Structure
-**{list directories and descriptions}**
+- github/workflows
+   - Directory containing GitHub Actions workflows for automating CI/CD processes.
+- cli
+   - Command line tool for
+- frontend
+   - Native desktop app frontend built using Electron. 
+- profile
+   - Information about the Digital Service at CMS team.
+
 
 # Development and Software Delivery Lifecycle 
 The following guide is for members of the project team who have access to the repository as well as code contributors. The main difference between internal and external contributions is that externabl contributors will need to fork the project and will not be able to merge their own pull requests. For more information on contribributing, see: [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Local Development
+<!--- ## Local Development
 <!--- # TODO - with example below:
 This project is monorepo with several apps. Please see the [api](./api/README.md) and [frontend](./frontend/README.md) READMEs for information on spinning up those projects locally. Also see the project [documentation](./documentation) for more info.
 -->
