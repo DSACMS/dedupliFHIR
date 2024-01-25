@@ -1,22 +1,20 @@
 # Maintainers
 
-MAINTAINERS:
+Maintainers:
 
-- GITHUB_ID
-- GITHUB_ID
-- GITHUB_ID
+- [@IsaacMilarky](https://github.com/IsaacMilarky)
+- [@natalialuzuriaga](https://github.com/natalialuzuriaga)
 
-approvers:
+Approvers:
 
-- GITHUB_ID
-- GITHUB_ID
-- GITHUB_ID
+- [@patsier-cms](https://github.com/patsier-cms)
+- [@IsaacMilarky](https://github.com/IsaacMilarky)
+- [@natalialuzuriaga](https://github.com/natalialuzuriaga)
 
-reviewers:
+Reviewers:
 
-- GITHUB_ID
-- GITHUB_ID
-- GITHUB_ID
+- [@patsier-cms](https://github.com/patsier-cms)
+- [@decause-gov](https://github.com/decause-gov)
 
 | Roles        | Responsibilities| Requirements  | Defined by|
 | -------------|:---------------|:-------------|:-------------|
