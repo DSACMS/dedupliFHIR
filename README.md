@@ -47,8 +47,8 @@ make test
 
 To run the cli (for now) use the command:
 ```
-poetry run python cli/ecqm-dedupe.py <options> <commands>
-```
+poetry run python cli/ecqm-dedupe.py <command> [--fmt] [<args>]
+``` 
 
 ### TODO:
 
