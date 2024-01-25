@@ -4,16 +4,10 @@
 
 Prototype for basic deduplication and aggregation of eCQM data
 
-## Core Team
-An up-to-date list of core team members can be found in [MAINTAINERS.md](MAINTAINERS.md). At this time, the project is still building the core team and defining roles and responsibilities. We are eagerly seeking individuals who would like to join the community and help us define and fill these roles.
-
-## Documentation Index 
-**{list of .md at top directory and descriptions}**
-
-## Repository Structure
-**{list directories and descriptions}**
+## About the Project
 
 ### Agency Mission
+This project originated from the CMS Open Source Community as a resource ACOs can use when preparing their patient records submission.
 
 ### Team Mission
 
@@ -58,23 +52,32 @@ To run the cli (for now) use the command:
 poetry run python cli/ecqm-dedupe.py <options> <commands>
 ```
 
-## TODO:
+### TODO:
 
 - Figure out schema used for patient and measure/valueset bundles
 - [Patient/measure example?](https://github.com/projecttacoma/fqm-execution/blob/3767d19700a48baa1609257033e4179eea485aba/test/fixtures/elm/CMS13v2.json)
 - [Patient bundle example](https://github.com/projecttacoma/fqm-execution/blob/4738f84b72290c2d715c902163043674213fe837/test/fixtures/EXM111-9.1.000/Armando772_Almanza534_08fc9439-b7ff-4309-b409-4d143388594c.json)
 
-## Questions
+### Questions
 
 - Are measures just instructions and patient bundles contain actual information?
   - If so, should run everything on patient bundle
 - Should we pre-generate weights rather than training?
 
-## References
+### References
 
 - http://hl7.org/fhir/us/identity-matching/2022May/
-- [Northwestern notes](https://docs.google.com/document/d/1sQPz6golYBLg3KIFmAUGzkxc7IQVFHacP1pBxQecO8M/edit#heading=h.wpfu2n41bod5)
 
+
+
+## Core Team
+An up-to-date list of core team members can be found in [MAINTAINERS.md](MAINTAINERS.md). At this time, the project is still building the core team and defining roles and responsibilities. We are eagerly seeking individuals who would like to join the community and help us define and fill these roles.
+
+## Documentation Index 
+**{list of .md at top directory and descriptions}**
+
+## Repository Structure
+**{list directories and descriptions}**
 
 # Development and Software Delivery Lifecycle 
 The following guide is for members of the project team who have access to the repository as well as code contributors. The main difference between internal and external contributions is that externabl contributors will need to fork the project and will not be able to merge their own pull requests. For more information on contribributing, see: [CONTRIBUTING.md](./CONTRIBUTING.md).
