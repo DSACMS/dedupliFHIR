@@ -58,9 +58,9 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 2.  Check out the `main` branch 
 3.  Create a feature branch
 4.  Write code and tests for your change 
-5.  From your branch, make a pull request against `cmsgov/cmsgov-example-repo/main` 
-6.  Work with repo maintainers to get your change reviewed 
-7.  Wait for your change to be pulled into `cmsgov/cmsgov-example-repo/main`
+5.  From your branch, make a pull request against `dev` if you have a feature change and `main` if it is a hotfix 
+6.  Work with repo maintainers to get your change reviewed and resolve git history if needed
+7.  Wait for your change to be pulled into `dev` and later released into `main`
 8.  Delete your feature branch
 
 ### Testing Conventions
