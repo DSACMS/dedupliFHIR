@@ -13,14 +13,35 @@ We encourage you to read this project's CONTRIBUTING policy (you are here), its
 
 ## Getting Started
 <!--- ### TODO: If you have 'good-first-issue' or 'easy' labels for newcomers, mention them here.-->
+First, please install poetry (see [installation instructions](https://python-poetry.org/docs/#installation)).
+
+Then, install Python dependencies with
+```
+make install
+```
+
+To run our Python tests run
+```
+make test
+```
+
+To Access the Python CLI immediately use
+```
+poetry run python cli/ecqm-dedupe.py <command> [--fmt] [<args>]
+``` 
+
 
 ### Team Specific Guidelines
 
-### Building dependencies
+### Building the Project
 
 <!--- ### TODO -->
+Poetry is required to build dependencies (see [instructions](https://python-poetry.org/docs/#installation)).
 
-### Building the Project
+Then, install Python dependencies with
+```
+make install
+```
 
 <!--- ### TODO -->
 
@@ -40,6 +61,11 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 ### Testing Conventions
 
 <!--- TODO -->
+This project uses pytest as the main testing framework for the project's cli. 
+
+Python tests can be found in the `cli/deduplifhirLib/tests.py`. Any new testing
+contributions are greatly appreciated and needed to ensure quality of any interpreted
+language project. 
 
 ### Coding Style and Linters
 
@@ -51,6 +77,13 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 1. Mention any other content guidelines the project adheres to (e.g. plainlanguage.gov, etc...)
 
 -->
+This project adheres to PEP8 rules and guidelines whenever possible when accepting
+new contributions of Python code. Although, there are good reasons to ignore particular guidelines
+in particular situations. Further information on PEP8 can be found [here.](https://peps.python.org/pep-0008/)
+
+This project also uses pylint as the main linter for the moment and employs pylint checks upon new pull
+requests into protected branches. Python code quality checks are extremely useful for lowering the
+cost of maintenence of Python projects. Further information on Pylint can be found [here.](https://pylint.readthedocs.io/en/latest/)
 
 ### Issues
 
