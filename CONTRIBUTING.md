@@ -33,6 +33,11 @@ poetry run python cli/ecqm-dedupe.py <command> [--fmt] [<args>]
 
 ### Team Specific Guidelines
 
+- Please try to keep PRs to a reasonable size; try to split large contributions to multiple PRs
+- Please create Pull Requests into dev unless the contribution is some kind of bugfix or urgent hotfix.
+- Document and explain the contribution clearly according to provided standards when possible
+- Feel free to reach out to us if there is any confusion
+
 ### Building the Project
 
 <!--- ### TODO -->
