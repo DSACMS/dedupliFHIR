@@ -13,36 +13,64 @@ We encourage you to read this project's CONTRIBUTING policy (you are here), its
 
 ## Getting Started
 <!--- ### TODO: If you have 'good-first-issue' or 'easy' labels for newcomers, mention them here.-->
+First, please install poetry (see [installation instructions](https://python-poetry.org/docs/#installation)).
+
+Then, install Python dependencies with
+```
+make install
+```
+
+To run our Python tests run
+```
+make test
+```
+
+To Access the Python CLI immediately use
+```
+poetry run python cli/ecqm-dedupe.py <command> [--fmt] [<args>]
+``` 
+
 
 ### Team Specific Guidelines
 
-### Building dependencies
-
-<!--- ### TODO -->
+- Please try to keep PRs to a reasonable size; try to split large contributions to multiple PRs
+- Please create Pull Requests into dev unless the contribution is some kind of bugfix or urgent hotfix.
+- Document and explain the contribution clearly according to provided standards when possible
+- Feel free to reach out to us if there is any confusion
 
 ### Building the Project
+
+<!--- ### TODO -->
+Poetry is required to build dependencies (see [instructions](https://python-poetry.org/docs/#installation)).
+
+Then, install Python dependencies with
+```
+make install
+```
 
 <!--- ### TODO -->
 
 ### Workflow and Branching
 
-<!---
-TODO: Workflow Example
 We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow/)
 
 1.  Fork the project 
-1.  Check out the `main` branch 
-1.  Create a feature branch
-1.  Write code and tests for your change 
-1.  From your branch, make a pull request against `cmsgov/cmsgov-example-repo/main` 
-1.  Work with repo maintainers to get your change reviewed 
-1.  Wait for your change to be pulled into `cmsgov/cmsgov-example-repo/main`
-1.  Delete your feature branch
--->
+2.  Check out the `main` branch 
+3.  Create a feature branch
+4.  Write code and tests for your change 
+5.  From your branch, make a pull request against `dev` if you have a feature change and `main` if it is a hotfix 
+6.  Work with repo maintainers to get your change reviewed and resolve git history if needed
+7.  Wait for your change to be pulled into `dev` and later released into `main`
+8.  Delete your feature branch
 
 ### Testing Conventions
 
 <!--- TODO -->
+This project uses pytest as the main testing framework for the project's cli. 
+
+Python tests can be found in the `cli/deduplifhirLib/tests.py`. Any new testing
+contributions are greatly appreciated and needed to ensure quality of any interpreted
+language project. 
 
 ### Coding Style and Linters
 
@@ -54,11 +82,15 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 1. Mention any other content guidelines the project adheres to (e.g. plainlanguage.gov, etc...)
 
 -->
+This project adheres to PEP8 rules and guidelines whenever possible when accepting
+new contributions of Python code. Although, there are good reasons to ignore particular guidelines
+in particular situations. Further information on PEP8 can be found [here.](https://peps.python.org/pep-0008/)
+
+This project also uses pylint as the main linter for the moment and employs pylint checks upon new pull
+requests into protected branches. Python code quality checks are extremely useful for lowering the
+cost of maintenence of Python projects. Further information on Pylint can be found [here.](https://pylint.readthedocs.io/en/latest/)
 
 ### Issues
-
-<!---
-TODO: Example Issue Guides
 
 When creating an issue please try to adhere to the following format:
 
@@ -76,13 +108,7 @@ When creating an issue please try to adhere to the following format:
 
     List all relevant steps to reproduce the observed behavior.
 
-    see our .github/ISSUE_TEMPLATE.md for more examples.
--->
-
 ### Pull Requests
-
-<!---
-### TODO: Confirm
 
 Comments should be formatted to a width no greater than 80 columns.
 
@@ -118,13 +144,7 @@ Some important notes regarding the summary line:
 * Do not end in a period — this is a title/subject 
 * Prefix the subject with its scope
 
-    see our .github/PULL_REQUEST_TEMPLATE.md for more examples.
--->
-
 ## Code Review
-
-<!---
-### TODO: Code Review Example
 
 The repository on GitHub is kept in sync with an internal repository at
 github.cms.gov. For the most part this process should be transparent to the
@@ -145,16 +165,10 @@ request will be closed.
 The changes in the pull request will be collapsed into a single commit, but the
 authorship metadata will be preserved.
 
--->
-
 ## Documentation
-
-<!--- 
-### TODO: Documentation Example
 
 We also welcome improvements to the project documentation or to the existing
 docs. Please file an [issue](https://github.com/cmsgov/cmsgov-example-repo/issues).
--->
 
 ## Policies
 
@@ -166,29 +180,13 @@ questions, just [shoot us an email](mailto:opensource@cms.hhs.gov).
 
 ### Security and Responsible Disclosure Policy
 
-The Centers for Medicare & Medicaid Services is committed to ensuring the
-security of the American public by protecting their information from
-unwarranted disclosure. We want security researchers to feel comfortable
-reporting vulnerabilities they have discovered so we can fix them and keep our
-users safe. We developed our disclosure policy to reflect our values and uphold
-our sense of responsibility to security researchers who share their expertise
-with us in good faith.
-
 *Submit a vulnerability:* Unfortunately, we cannot accept secure submissions via
 email or via GitHub Issues. Please use our website to submit vulnerabilities at
 [https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com).
 HHS maintains an acknowledgements page to recognize your efforts on behalf of
 the American public, but you are also welcome to submit anonymously.
 
-Review the HHS Disclosure Policy and websites in scope:
-[https://www.hhs.gov/vulnerability-disclosure-policy/index.html](https://www.hhs.gov/vulnerability-disclosure-policy/index.html).
-
-This policy describes *what systems and types of research* are covered under this
-policy, *how to send* us vulnerability reports, and *how long* we ask security
-researchers to wait before publicly disclosing vulnerabilities.
-
-If you have other cybersecurity related questions, please contact us at
-[csirc@hhs.gov](mailto:csirc@hhs.gov).
+For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](SECURITY.md).
 
 ## Public domain
 
