@@ -8,7 +8,7 @@ from deduplifhirLib.utils import use_linker
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
 @click.group()
 def cli():
-    """ Defines the click cli object """
+    """ Set of CLI commands to appy Splink data linkage and deduplication for FHIR data """
 
 #TODO: CACHE THIS
 #seemlingly unused arguments are likely used by the use_linker cm -IM
