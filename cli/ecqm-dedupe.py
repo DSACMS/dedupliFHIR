@@ -43,7 +43,7 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
 
 @click.command()
 @click.option('--fmt', default="CSV", help="format of deduped data result")
-@click.argument('good_data_path', default=None, help="Optional path of processed data output file mapping")
+@click.argument('good_data_path', default=None)
 @click.argument('output_path')
 def gen_diff(fmt, good_data_path,output_path):
     """
@@ -52,7 +52,7 @@ def gen_diff(fmt, good_data_path,output_path):
     Arguments:
         fmt: Format of output data from dedupe-data
         good_data_path: path of output data, when left as default uses cache
-        output_path: path to save diff files to.
+        output_path: Optional path of processed data output file mapping
     """
 
 
