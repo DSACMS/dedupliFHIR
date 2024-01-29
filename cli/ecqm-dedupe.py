@@ -38,6 +38,10 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     if fmt != "TEST":
         deduped_record_mapping = deduped_record_mapping.drop(deduped_record_mapping[deduped_record_mapping.path == "TRAINING"].index)
 
+    #cache results
+    #TODO: make platform agnostic
+    deduped_record_mapping.to_csv("/tmp/dedupe-cache.csv")
+
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
 
