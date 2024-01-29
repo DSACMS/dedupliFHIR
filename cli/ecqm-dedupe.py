@@ -1,16 +1,21 @@
 """
 Module to define cli for ecqm-deduplifhir library.
 """
+import os
+import os.path
+import pandas as pd
 import click
 from splink.duckdb.blocking_rule_library import block_on
 from deduplifhirLib.utils import use_linker
+
+
+CACHE_FILE = "/tmp/dedupe-cache.csv"
 
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
 @click.group()
 def cli():
     """ Set of CLI commands to appy Splink data linkage and deduplication for FHIR data """
 
-#TODO: CACHE THIS
 #seemlingly unused arguments are likely used by the use_linker cm -IM
 @click.command()
 @click.option('--fmt', default="FHIR", help='Format of patient data')
@@ -40,7 +45,7 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
 
     #cache results
     #TODO: make platform agnostic
-    deduped_record_mapping.to_csv("/tmp/dedupe-cache.csv")
+    deduped_record_mapping.to_csv(CACHE_FILE)
 
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
@@ -63,10 +68,29 @@ def gen_diff(fmt, good_data_path,output_path):
 @click.command()
 def clear_cache():
     """Clear cache of dedupliFHIED patient data"""
+    os.remove(CACHE_FILE)
+    print("Cache cleared.")
 
 @click.command()
 def status():
     """Output status of cache as well as result and stats of last run"""
+
+    if not os.path.isfile(CACHE_FILE):
+        print("Cache is empty")
+        return
+
+    print("Cache contains data")
+    #Print amount of duplicates found in cache if found
+    cache_df = pd.read_csv(CACHE_FILE)
+
+    number_patients = cache_df.cluster_id.nunique(dropna=True)
+
+    number_total = cache_df.unique_id.nunique(dropna=True)
+
+    print(f"There were {number_total - number_patients} duplicates found last run.")
+
+    print(f"There are {number_patients} unique patients among {number_total} records among the data.")
+
 
 cli.add_command(dedupe_data)
 cli.add_command(gen_diff)
