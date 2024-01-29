@@ -2,7 +2,8 @@
 
 # eCQM Dedupe
 
-Prototype for basic deduplication and aggregation of eCQM data
+A CLI bundled with an electron front-end that provides data-linkage and AI deduplication for reported
+ACO data at scale.
 
 ## About the Project
 As part of the Affordable Care Act, and attempts to reduce costs/utilization/expenditures, ACOS were created; Accountable care organizations.
@@ -13,37 +14,8 @@ health data.
 
 This tool was made to target the FHIR (and later QRDA) file formats of ACO reported health metrics.
 
-
-### Agency Mission
 This project originated from the CMS Open Source Community as a resource ACOs can use when preparing their patient records submission.
 
-### Project Vision
-
-A CLI bundled with an electron front-end that provides data-linkage and AI deduplication for reported
-ACO data at scale.
-
-### Project Information
-
-<!-- Example Innersource Project Info
- * [Project Website](https://cms.gov/digital-service-cms)
- * [Project Documentation:](https://confluence.cms.gov/)
- * [Project Sprint/Roadmap:](https://jira.cms.gov/)
- * [Project Slack Channel:](https://cmsgov.slack.com/archives/XXXXXXXXXX)
- * [Project Tools/Hosting/Deployment:](https://confluence.cms.gov)
- * Project Keyword(s) for Search: KEYWORD1, KEYWORD2
- * Project Members:
-    * Team Lead, PO, Delivery Lead, Approvers, Trusted Committers etc.
--->
-
- * Project Members:
-    * Pat Sier, Natalia Luzuriaga, Isaac Milarsky, Remy DeCausemaker 
-
-<!-- Example Open Source Info
- * [Project Website](https://cms.gov/digital-service-cms)
- * [Project Documentation:](https://confluence.cms.gov/)
- * Public Contact: opensource@cms.hhs.gov (**NOTE: Do not use individual/personal email addresses**)
- * Follow [@CMSgov](https://twitter.com/cmsgov) on Twitter for updates.
--->
 
 ### Installation
 
@@ -93,14 +65,16 @@ An up-to-date list of core team members can be found in [MAINTAINERS.md](MAINTAI
 - [LICENSE](./LICENSE)
 
 ## Repository Structure
-- github/workflows
-   - Directory containing GitHub Actions workflows for automating CI/CD processes.
-- cli
-   - Command line tool for data linkage and deduplication of ACO patient data.
-- frontend
-   - Native desktop app frontend built using Electron. 
-- profile
-   - Information about the Digital Service at CMS team.
+
+```
+.
+├── .github
+│   └── workflows - Directory containing GitHub Actions workflows for automating CI/CD processes.
+├── cli - Command line tool for data linkage and deduplication of ACO patient data.
+│   └── deduplifhirLib
+├── frontend - Native desktop app frontend built using Electron. 
+└── profile - Information about the Digital Service at CMS team.
+```
 
 
 # Development and Software Delivery Lifecycle 
@@ -162,7 +136,7 @@ Information about how the **{project_name}** community is governed may be found 
 -->
 
 ## Feedback
-If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know at **{contact email}**. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
+If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know at **mailto:opensource@cms.hhs.gov**. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
 
 <!--
 ## Glossary
@@ -189,6 +163,6 @@ For more information about our Security, Vulnerability, and Responsible Disclosu
 
 ## Public domain
 
-This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/) as indicated in our [LICENSE](LICENSE).
 
 All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.
