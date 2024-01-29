@@ -1,6 +1,6 @@
-# CMS Open Source Community Guidelines
+# DeDupliFHIR Open Source Community Guidelines
 
-This document contains principles and guidelines for participating in the CMS open source community.
+This document contains principles and guidelines for participating in the DeDupliFHIR open source community.
 
 ## Principles
 
@@ -21,7 +21,7 @@ All community members are expected to adhere to our [Code of Conduct](CODE_OF_CO
 
 Information on contributing to this repository is available in our [Contributing file](CONTRIBUTING.md).
 
-When participating in CMS open source community conversations and spaces, we ask individuals to follow the following guidelines:
+When participating in DeDupliFHIR open source community conversations and spaces, we ask individuals to follow the following guidelines:
 
 - When joining a conversation for the first time, please introduce yourself by providing a brief intro that includes:
   - your related organization (if applicable)
