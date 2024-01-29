@@ -64,15 +64,10 @@ def clear_cache():
 def status():
     """Output status of cache as well as result and stats of last run"""
 
-@click.command()
-def help():
-    """Output information and statistics about dedupliFHIR"""
-
 cli.add_command(dedupe_data)
 cli.add_command(gen_diff)
 cli.add_command(clear_cache)
 cli.add_command(status)
-cli.add_command(help)
 
 if __name__ == "__main__":
     cli()
