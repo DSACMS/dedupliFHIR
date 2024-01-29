@@ -118,7 +118,7 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 Thank you for considering contributing to an Open Source project of the US Government! For more information about our contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Codeowners
-The contents of this repository are managed by **{responsible organization(s)}**. Those responsible for the code and documentation in this repository can be found in [CODEOWNERS.md](CODEOWNERS.md).
+Those responsible for the code and documentation in this repository can be found in [CODEOWNERS.md](CODEOWNERS.md).
 
 ## Community
 The eCQM Dedupe team is taking a community-first and open source approach to the product development of this tool. We believe government software should be made in the open and be built and licensed such that anyone can download the code, run it themselves without paying money to third parties or using proprietary software, and use it as they will.
