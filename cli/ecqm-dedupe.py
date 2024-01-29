@@ -63,6 +63,7 @@ def gen_diff(fmt, good_data_path,output_path):
         good_data_path: path of output data, when left as default uses cache
         output_path: Optional path of processed data output file mapping
     """
+    raise NotImplementedError
 
 
 @click.command()
