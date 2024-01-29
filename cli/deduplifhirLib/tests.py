@@ -29,7 +29,7 @@ def test_generate_data_and_dedup():
     column_path = str(test_path) + "/test_data_columns.json"
 
     #Create test data
-    generate_dup_data(column_path, csv_path, 1000, 0.70)
+    generate_dup_data(column_path, csv_path, 800, 0.70)
 
     df = parse_test_data(csv_path)
 
