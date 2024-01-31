@@ -41,7 +41,8 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     deduped_record_mapping = clusters.as_pandas_dataframe()
 
     if fmt != "TEST":
-        deduped_record_mapping = deduped_record_mapping.drop(deduped_record_mapping[deduped_record_mapping.path == "TRAINING"].index)
+        deduped_record_mapping = deduped_record_mapping.drop(
+            deduped_record_mapping[deduped_record_mapping.path == "TRAINING"].index)
 
     #cache results
     #TODO: make platform agnostic
@@ -90,7 +91,9 @@ def status():
 
     print(f"There were {number_total - number_patients} duplicates found last run.")
 
-    print(f"There are {number_patients} unique patients among {number_total} records among the data.")
+    print(
+        f"There are {number_patients} unique patients among " +
+        f"{number_total} records among the data.")
 
 
 cli.add_command(dedupe_data)
