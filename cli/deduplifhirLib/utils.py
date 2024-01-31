@@ -7,7 +7,6 @@ generation for Splink.
 """
 import os
 import time
-from pathlib import Path
 import csv
 import datetime
 import uuid
@@ -15,11 +14,8 @@ from multiprocessing import Pool
 from functools import wraps
 import pandas as pd
 from splink.duckdb.linker import DuckDBLinker
-from splink.duckdb.blocking_rule_library import block_on
-
 
 from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
-from deduplifhirLib.duplicate_data_generator import generate_dup_data
 
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -55,9 +51,10 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
 
     #Load files concurrently via multiprocessing
     print(f"Reading files with {cpu_cores} cores...")
+    df_list = []
     start = time.time()
-    pool = Pool(cpu_cores)
-    df_list = pool.map(parse_function, all_patient_records)
+    with Pool(cpu_cores) as pool:
+        df_list = pool.map(parse_function, all_patient_records)
 
     print(f"Read fhir data in {time.time() - start} seconds")
     print("Done parsing fhir data.")

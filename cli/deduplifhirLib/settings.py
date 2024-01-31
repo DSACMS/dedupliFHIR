@@ -14,7 +14,6 @@ the probability that records are duplicates of each other.
 import json
 import uuid
 import pandas as pd
-from splink.duckdb.linker import DuckDBLinker
 import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
