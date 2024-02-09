@@ -53,15 +53,15 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
 
 @click.command()
 @click.option('--fmt', default="CSV", help="format of deduped data result")
-@click.argument('good_data_path', default=None)
+@click.argument('processed_patient_data_path', default=None)
 @click.argument('output_path')
-def gen_diff(fmt, good_data_path,output_path):
+def gen_diff(fmt, processed_patient_data_path,output_path):
     """
     dedupliFHIR cli command to generate diffs between duplicate patients and save them
 
     Arguments:
         fmt: Format of output data from dedupe-data
-        good_data_path: path of output data, when left as default uses cache
+        processed_patient_data_path: path of output data, when left as default uses cache
         output_path: Optional path of processed data output file mapping
     """
     raise NotImplementedError
