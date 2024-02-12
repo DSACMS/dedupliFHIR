@@ -65,6 +65,7 @@ An up-to-date list of core team members can be found in [MAINTAINERS.md](MAINTAI
 - [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - [SECURITY.md](./SECURITY.md)
 - [LICENSE](./LICENSE)
+- [SUPPORT.md](./.github/SUPPORT.md)
 
 ## Repository Structure
 
