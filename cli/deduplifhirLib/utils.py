@@ -7,7 +7,6 @@ generation for Splink.
 """
 import os
 import time
-from pathlib import Path
 import csv
 import datetime
 import uuid
@@ -15,11 +14,8 @@ from multiprocessing import Pool
 from functools import wraps
 import pandas as pd
 from splink.duckdb.linker import DuckDBLinker
-from splink.duckdb.blocking_rule_library import block_on
-
 
 from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
-from deduplifhirLib.duplicate_data_generator import generate_dup_data
 
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -55,9 +51,10 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
 
     #Load files concurrently via multiprocessing
     print(f"Reading files with {cpu_cores} cores...")
+    df_list = []
     start = time.time()
-    pool = Pool(cpu_cores)
-    df_list = pool.map(parse_function, all_patient_records)
+    with Pool(cpu_cores) as pool:
+        df_list = pool.map(parse_function, all_patient_records)
 
     print(f"Read fhir data in {time.time() - start} seconds")
     print("Done parsing fhir data.")
@@ -147,35 +144,3 @@ def use_linker(func):
         return func(*args,**kwargs)
 
     return wrapper
-
-if __name__ == "__main__":
-
-    test_path = (Path(__file__).parent).resolve()
-    print(test_path)
-
-    csv_path = os.path.join(str(test_path),"test_data.csv")
-    column_path = os.path.join(str(test_path),"test_data_columns.json")
-
-    #Create test data
-    generate_dup_data(column_path, csv_path, 10000, 0.20)
-
-    df = parse_test_data(csv_path)
-
-    linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-    linker.estimate_u_using_random_sampling(max_pairs=1e6)
-
-    blocking_rule_for_training = block_on(["given_name", "family_name"])
-
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-
-    pairwise_predictions = linker.predict()
-
-    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-
-    print(clusters.as_pandas_dataframe(limit=25))

@@ -14,7 +14,6 @@ the probability that records are duplicates of each other.
 import json
 import uuid
 import pandas as pd
-from splink.duckdb.linker import DuckDBLinker
 import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
@@ -93,26 +92,3 @@ def read_fhir_data(patient_record_path):
     #print(patient_dict)
 
     return pd.DataFrame(patient_dict)
-
-
-if __name__ == "__main__":
-    #DuckDBLinker just defines the Pandas Dataframe format as using
-    #DuckDB style formatting
-    linker = DuckDBLinker(splink_test_df, SPLINK_LINKER_SETTINGS_TEST_DEDUPE)
-    linker.estimate_u_using_random_sampling(max_pairs=1e6)
-
-    blocking_rule_for_training = block_on(["first_name", "surname"])
-
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    blocking_rule_for_training = block_on("substr(dob, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-
-    pairwise_predictions = linker.predict()
-
-    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-
-    print(clusters.as_pandas_dataframe(limit=25))
