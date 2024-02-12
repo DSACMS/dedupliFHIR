@@ -1,0 +1,15 @@
+[MAIN]
+
+# go here to check pylint codes if not explained
+#https://vald-phoenix.github.io/pylint-errors/
+
+#doc string checkers
+#enable=C0112,C0114,C0115,C0116
+
+# checks for black listed names being used
+#enable=C0102
+
+#refactoring checker
+#enable=R
+
+disable=import-error

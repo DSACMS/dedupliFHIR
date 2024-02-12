@@ -58,9 +58,6 @@ coverage.xml
 # pyenv
 .python-version
 
-# dotenv
-.env
-
 # IDEs and editors
 /.idea
 .vscode
@@ -79,7 +76,6 @@ ENV/
 # Data files
 input/*.json
 output/*.json
-*.csv
 node_modules/
 learned_settings
 training.json
