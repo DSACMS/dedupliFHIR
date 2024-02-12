@@ -85,20 +85,21 @@ def generate_temp_files(config, fake_gen):
         fake_gen: Faker generation object
     """
 
-    pool = Pool(config['cpus'])
-
     tmp_dir = './temp'
-    create_temp_directory(tmp_dir)
+    
+    with Pool(config['cpus']) as pool:
+        
+        create_temp_directory(tmp_dir)
 
-    batch_size = config['batch_size']
-    num_batches = ceil(config['total_row_cnt']/batch_size)
-    remaining_rows = config['total_row_cnt']
+        batch_size = config['batch_size']
+        num_batches = ceil(config['total_row_cnt']/batch_size)
+        remaining_rows = config['total_row_cnt']
 
-    for _ in range(num_batches):
-        pool.apply_async(
-            create_fake_data_file, args = (config, fake_gen, tmp_dir, batch_size, remaining_rows))
-    pool.close()
-    pool.join()
+        for _ in range(num_batches):
+            pool.apply_async(
+                create_fake_data_file, args = (config, fake_gen, tmp_dir, batch_size, remaining_rows))
+        pool.close()
+        pool.join()
     return tmp_dir
 
 
