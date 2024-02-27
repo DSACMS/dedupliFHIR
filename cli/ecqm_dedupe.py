@@ -3,13 +3,15 @@ Module to define cli for ecqm-deduplifhir library.
 """
 import os
 import os.path
+import shutil
+import difflib
 import pandas as pd
 import click
 from splink.duckdb.blocking_rule_library import block_on
 from deduplifhirLib.utils import use_linker
 
 
-CACHE_FILE = "/tmp/dedupe-cache.csv"
+CACHE_DIR = "/tmp/"
 
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
 @click.group()
@@ -44,18 +46,21 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
         deduped_record_mapping = deduped_record_mapping.drop(
             deduped_record_mapping[deduped_record_mapping.path == "TRAINING"].index)
 
+    #Calculate only uniques
+    unique_records = deduped_record_mapping.drop_duplicates(subset=['cluster_id'])
     #cache results
     #TODO: make platform agnostic
-    deduped_record_mapping.to_csv(CACHE_FILE)
+    deduped_record_mapping.to_csv(CACHE_DIR + "dedupe-cache.csv")
+    unique_records.to_csv(CACHE_DIR + "unique-records-cache.csv")
 
     path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
 
 @click.command()
-@click.option('--fmt', default="CSV", help="format of deduped data result")
-@click.argument('processed_patient_data_path', default=None)
+@click.option('--html', is_flag=True)
 @click.argument('output_path')
-def gen_diff(fmt, processed_patient_data_path,output_path):
+@click.argument('processed_patient_data_path', default=CACHE_DIR)
+def gen_diff(html,output_path,processed_patient_data_path):
     """
     dedupliFHIR cli command to generate diffs between duplicate patients and save them
 
@@ -64,27 +69,34 @@ def gen_diff(fmt, processed_patient_data_path,output_path):
         processed_patient_data_path: path of output data, when left as default uses cache
         output_path: Optional path of processed data output file mapping
     """
-    raise NotImplementedError
+    
+    #Get text from csv with dupes
+    cache_df = pd.read_csv(processed_patient_data_path + "dedupe-cache.csv")
+
+    #Get a dataframe with all of the paths concatinated attached to their cluster id.
+    grouped_dirs = cache_df.groupby('cluster_id')['path'].apply(' '.join).reset_index()
+    print(grouped_dirs.head())
+
 
 
 @click.command()
 def clear_cache():
     """Clear cache of dedupliFHIED patient data"""
-    os.remove(CACHE_FILE)
+    shutil.rmtree(CACHE_DIR)
     print("Cache cleared.")
 
 @click.command()
 def status():
     """Output status of cache as well as result and stats of last run"""
 
-    if not os.path.isfile(CACHE_FILE):
+    try:
+        #Print amount of duplicates found in cache if found
+        cache_df = pd.read_csv(CACHE_DIR + "dedupe-cache.csv")
+    except FileNotFoundError:
         print("Cache is empty")
         return
 
     print("Cache contains data")
-    #Print amount of duplicates found in cache if found
-    cache_df = pd.read_csv(CACHE_FILE)
-
     number_patients = cache_df.cluster_id.nunique(dropna=True)
 
     number_total = cache_df.unique_id.nunique(dropna=True)
