@@ -130,7 +130,8 @@ def gen_html_diff(pathOne, pathTwo):
 @click.command()
 def clear_cache():
     """Clear cache of dedupliFHIED patient data"""
-    shutil.rmtree(CACHE_DIR)
+    os.remove(CACHE_DIR + "unique-records-cache.csv")
+    os.remove(CACHE_DIR + "dedupe-cache.csv")
     print("Cache cleared.")
 
 @click.command()
