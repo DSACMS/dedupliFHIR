@@ -75,8 +75,56 @@ def gen_diff(html,output_path,processed_patient_data_path):
 
     #Get a dataframe with all of the paths concatinated attached to their cluster id.
     grouped_dirs = cache_df.groupby('cluster_id')['path'].apply(' '.join).reset_index()
-    print(grouped_dirs.head())
+    
+    #convert to list
+    pat_list = grouped_dirs.to_dict('records')
+    for unique_patient_record in pat_list:
+        list_of_files = unique_patient_record['path'].split()
 
+        if (num_files := len(list_of_files)) > 1:
+            print(list_of_files)
+        
+        if num_files == 2:
+            #generate diff if we can.
+            if not html:
+                diffGen = gen_regular_diff(list_of_files[0], list_of_files[1])
+            else:
+                diffGen = gen_html_diff(list_of_files[0], list_of_files[1])
+
+            if not diffGen:
+                return
+
+            #save diff to file.
+            with open(CACHE_DIR + str(unique_patient_record['cluster_id']) + ".diff","w") as f:
+                for line in diffGen:
+                    f.write(str(line))
+
+
+
+def gen_regular_diff(pathOne, pathTwo):
+    try:
+        with open(pathOne,'r') as rightFile:
+            with open(pathTwo,'r') as leftFile:
+                diff = difflib.unified_diff(
+                    rightFile.readlines(),
+                    leftFile.readlines())
+                
+                return diff
+    except FileNotFoundError:
+        return []
+
+def gen_html_diff(pathOne, pathTwo):
+    try:
+        with open(pathOne,'r') as rightFile:
+            with open(pathTwo,'r') as leftFile:
+                diff = difflib.HtmlDiff().make_file(
+                    rightFile.readlines(),
+                    leftFile.readlines()
+                )
+                
+                return diff
+    except FileNotFoundError:
+        return []
 
 
 @click.command()
