@@ -7,19 +7,21 @@ body {
 }
 
 .content {
-    max-width: 1400px;
+    max-width: 2048px;
     width: 100%;
-    padding: 0 6px; 
-    padding-top: 24px;
+    padding: 24px;
 }
 
 .form {
     max-width: 400px;
     width: 100%;
     margin: 0 auto;
-  }
+}
 
-h1, h2 {
+h1, h2, .usa-label {
     text-align: center;
 }
 
+.usa-button {
+    width: 100%;
+}

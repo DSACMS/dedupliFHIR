@@ -3,18 +3,6 @@ const path = require("node:path")
 
 let mainWindow
 
-async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    title: "Select file to be uploaded",
-    properties: ["openFile"],
-    filters: [{ name: "FHIR & QRDA files", extensions: ["json"] }],
-  })
-  if (!canceled && filePaths.length > 0) {
-    return filePaths[0]
-  }
-  // TODO: Consider displaying data on UI before submission
-}
-
 function createWindow() {
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -27,7 +15,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle("dialog:openFile", handleFileOpen)
   createWindow()
 })
 

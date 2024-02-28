@@ -13,12 +13,12 @@
       <h1>DedupliFHIR</h1>
       <h2>Upload Patient Records File</h2>
       <div class="form">
+        <label class="usa-label" for="file-input-specific"
+          >Select file to undergo deduplication</label
+        >
         <div class="usa-form-group">
-          <label class="usa-label" for="file-input-specific"
-            >Select file to undergo deduplication</label
-          >
           <span class="usa-hint" id="file-input-specific-hint"
-            >Accepted Types: QRDA, FHIR</span
+            >Accepted Types: FHIR, CSV</span
           >
           <input
             id="file-input-specific"
@@ -26,10 +26,18 @@
             type="file"
             name="file-input-specific"
             aria-describedby="file-input-specific-hint"
-            accept=".json"
+            accept=".json,.csv"
           />
         </div>
-        <br>
+        <div class="usa-alert usa-alert--error" id="file-input-alert" role="alert">
+          <div class="usa-alert__body">
+            <h4 class="usa-alert__heading">Error status</h4>
+            <p class="usa-alert__text">
+              File not found. Please upload a file.
+            </p>
+          </div>
+        </div> 
+        <br>       
         <button type="button" class="usa-button" id="submit">Submit</button>
       </div>
       <script src="./renderer.js"></script>
