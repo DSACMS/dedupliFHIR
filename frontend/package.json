@@ -5,12 +5,17 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "lint": "eslint ./**.js",
+    "style": "prettier --check ./**.{js,css}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^28.0.0"
+    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
+    "electron": "^28.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5"
   },
   "dependencies": {
     "@uswds/uswds": "3.7.1"
