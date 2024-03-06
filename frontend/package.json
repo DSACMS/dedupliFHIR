@@ -6,7 +6,9 @@
   "scripts": {
     "start": "electron .",
     "lint": "eslint ./**.js",
-    "style": "prettier --check ./**.{js,css}",
+    "lint:fix": "eslint --quiet --fix \"./*.{js}\"",
+    "prettier": "prettier --check ./**.{js,css}",
+    "prettier:fix": "prettier --write \"./**.{js,css}\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
