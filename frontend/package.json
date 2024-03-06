@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "lint": "eslint ./**.js",
-    "lint:fix": "eslint --quiet --fix \"./*.{js}\"",
+    "lint:fix": "eslint --quiet --fix \"**.js\"",
     "prettier": "prettier --check ./**.{js,css}",
     "prettier:fix": "prettier --write \"./**.{js,css}\"",
     "test": "echo \"Error: no test specified\" && exit 1"
