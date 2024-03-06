@@ -1,5 +1,4 @@
 const fileInputAlert = document.getElementById("file-input-alert");
-fileInputAlert.style.display = "none";
 
 const submitButton = document.getElementById("submit");
 submitButton.addEventListener("click", () => {
