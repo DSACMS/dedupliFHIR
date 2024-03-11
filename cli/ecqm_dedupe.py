@@ -73,7 +73,7 @@ def gen_diff(html,output_path,processed_patient_data_path):
     #Get text from csv with dupes
     cache_df = pd.read_csv(processed_patient_data_path + "dedupe-cache.csv")
 
-    #Get a dataframe with all of the paths concatinated attached to their cluster id.
+    #Get a dataframe with all of the paths concatenated attached to their cluster id.
     grouped_dirs = cache_df.groupby('cluster_id')['path'].apply(' '.join).reset_index()
     
     #convert to list
