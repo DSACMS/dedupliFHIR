@@ -17,7 +17,7 @@ submitButton.addEventListener("click", () => {
 
       fileInputAlert.style.display = "none";
 
-      window.electronAPI.runProgram();
+      window.electronAPI.runProgram(selectedFile.path);
     }
   } else {
     // Displays error if no file selected

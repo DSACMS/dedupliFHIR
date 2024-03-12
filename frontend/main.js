@@ -3,18 +3,12 @@ const path = require("node:path");
 const { PythonShell } = require("python-shell");
 let mainWindow;
 
-function runProgram() {
+function runProgram(filePath) {
   mainWindow.loadFile("loading.html");
 
   const command = "ecqm_dedupe.py";
 
-  const poetryArgs = [
-    "dedupe-data",
-    "--fmt",
-    "TEST",
-    "../cli/deduplifhirLib/test_data.csv",
-    "./",
-  ];
+  const poetryArgs = ["dedupe-data", "--fmt", "TEST", filePath, "./"];
 
   let options = {
     mode: "text",
@@ -45,7 +39,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle("dialog:runProgram", runProgram);
   createWindow();
 });
 
@@ -59,4 +52,8 @@ app.on("activate", () => {
   if (mainWindow == null) {
     createWindow();
   }
+});
+
+ipcMain.handle("runProgram", async (event, data) => {
+  return await runProgram(data);
 });
