@@ -1,7 +1,36 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron/main");
 const path = require("node:path");
-
+const { PythonShell } = require("python-shell");
 let mainWindow;
+
+function runProgram() {
+  mainWindow.loadFile("loading.html");
+
+  const command = "ecqm_dedupe.py";
+
+  const poetryArgs = [
+    "dedupe-data",
+    "--fmt",
+    "TEST",
+    "../cli/deduplifhirLib/test_data.csv",
+    "./",
+  ];
+
+  let options = {
+    mode: "text",
+    scriptPath: "../cli",
+    pythonPath: "../.venv/bin/python",
+    args: poetryArgs,
+  };
+
+  console.log("ABOUT TO RUN PYTHON SHELL PROGRAM");
+  PythonShell.run(command, options).then((messages) => {
+    console.log("SUCCESS");
+    console.log("results: %j", messages);
+  });
+
+  console.log("DONE EXECUTING PYTHON PROGRAM");
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -15,6 +44,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  ipcMain.handle("dialog:runProgram", runProgram);
   createWindow();
 });
 
