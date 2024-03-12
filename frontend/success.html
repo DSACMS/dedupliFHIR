@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:;"> -->
+    <link rel="stylesheet" href="node_modules/@uswds/uswds/dist/css/uswds.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>DedupliFHIR</title>
+  </head>
+  <body>
+    <div class="content">
+      <h1>DedupliFHIR</h1>
+
+      <h2>Results</h2>
+      <!-- <table class="usa-table">
+        <caption>
+          Deduplication Results
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Metric</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+           TODO: Add number of total records
+          <tr>
+            <th scope="row">Total Records</th>
+            <td>
+            </td>
+          </tr>
+            TODO: Add number of duplicate records
+          <tr>
+            <th scope="row">Duplicate Records</th>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table> -->
+
+      <ul class="usa-button-group">
+        <li class="usa-button-group__item">
+          <a href= "index.html" class="usa-button usa-button--outline"> Return to Home </a>
+        </li>
+        <li class="usa-button-group__item">
+          <button type="button" class="usa-button" id="download">Download File</button>
+        </li>
+      </ul>
+     
+      <script src="./renderer.js"></script>
+      <script src="node_modules/@uswds/uswds/dist/js/uswds.min.js"></script>
+    </div>
+  </body>
+</html>

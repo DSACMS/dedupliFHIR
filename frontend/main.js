@@ -27,6 +27,7 @@ function runProgram() {
   PythonShell.run(command, options).then((messages) => {
     console.log("SUCCESS");
     console.log("results: %j", messages);
+    mainWindow.loadFile("success.html");
   });
 
   console.log("DONE EXECUTING PYTHON PROGRAM");
