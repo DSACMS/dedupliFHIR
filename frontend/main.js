@@ -25,11 +25,16 @@ function runProgram(filePath) {
     args: poetryArgs,
   };
 
-  PythonShell.run(script, options).then((messages) => {
-    console.log("SUCCESS");
-    console.log("results: %j", messages);
-    mainWindow.loadFile("success.html");
-  });
+  PythonShell.run(script, options)
+    .then((messages) => {
+      console.log("SUCCESS");
+      console.log("results: %j", messages);
+      mainWindow.loadFile("success.html");
+    })
+    .catch((err) => {
+      console.log(err);
+      mainWindow.loadFile("error.html");
+    });
 }
 
 function createWindow() {
