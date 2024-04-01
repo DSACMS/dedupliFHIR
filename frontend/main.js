@@ -8,7 +8,7 @@ const {
   OPTIONS,
   FORMAT,
   RESULTS_SPREADSHEET,
-} = require("./constants/constants.js");
+} = require("./constants.js");
 let mainWindow;
 
 function runProgram(filePath) {
