@@ -2,18 +2,24 @@ const { app, BrowserWindow, dialog, ipcMain } = require("electron/main");
 const path = require("node:path");
 const fs = require("fs-extra");
 const { PythonShell } = require("python-shell");
-const constants = require("./constants/constants.js");
+const {
+  SCRIPT,
+  COMMANDS,
+  OPTIONS,
+  FORMAT,
+  RESULTS_SPREADSHEET,
+} = require("./constants/constants.js");
 let mainWindow;
 
 function runProgram(filePath) {
   mainWindow.loadFile("loading.html");
 
-  const script = constants.SCRIPT;
+  const script = SCRIPT;
 
   const poetryArgs = [
-    constants.COMMANDS.DEDUPE_DATA,
-    constants.OPTIONS.FORMAT,
-    constants.FORMAT.TEST,
+    COMMANDS.DEDUPE_DATA,
+    OPTIONS.FORMAT,
+    FORMAT.TEST,
     filePath,
     "./",
   ];
@@ -40,13 +46,13 @@ async function handleSaveFile() {
   try {
     const result = await dialog.showSaveDialog({
       title: "Select Directory to Save Results",
-      defaultPath: constants.RESULTS_SPREADSHEET,
+      defaultPath: RESULTS_SPREADSHEET,
       properties: ["openDirectory"],
     });
 
     if (result.canceled || !result.filePath) return null;
 
-    const sourceFile = constants.RESULTS_SPREADSHEET;
+    const sourceFile = RESULTS_SPREADSHEET;
     const destinationFile = result.filePath; // Selected path of new file location
 
     try {
