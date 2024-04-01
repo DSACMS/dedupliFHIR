@@ -7,6 +7,8 @@ const constants = {
     FORMAT: "--fmt",
   },
   FORMAT: {
+    CSV: "CSV",
+    FHIR: "FHIR",
     TEST: "TEST",
   },
   RESULTS_SPREADSHEET: "deduped_record_mapping.xlsx",

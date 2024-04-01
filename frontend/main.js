@@ -11,15 +11,29 @@ const {
 } = require("./constants.js");
 let mainWindow;
 
+function identifyFormat(fileName) {
+  const extension = path.extname(fileName).slice(1);
+
+  switch (extension) {
+    case "csv":
+      return FORMAT.CSV;
+    case "xml":
+      return FORMAT.FHIR;
+    default:
+      return FORMAT.TEST;
+  }
+}
+
 function runProgram(filePath) {
   mainWindow.loadFile("loading.html");
 
+  const fileName = path.basename(filePath);
   const script = SCRIPT;
 
   const poetryArgs = [
     COMMANDS.DEDUPE_DATA,
     OPTIONS.FORMAT,
-    FORMAT.TEST,
+    identifyFormat(fileName),
     filePath,
     "./",
   ];
