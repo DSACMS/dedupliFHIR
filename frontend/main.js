@@ -35,7 +35,7 @@ function runProgram(filePath) {
     "..",
     ".venv",
     "bin",
-    "python"
+    "python",
   );
 
   const script = SCRIPT;
