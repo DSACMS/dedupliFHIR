@@ -13,6 +13,7 @@
       <h1>DedupliFHIR</h1>
 
       <h2>Results</h2>
+      <!-- TODO: Add result data to table -->
       <!-- <table class="usa-table">
         <caption>
           Deduplication Results
@@ -38,8 +39,7 @@
           </tr>
         </tbody>
       </table> -->
-
-      <div class="usa-alert usa-alert--success" style="display: none;">
+      <div class="usa-alert usa-alert--success" id="download-success-alert" role="alert" style="display: none;">
         <div class="usa-alert__body">
           <h4 class="usa-alert__heading">Success</h4>
           <p class="usa-alert__text">
@@ -47,7 +47,15 @@
           </p>
         </div>
       </div>
-
+      <div class="usa-alert usa-alert--error" id="download-fail-alert" role="alert" style="display: none;">
+        <div class="usa-alert__body">
+          <h4 class="usa-alert__heading">Error</h4>
+          <p class="usa-alert__text">
+            Unable to download file. Please try again.
+          </p>
+        </div>
+      </div> 
+      <br>
       <ul class="usa-button-group">
         <li class="usa-button-group__item">
           <a href="index.html" class="usa-button usa-button--outline"> Return to Home </a>

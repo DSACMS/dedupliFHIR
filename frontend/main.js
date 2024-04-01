@@ -27,14 +27,39 @@ function runProgram(filePath) {
 
   PythonShell.run(script, options)
     .then((messages) => {
-      console.log("SUCCESS");
       console.log("results: %j", messages);
       mainWindow.loadFile("success.html");
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      console.log("Error running dedupe-data command: ", err);
       mainWindow.loadFile("error.html");
     });
+}
+
+async function handleSaveFile() {
+  try {
+    const result = await dialog.showSaveDialog({
+      title: "Select Directory to Save Results",
+      defaultPath: "deduped_record_mapping.xlsx",
+      properties: ["openDirectory"],
+    });
+
+    if (result.canceled || !result.filePath) return null;
+
+    const sourceFile = "deduped_record_mapping.xlsx";
+    const destinationFile = result.filePath; // Selected path of new file location
+
+    try {
+      await fs.copy(sourceFile, destinationFile);
+      return destinationFile;
+    } catch (error) {
+      console.error("Error copying file:", error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error showing save dialog:", error);
+    return null;
+  }
 }
 
 function createWindow() {
@@ -70,31 +95,4 @@ ipcMain.handle("runProgram", async (event, data) => {
   return await runProgram(data);
 });
 
-ipcMain.on("download", (event, info) => {
-  dialog
-    .showSaveDialog({
-      title: "Select Directory to Save Results",
-      defaultPath: "deduped_record_mapping.xlsx",
-      properties: ["openDirectory"],
-    })
-    .then((result) => {
-      if (!result.canceled && result.filePath) {
-        const sourceFile = "deduped_record_mapping.xlsx";
-        const destinationFile = result.filePath; // Path to the new file
-
-        console.log(destinationFile, "hi");
-
-        fs.copy(sourceFile, destinationFile)
-          .then(() => {
-            console.log("File saved successfully.");
-            mainWindow.webContents.send("dialog-response", destinationFile);
-          })
-          .catch((err) => {
-            console.error("Error saving file:", err);
-          });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+ipcMain.handle("dialog:saveFile", handleSaveFile);
