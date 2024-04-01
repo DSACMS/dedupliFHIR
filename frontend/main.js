@@ -40,13 +40,13 @@ async function handleSaveFile() {
   try {
     const result = await dialog.showSaveDialog({
       title: "Select Directory to Save Results",
-      defaultPath: "deduped_record_mapping.xlsx",
+      defaultPath: constants.RESULTS_SPREADSHEET,
       properties: ["openDirectory"],
     });
 
     if (result.canceled || !result.filePath) return null;
 
-    const sourceFile = "deduped_record_mapping.xlsx";
+    const sourceFile = constants.RESULTS_SPREADSHEET;
     const destinationFile = result.filePath; // Selected path of new file location
 
     try {

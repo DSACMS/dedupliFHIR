@@ -9,6 +9,7 @@ const constants = {
   FORMAT: {
     TEST: "TEST",
   },
+  RESULTS_SPREADSHEET: "deduped_record_mapping.xlsx",
 };
 
 module.exports = constants;
