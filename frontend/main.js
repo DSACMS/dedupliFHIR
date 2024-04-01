@@ -28,6 +28,16 @@ function runProgram(filePath) {
   mainWindow.loadFile("loading.html");
 
   const fileName = path.basename(filePath);
+  const currentDirectory = path.dirname(__filename);
+  const scriptPath = path.join(currentDirectory, "..", "cli");
+  const pythonPath = path.join(
+    currentDirectory,
+    "..",
+    ".venv",
+    "bin",
+    "python"
+  );
+
   const script = SCRIPT;
 
   const poetryArgs = [
@@ -35,13 +45,13 @@ function runProgram(filePath) {
     OPTIONS.FORMAT,
     identifyFormat(fileName),
     filePath,
-    "./",
+    currentDirectory,
   ];
 
   let options = {
     mode: "text",
-    scriptPath: "../cli",
-    pythonPath: "../.venv/bin/python",
+    scriptPath: scriptPath,
+    pythonPath: pythonPath,
     args: poetryArgs,
   };
 
