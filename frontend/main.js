@@ -91,8 +91,8 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.handle("runProgram", async (event, data) => {
-  return await runProgram(data);
+ipcMain.handle("runProgram", (event, data) => {
+  return runProgram(data);
 });
 
 ipcMain.handle("dialog:saveFile", handleSaveFile);
