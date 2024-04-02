@@ -70,7 +70,7 @@ async function handleSaveFile() {
   try {
     const result = await dialog.showSaveDialog({
       title: "Select Directory to Save Results",
-      defaultPath: RESULTS_SPREADSHEET,
+      defaultPath: app.getPath("downloads") + "/" + RESULTS_SPREADSHEET,
       properties: ["openDirectory"],
     });
 
