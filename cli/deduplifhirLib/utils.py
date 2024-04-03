@@ -126,7 +126,7 @@ def use_linker(func):
         print(f"Format is {fmt}")
         print(f"Data dir is {data_dir}")
 
-        training_df = parse_test_data('cli/deduplifhirLib/test_data.csv',marked=True)
+        training_df = parse_test_data('../cli/deduplifhirLib/test_data.csv',marked=True)
         if fmt == "FHIR":
             train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
         elif fmt == "QRDA":
