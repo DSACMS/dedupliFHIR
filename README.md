@@ -1,9 +1,11 @@
 <!--- # NOTE: Modify sections marked with `TODO` and then rename the file.-->
 
-# eCQM Dedupe
+# DedupliFHIR
 
 A CLI bundled with an electron front-end that provides data-linkage and AI deduplication for reported
 ACO data at scale.
+
+https://github.com/DSACMS/dedupliFHIR/assets/29980737/2924b785-8915-4c17-841e-ba53bc210835
 
 ## About the Project
 As part of the Affordable Care Act, and attempts to reduce costs/utilization/expenditures, ACOS were created; Accountable care organizations.
