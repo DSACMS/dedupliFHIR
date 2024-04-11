@@ -1,18 +1,95 @@
-const { app, BrowserWindow, dialog, ipcMain } = require("electron/main")
-const path = require("node:path")
+const { app, BrowserWindow, dialog, ipcMain } = require("electron/main");
+const path = require("node:path");
+const fs = require("fs-extra");
+const { PythonShell } = require("python-shell");
+const {
+  SCRIPT,
+  COMMANDS,
+  OPTIONS,
+  FORMAT,
+  RESULTS_SPREADSHEET,
+} = require("./constants.js");
+let mainWindow;
 
-let mainWindow
+function identifyFormat(fileName) {
+  const extension = path.extname(fileName).slice(1);
 
-async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    title: "Select file to be uploaded",
-    properties: ["openFile"],
-    filters: [{ name: "FHIR & QRDA files", extensions: ["json"] }],
-  })
-  if (!canceled && filePaths.length > 0) {
-    return filePaths[0]
+  switch (extension) {
+    case "csv":
+      return FORMAT.CSV;
+    case "xml":
+      return FORMAT.FHIR;
+    default:
+      return FORMAT.TEST;
   }
-  // TODO: Consider displaying data on UI before submission
+}
+
+function runProgram(filePath) {
+  mainWindow.loadFile("loading.html");
+
+  const fileName = path.basename(filePath);
+  const currentDirectory = path.dirname(__filename);
+  const scriptPath = path.join(currentDirectory, "..", "cli");
+  const pythonPath = path.join(
+    currentDirectory,
+    "..",
+    ".venv",
+    "bin",
+    "python",
+  );
+
+  const script = SCRIPT;
+
+  const poetryArgs = [
+    COMMANDS.DEDUPE_DATA,
+    OPTIONS.FORMAT,
+    identifyFormat(fileName),
+    filePath,
+    currentDirectory + "/",
+  ];
+
+  let options = {
+    mode: "text",
+    scriptPath: scriptPath,
+    pythonPath: pythonPath,
+    args: poetryArgs,
+  };
+
+  PythonShell.run(script, options)
+    .then((messages) => {
+      console.log("results: %j", messages);
+      mainWindow.loadFile("success.html");
+    })
+    .catch((error) => {
+      console.log("Error running dedupe-data command: ", err);
+      mainWindow.loadFile("error.html");
+    });
+}
+
+async function handleSaveFile() {
+  try {
+    const result = await dialog.showSaveDialog({
+      title: "Select Directory to Save Results",
+      defaultPath: app.getPath("downloads") + "/" + RESULTS_SPREADSHEET,
+      properties: ["openDirectory"],
+    });
+
+    if (result.canceled || !result.filePath) return null;
+
+    const sourceFile = RESULTS_SPREADSHEET;
+    const destinationFile = result.filePath; // Selected path of new file location
+
+    try {
+      await fs.copy(sourceFile, destinationFile);
+      return destinationFile;
+    } catch (error) {
+      console.error("Error copying file:", error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error showing save dialog:", error);
+    return null;
+  }
 }
 
 function createWindow() {
@@ -20,25 +97,32 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
       contextIsolation: true,
+      nodeIntegration: false,
+      enableRemoteModule: false,
     },
-  })
+  });
 
-  mainWindow.loadFile("index.html")
+  mainWindow.loadFile("index.html");
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle("dialog:openFile", handleFileOpen)
-  createWindow()
-})
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
-    app.quit()
+    app.quit();
   }
-})
+});
 
 app.on("activate", () => {
   if (mainWindow == null) {
-    createWindow()
+    createWindow();
   }
-})
+});
+
+ipcMain.handle("runProgram", (event, data) => {
+  return runProgram(data);
+});
+
+ipcMain.handle("dialog:saveFile", handleSaveFile);

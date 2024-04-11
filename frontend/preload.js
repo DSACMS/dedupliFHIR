@@ -1,5 +1,6 @@
-const { ipcRenderer, contextBridge } = require("electron")
+const { ipcRenderer, contextBridge } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  openFile: () => ipcRenderer.invoke("dialog:openFile"),
-})
+  runProgram: (filePath) => ipcRenderer.invoke("runProgram", filePath),
+  saveFile: () => ipcRenderer.invoke("dialog:saveFile"),
+});
