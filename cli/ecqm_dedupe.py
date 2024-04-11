@@ -52,7 +52,7 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     deduped_record_mapping.to_csv(CACHE_DIR + "dedupe-cache.csv")
     unique_records.to_csv(CACHE_DIR + "unique-records-cache.csv")
 
-    path_to_write = output_path + "/deduped_record_mapping.xlsx"
+    path_to_write = output_path + "deduped_record_mapping.xlsx"
     deduped_record_mapping.to_excel(path_to_write)
 
 @click.command()

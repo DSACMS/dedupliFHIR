@@ -45,7 +45,7 @@ function runProgram(filePath) {
     OPTIONS.FORMAT,
     identifyFormat(fileName),
     filePath,
-    currentDirectory,
+    currentDirectory + "/",
   ];
 
   let options = {
