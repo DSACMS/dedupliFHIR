@@ -25,7 +25,7 @@ function identifyFormat(fileName) {
 }
 
 function runProgram(filePath) {
-  mainWindow.loadFile("loading.html");
+  mainWindow.loadFile("pages/loading.html");
 
   const fileName = path.basename(filePath);
   const currentDirectory = path.dirname(__filename);
@@ -35,7 +35,7 @@ function runProgram(filePath) {
     "..",
     ".venv",
     "bin",
-    "python",
+    "python"
   );
 
   const script = SCRIPT;
@@ -58,11 +58,11 @@ function runProgram(filePath) {
   PythonShell.run(script, options)
     .then((messages) => {
       console.log("results: %j", messages);
-      mainWindow.loadFile("success.html");
+      mainWindow.loadFile("pages/success.html");
     })
     .catch((error) => {
       console.log("Error running dedupe-data command: ", err);
-      mainWindow.loadFile("error.html");
+      mainWindow.loadFile("pages/error.html");
     });
 }
 
