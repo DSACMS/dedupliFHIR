@@ -17,42 +17,30 @@ import pandas as pd
 import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
-from splink.datasets import splink_datasets
 
 
 SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = {
     "link_type": "dedupe_only",
     "blocking_rules_to_generate_predictions": [
-        block_on("given_name"),
-        block_on("family_name"),
+        block_on( "birth_date"),
+        block_on(["ssn", "birth_date"]),
+        block_on(["ssn", "street_address"]),
+        block_on("phone"),
     ],
     "comparisons": [
-        ctl.name_comparison("given_name"),
-        ctl.name_comparison("family_name"),
-        ctl.date_comparison("birth_date", cast_strings_to_date=True),
-        cl.exact_match("city", term_frequency_adjustments=True),
+        ctl.name_comparison("given_name", term_frequency_adjustments=True),
+        ctl.name_comparison("family_name", term_frequency_adjustments=True),
+        ctl.date_comparison("birth_date", cast_strings_to_date=True, invalid_dates_as_null=True),
+        ctl.postcode_comparison("postal_code"),
+        cl.exact_match("street_address", term_frequency_adjustments=True),
+        cl.exact_match("phone",  term_frequency_adjustments=True),
     ],
+    "retain_matching_columns": True,
+    "retain_intermediate_calculation_columns": True,
+    "max_iterations": 20,
+    "em_convergence": 0.01
 }
 
-
-
-splink_test_df = splink_datasets.fake_1000 # pylint: disable=no-member
-
-#This is the same as the above settings object, but for the test fake data.
-SPLINK_LINKER_SETTINGS_TEST_DEDUPE = {
-    "link_type": "dedupe_only",
-    "blocking_rules_to_generate_predictions": [
-        block_on("first_name"),
-        block_on("surname"),
-    ],
-    "comparisons": [
-        ctl.name_comparison("first_name"),
-        ctl.name_comparison("surname"),
-        ctl.date_comparison("dob", cast_strings_to_date=True),
-        cl.exact_match("city", term_frequency_adjustments=True),
-        ctl.email_comparison("email", include_username_fuzzy_level=False),
-    ],
-}
 
 #NOTE: The only reason this function is defined outside utils.py is because of a known bug with
 #python multiprocessing: https://bugs.python.org/issue25053
