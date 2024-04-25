@@ -22,12 +22,10 @@ from splink.duckdb.blocking_rule_library import block_on
 SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = {
     "link_type": "dedupe_only",
     "blocking_rules_to_generate_predictions": [
-        block_on(["family_name", "birth_date"]),
-        block_on(["given_name", "birth_date"]),
+        block_on( "birth_date"),
         block_on(["ssn", "birth_date"]),
         block_on(["ssn", "street_address"]),
-        block_on(["family_name", "phone"]),
-        block_on(["ssn", "family_name"]),
+        block_on("phone"),
     ],
     "comparisons": [
         ctl.name_comparison("given_name", term_frequency_adjustments=True),
