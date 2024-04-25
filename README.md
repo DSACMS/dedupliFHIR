@@ -10,13 +10,10 @@ https://github.com/DSACMS/dedupliFHIR/assets/29980737/2924b785-8915-4c17-841e-ba
 ## About the Project
 As part of the Affordable Care Act, and attempts to reduce costs/utilization/expenditures, ACOS were created; Accountable care organizations.
 
-Currently, ACO health metrics are self-reported and can result in duplicate records. This tool seeks
-to leverage existing open source AI data linkage technology to help increase the quality of reported 
-health data.
-
-This tool was made to target the FHIR (and later QRDA) file formats of ACO reported health metrics.
+Currently, ACO health metrics are self-reported and can result in duplicate records. DedupliFHIR is a tool that leverages existing open source AI data linkage libraries to help improve the quality of reported health data. This tool’s initial release targets the FHIR data format for ACO reported eCQM metrics. Future releases are planning to support QRDA formats, as well as generic .csv and other text formats.
 
 This project originated from the CMS Open Source Community as a resource ACOs can use when preparing their patient records submission.
+
 
 
 ### Installation
