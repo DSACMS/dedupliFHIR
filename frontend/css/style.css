@@ -27,6 +27,10 @@ h2,
   width: 100%;
 }
 
+.usa-alert {
+  display: none;
+}
+
 .loader {
   position: absolute;
   left: 42.5%;
