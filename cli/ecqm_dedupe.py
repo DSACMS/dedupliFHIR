@@ -27,13 +27,18 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     """Program to dedupe patient data in many formats namely FHIR and QRDA"""
 
     #linker is created by use_linker decorator
-    blocking_rule_for_training = block_on(["given_name", "family_name"])
+    blocking_rule_for_training = block_on("ssn")
     linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
+        blocking_rule_for_training)
 
-    blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
+    blocking_rule_for_training = block_on("birth_date")  # block on year
     linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
+        blocking_rule_for_training)
+    
+    blocking_rule_for_training = block_on(["street_address", "postal_code"])
+    linker.estimate_parameters_using_expectation_maximisation(
+        blocking_rule_for_training)
+
 
     pairwise_predictions = linker.predict()
 
