@@ -52,8 +52,27 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     deduped_record_mapping.to_csv(CACHE_DIR + "dedupe-cache.csv")
     unique_records.to_csv(CACHE_DIR + "unique-records-cache.csv")
 
-    path_to_write = output_path + "deduped_record_mapping.xlsx"
-    deduped_record_mapping.to_excel(path_to_write)
+
+    _, extension = os.path.splitext(output_path)
+
+    if extension == '.xlsx':
+        deduped_record_mapping.to_excel(output_path)
+    elif extension == '.csv':
+        deduped_record_mapping.to_csv(output_path)
+    elif extension == '.json':
+        deduped_record_mapping.to_json(output_path)
+    elif extension == '.html':
+        deduped_record_mapping.to_html(output_path)
+    elif extension == '.xml':
+        deduped_record_mapping.to_xml(output_path)
+    elif extension == '.tex':
+        deduped_record_mapping.to_latex(output_path)
+    elif extension == '.feather':
+        deduped_record_mapping.to_feather(output_path)
+    else:
+        raise ValueError("File format not supported!")
+    #path_to_write = output_path + "deduped_record_mapping.xlsx"
+    #deduped_record_mapping.to_excel(path_to_write)
 
 @click.command()
 @click.option('--html', is_flag=True)

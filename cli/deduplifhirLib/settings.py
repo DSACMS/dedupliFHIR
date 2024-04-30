@@ -36,24 +36,6 @@ SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = {
 
 
 
-splink_test_df = splink_datasets.fake_1000 # pylint: disable=no-member
-
-#This is the same as the above settings object, but for the test fake data.
-SPLINK_LINKER_SETTINGS_TEST_DEDUPE = {
-    "link_type": "dedupe_only",
-    "blocking_rules_to_generate_predictions": [
-        block_on("first_name"),
-        block_on("surname"),
-    ],
-    "comparisons": [
-        ctl.name_comparison("first_name"),
-        ctl.name_comparison("surname"),
-        ctl.date_comparison("dob", cast_strings_to_date=True),
-        cl.exact_match("city", term_frequency_adjustments=True),
-        ctl.email_comparison("email", include_username_fuzzy_level=False),
-    ],
-}
-
 #NOTE: The only reason this function is defined outside utils.py is because of a known bug with
 #python multiprocessing: https://bugs.python.org/issue25053
 def read_fhir_data(patient_record_path):
