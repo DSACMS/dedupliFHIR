@@ -83,23 +83,26 @@ def parse_test_data(path,marked=False):
 
         for row in csvreader:
             #print(row[2])
-            dob = datetime.datetime.strptime(row[5], '%m/%d/%Y').strftime('%Y-%m-%d')
-            patient_dict = {
-                "unique_id": uuid.uuid4().int,
-                "family_name": [row[2]],
-                "given_name": [row[3]],
-                "gender": [row[4]],
-                "birth_date": [dob],
-                "phone": [row[6]],
-                "street_address": [row[7]],
-                "city": [row[8]],
-                "state": [row[9]],
-                "postal_code": [row[10]],
-                "ssn": [row[11]],
-                "path": ["TRAINING" if marked else ""]
-            }
+            try:
+                dob = datetime.datetime.strptime(row[5], '%m/%d/%Y').strftime('%Y-%m-%d')
+                patient_dict = {
+                    "unique_id": uuid.uuid4().int,
+                    "family_name": [row[2]],
+                    "given_name": [row[3]],
+                    "gender": [row[4]],
+                    "birth_date": [dob],
+                    "phone": [row[6]],
+                    "street_address": [row[7]],
+                    "city": [row[8]],
+                    "state": [row[9]],
+                    "postal_code": [row[10]],
+                    "ssn": [row[11]],
+                    "path": ["TRAINING" if marked else ""]
+                }
 
-            df_list.append(pd.DataFrame(patient_dict))
+                df_list.append(pd.DataFrame(patient_dict))
+            except IndexError:
+                print("could not read row")
 
     return pd.concat(df_list)
 
@@ -126,7 +129,10 @@ def use_linker(func):
         print(f"Format is {fmt}")
         print(f"Data dir is {data_dir}")
 
-        training_df = parse_test_data('../cli/deduplifhirLib/test_data.csv',marked=True)
+
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+
+        training_df = parse_test_data(dir_path + '/test_data.csv',marked=True)
         if fmt == "FHIR":
             train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
         elif fmt == "QRDA":
