@@ -11,7 +11,7 @@ const constants = {
     FHIR: "FHIR",
     TEST: "TEST",
   },
-  RESULTS_SPREADSHEET: "deduped_record_mapping.xlsx",
+  RESULTS_FILE: "deduped_record_mapping",
 };
 
 module.exports = constants;

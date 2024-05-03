@@ -28,6 +28,18 @@
             accept=".json,.csv"
           />
         </div>
+        <div class="usa-form-group">
+        <label class="usa-label" for="options">Select file format for results data</label>
+        <select class="usa-select" name="options" id="options">
+          <option value=".xlsx" selected="selected" >.xlsx</option>
+          <option value=".csv">.csv</option>
+          <option value=".json">.json</option>
+          <option value=".html">.html</option>
+          <option value=".xml">.xml</option>
+          <option value=".tex">.tex</option>
+          <option value=".feather">.feather</option>
+        </select>
+        </div>
         <div class="usa-alert usa-alert--error" id="file-input-alert" role="alert">
           <div class="usa-alert__body">
             <h4 class="usa-alert__heading">Error</h4>
