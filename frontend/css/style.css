@@ -31,6 +31,10 @@ h2,
   display: none;
 }
 
+#deduplication-error-alert {
+  display: block;
+}
+
 .loader {
   position: absolute;
   left: 42.5%;
