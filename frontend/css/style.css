@@ -19,12 +19,20 @@ body {
 
 h1,
 h2,
-.usa-label {
+#file-input-copy {
   text-align: center;
 }
 
 .usa-button {
   width: 100%;
+}
+
+.usa-alert {
+  display: none;
+}
+
+#deduplication-error-alert {
+  display: block;
 }
 
 .loader {

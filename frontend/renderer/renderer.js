@@ -1,7 +1,9 @@
 const fileInputAlert = document.getElementById("file-input-alert");
+const fileFormatSelect = document.getElementById("options");
 
 const submitButton = document.getElementById("submit");
 submitButton.addEventListener("click", () => {
+  var selectedFormat = fileFormatSelect.value;
   var fileInput = document.getElementById("file-input-specific");
 
   // Check if files are selected
@@ -17,7 +19,7 @@ submitButton.addEventListener("click", () => {
 
       fileInputAlert.style.display = "none";
 
-      window.electronAPI.runProgram(selectedFile.path);
+      window.electronAPI.runProgram(selectedFile.path, selectedFormat);
     }
   } else {
     // Displays error if no file selected

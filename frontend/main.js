@@ -7,9 +7,10 @@ const {
   COMMANDS,
   OPTIONS,
   FORMAT,
-  RESULTS_SPREADSHEET,
+  RESULTS_FILE,
 } = require("./constants.js");
 let mainWindow;
+var fileExtension;
 
 function identifyFormat(fileName) {
   const extension = path.extname(fileName).slice(1);
@@ -24,8 +25,9 @@ function identifyFormat(fileName) {
   }
 }
 
-function runProgram(filePath) {
-  mainWindow.loadFile("loading.html");
+function runProgram(filePath, fileFormat) {
+  mainWindow.loadFile("pages/loading.html");
+  fileExtension = fileFormat;
 
   const fileName = path.basename(filePath);
   const currentDirectory = path.dirname(__filename);
@@ -45,7 +47,7 @@ function runProgram(filePath) {
     OPTIONS.FORMAT,
     identifyFormat(fileName),
     filePath,
-    currentDirectory + "/",
+    currentDirectory + "/" + RESULTS_FILE + fileFormat,
   ];
 
   let options = {
@@ -58,11 +60,11 @@ function runProgram(filePath) {
   PythonShell.run(script, options)
     .then((messages) => {
       console.log("results: %j", messages);
-      mainWindow.loadFile("success.html");
+      mainWindow.loadFile("pages/success.html");
     })
-    .catch((error) => {
+    .catch((err) => {
       console.log("Error running dedupe-data command: ", err);
-      mainWindow.loadFile("error.html");
+      mainWindow.loadFile("pages/error.html");
     });
 }
 
@@ -70,13 +72,14 @@ async function handleSaveFile() {
   try {
     const result = await dialog.showSaveDialog({
       title: "Select Directory to Save Results",
-      defaultPath: app.getPath("downloads") + "/" + RESULTS_SPREADSHEET,
+      defaultPath:
+        app.getPath("downloads") + "/" + RESULTS_FILE + fileExtension,
       properties: ["openDirectory"],
     });
 
     if (result.canceled || !result.filePath) return null;
 
-    const sourceFile = RESULTS_SPREADSHEET;
+    const sourceFile = RESULTS_FILE + fileExtension;
     const destinationFile = result.filePath; // Selected path of new file location
 
     try {
@@ -121,8 +124,8 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.handle("runProgram", (event, data) => {
-  return runProgram(data);
+ipcMain.handle("runProgram", (event, filePath, fileFormat) => {
+  return runProgram(filePath, fileFormat);
 });
 
 ipcMain.handle("dialog:saveFile", handleSaveFile);
