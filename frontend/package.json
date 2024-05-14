@@ -1,5 +1,5 @@
 {
-  "name": "ecqm-dedupe-desktop-app",
+  "name": "deduplifhir-desktop-app",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -9,13 +9,35 @@
     "lint:fix": "eslint --quiet --fix \"**.js\"",
     "prettier": "prettier --check ./**.{js,css}",
     "prettier:fix": "prettier --write \"./**.{js,css}\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "author": "",
   "license": "ISC",
+  "build": {
+    "appId": "com.example.app",
+    "extraResources": [
+      {
+        "from": "../python",
+        "to": "python",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../cli",
+        "to": "cli",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "electron": "^28.0.0",
+    "electron-builder": "^24.13.3",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5"
   },

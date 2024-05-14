@@ -12,6 +12,22 @@ const {
 let mainWindow;
 var fileExtension;
 
+function findPython() {
+  const possibilities = [
+    // In packaged app
+    path.join(process.resourcesPath, "python", "bin", "python3.11"),
+    // In development
+    path.join("..", "python", "bin", "python3.11"),
+  ];
+  for (const path of possibilities) {
+    if (fs.existsSync(path)) {
+      return path;
+    }
+  }
+  console.log("Could not find python3, checked", possibilities);
+  app.quit();
+}
+
 function identifyFormat(fileName) {
   const extension = path.extname(fileName).slice(1);
 
@@ -31,14 +47,12 @@ function runProgram(filePath, fileFormat) {
 
   const fileName = path.basename(filePath);
   const currentDirectory = path.dirname(__filename);
-  const scriptPath = path.join(currentDirectory, "..", "cli");
-  const pythonPath = path.join(
-    currentDirectory,
-    "..",
-    ".venv",
-    "bin",
-    "python",
-  );
+  const scriptPath = app.isPackaged
+    ? path.join(process.resourcesPath, "cli")
+    : path.join(currentDirectory, "..", "cli");
+  const outputPath = app.isPackaged
+    ? app.getPath("userData") + "/" + RESULTS_FILE + fileFormat
+    : currentDirectory + "/" + RESULTS_FILE + fileFormat;
 
   const script = SCRIPT;
 
@@ -47,13 +61,13 @@ function runProgram(filePath, fileFormat) {
     OPTIONS.FORMAT,
     identifyFormat(fileName),
     filePath,
-    currentDirectory + "/" + RESULTS_FILE + fileFormat,
+    outputPath,
   ];
 
   let options = {
     mode: "text",
     scriptPath: scriptPath,
-    pythonPath: pythonPath,
+    pythonPath: findPython(),
     args: poetryArgs,
   };
 
@@ -79,7 +93,9 @@ async function handleSaveFile() {
 
     if (result.canceled || !result.filePath) return null;
 
-    const sourceFile = RESULTS_FILE + fileExtension;
+    const sourceFile = app.isPackaged
+      ? app.getPath("userData") + "/" + RESULTS_FILE + fileExtension
+      : RESULTS_FILE + fileExtension;
     const destinationFile = result.filePath; // Selected path of new file location
 
     try {
