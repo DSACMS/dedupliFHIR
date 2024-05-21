@@ -17,7 +17,7 @@ function findPython() {
     // In packaged app
     path.join(process.resourcesPath, "python", "bin", "python3.11"),
     // In development
-    path.join("..", "python", "bin", "python3.11"),
+    path.join("..", ".venv", "bin", "python"),
   ];
   for (const path of possibilities) {
     if (fs.existsSync(path)) {
@@ -51,7 +51,7 @@ function runProgram(filePath, fileFormat) {
     ? path.join(process.resourcesPath, "cli")
     : path.join(currentDirectory, "..", "cli");
   const outputPath = app.isPackaged
-    ? app.getPath("userData") + "/" + RESULTS_FILE + fileFormat
+    ? app.getPath("userData") + RESULTS_FILE + fileFormat
     : currentDirectory + "/" + RESULTS_FILE + fileFormat;
 
   const script = SCRIPT;
@@ -94,7 +94,7 @@ async function handleSaveFile() {
     if (result.canceled || !result.filePath) return null;
 
     const sourceFile = app.isPackaged
-      ? app.getPath("userData") + "/" + RESULTS_FILE + fileExtension
+      ? app.getPath("userData") + RESULTS_FILE + fileExtension
       : RESULTS_FILE + fileExtension;
     const destinationFile = result.filePath; // Selected path of new file location
 
@@ -139,7 +139,6 @@ app.on("activate", () => {
     createWindow();
   }
 });
-
 ipcMain.handle("runProgram", (event, filePath, fileFormat) => {
   return runProgram(filePath, fileFormat);
 });

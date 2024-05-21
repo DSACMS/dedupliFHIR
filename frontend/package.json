@@ -11,7 +11,7 @@
     "prettier:fix": "prettier --write \"./**.{js,css}\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "../set-up-python-env.sh && electron-builder"
   },
   "author": "",
   "license": "ISC",
