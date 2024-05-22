@@ -7,10 +7,10 @@ const {
   COMMANDS,
   OPTIONS,
   FORMAT,
-  RESULTS_FILE,
+  RESULTS_FILE_NAME,
 } = require("./constants.js");
 let mainWindow;
-var fileExtension;
+var resultsFile;
 
 function findPython() {
   const possibilities = [
@@ -43,16 +43,20 @@ function identifyFormat(fileName) {
 
 function runProgram(filePath, fileFormat) {
   mainWindow.loadFile("pages/loading.html");
-  fileExtension = fileFormat;
+  resultsFile = RESULTS_FILE_NAME + fileFormat;
 
   const fileName = path.basename(filePath);
   const currentDirectory = path.dirname(__filename);
-  const scriptPath = app.isPackaged
-    ? path.join(process.resourcesPath, "cli")
-    : path.join(currentDirectory, "..", "cli");
-  const outputPath = app.isPackaged
-    ? app.getPath("userData") + RESULTS_FILE + fileFormat
-    : currentDirectory + "/" + RESULTS_FILE + fileFormat;
+  let scriptPath;
+  let outputPath;
+
+  if (app.isPackaged) {
+    scriptPath = path.join(process.resourcesPath, "cli");
+    outputPath = path.join(app.getPath("userData"), resultsFile);
+  } else {
+    scriptPath = path.join(currentDirectory, "..", "cli");
+    outputPath = path.join(currentDirectory, resultsFile);
+  }
 
   const script = SCRIPT;
 
@@ -86,16 +90,16 @@ async function handleSaveFile() {
   try {
     const result = await dialog.showSaveDialog({
       title: "Select Directory to Save Results",
-      defaultPath:
-        app.getPath("downloads") + "/" + RESULTS_FILE + fileExtension,
+      defaultPath: path.join(app.getPath("downloads"), resultsFile),
       properties: ["openDirectory"],
     });
 
     if (result.canceled || !result.filePath) return null;
 
     const sourceFile = app.isPackaged
-      ? app.getPath("userData") + RESULTS_FILE + fileExtension
-      : RESULTS_FILE + fileExtension;
+      ? path.join(app.getPath("userData"), resultsFile)
+      : resultsFile;
+
     const destinationFile = result.filePath; // Selected path of new file location
 
     try {
