@@ -35,6 +35,20 @@ h2,
   display: block;
 }
 
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 95%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+img {
+  width: 100px;
+  height: 100px;
+}
+
 .loader {
   position: absolute;
   left: 42.5%;
