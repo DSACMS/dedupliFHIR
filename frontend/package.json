@@ -14,10 +14,10 @@
     "prettier:fix": "prettier --write \"./**.{js,css}\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
-    "dist": "../set-up-python-env.sh && electron-builder"
+    "dist": "cd .. && make dist"
   },
   "build": {
-    "appId": "com.example.app",
+    "appId": "gov.cms.deduplifhir",
     "extraResources": [
       {
         "from": "../python",
