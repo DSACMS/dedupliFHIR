@@ -21,6 +21,11 @@ from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
 
+def check_blocking_uniques(check_df,blocking_field,required_uniques=5):
+    uniques = getattr(check_df, blocking_field).nunique(dropna=True)
+    assert uniques >= required_uniques
+
+
 def parse_qrda_data(path,cpu_cores=4):
     raise NotImplementedError
 
