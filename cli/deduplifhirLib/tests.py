@@ -113,13 +113,14 @@ def test_with_different_data_sizes(data_size, duplicate_percentage):
     csv_path = str(test_path) + "/test_data.csv"
     column_path = str(test_path) + "/test_data_columns.json"
 
+    #
     generate_dup_data(column_path, csv_path, data_size, duplicate_percentage)
     df = parse_test_data(csv_path)
 
     linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
     linker.estimate_u_using_random_sampling(max_pairs=1e6)
 
-    blocking_rule_for_training = block_on(["given_name", "family_name"])
+    blocking_rule_for_training = block_on(["street_address", "postal_code"])
 
     linker.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training, estimate_without_term_frequencies=True)
