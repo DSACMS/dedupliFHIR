@@ -155,6 +155,8 @@ def use_linker(func):
             train_frame = pd.concat([parse_test_data(data_dir),training_df])
         elif fmt == "TEST":
             train_frame = training_df
+        else:
+            raise ValueError('Unrecognized format to parse')
 
         #check blocking values
         for rule in SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE['blocking_rules_to_generate_predictions']:
