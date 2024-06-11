@@ -21,6 +21,20 @@ from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
 
+def check_blocking_uniques(check_df,blocking_field,required_uniques=5):
+    """
+    Function that takes in a dataframe and asserts the required blocking values
+    are present for splink to use. Throws an assertion error if it can't.
+
+    Arguments:
+        check_df: Pandas Dataframe to check
+        blocking_field: Column of the frame to check uniques of
+        required_uniques: Unique values to require for blocking rules
+    """
+    uniques = getattr(check_df, blocking_field).nunique(dropna=True)
+    assert uniques >= required_uniques
+
+
 def parse_qrda_data(path,cpu_cores=4):
     raise NotImplementedError
 
@@ -141,7 +155,20 @@ def use_linker(func):
             train_frame = pd.concat([parse_test_data(data_dir),training_df])
         elif fmt == "TEST":
             train_frame = training_df
+        else:
+            raise ValueError('Unrecognized format to parse')
 
+        #check blocking values
+        for rule in SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE['blocking_rules_to_generate_predictions']:
+            try:
+                if isinstance(rule, list):
+                    for sub_rule in rule:
+                        check_blocking_uniques(train_frame, sub_rule)
+                else:
+                    check_blocking_uniques(train_frame, rule)
+            except AssertionError as e:
+                print(f"Could not assert the proper number of unique records for rule {rule}")
+                raise e
 
         lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
         lnkr.estimate_u_using_random_sampling(max_pairs=5e6)
