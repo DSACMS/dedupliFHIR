@@ -3,9 +3,9 @@ This module defines the pytest testing functions and fixtures needed to test the
 de-dupliFHIR project.
 """
 from pathlib import Path
+from io import StringIO
 import pytest
 import pandas as pd
-from io import StringIO
 from splink.duckdb.linker import DuckDBLinker
 from splink.duckdb.blocking_rule_library import block_on
 from deduplifhirLib.duplicate_data_generator import generate_dup_data
@@ -54,7 +54,12 @@ def test_generate_data_and_dedup():
 
 @pytest.fixture
 def dedup_test_data():
-    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
+    """
+    Test fixture that parses specific data that we would like to run tests for into a dataframe
+    """
+
+    test_data_csv = """
+    id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
     "4_Arlene_Oliver.xml","","oliver","arlene","female","05/26/1972","434-228-8487","845 Collier Pike Center","North Katheryn","WA","99033",""
     "21_Raul_Waters.xml","","waters","raul","male","10/31/1972","(878)360-4765","61035 Adell Ranch Wall","Kerlukeburgh","NC","28885",""
     "22_Raul_Waters.xml","","waters","raul","male","10/31/1972","(878)360-4765","61035 Adell Ranch Wall","Kerlukeburgh","NC","28885",""
@@ -77,7 +82,7 @@ def test_number_of_duplicates(test_generate_data_and_dedup):
     # Assuming 30% duplicates, calculate the expected number
     expected_duplicates = 800 * 0.30
     unique_clusters = test_generate_data_and_dedup['cluster_id'].nunique()
-    
+
     assert (800 - unique_clusters) >= expected_duplicates * 0.9  # Allowing some tolerance
 
 def test_deduplication_accuracy(test_generate_data_and_dedup):
@@ -86,7 +91,7 @@ def test_deduplication_accuracy(test_generate_data_and_dedup):
     """
     df = test_generate_data_and_dedup
     duplicates = df[df.duplicated(subset=['given_name', 'family_name', 'birth_date'], keep=False)]
-    
+
     # Check if duplicates are correctly identified
     assert len(duplicates) > 0
     assert duplicates['cluster_id'].nunique() < len(duplicates)
@@ -97,7 +102,7 @@ def test_no_records_lost(test_generate_data_and_dedup):
     """
     original_count = 800
     deduped_count = test_generate_data_and_dedup.shape[0]
-    
+
     assert original_count == deduped_count
 
 @pytest.mark.parametrize("data_size, duplicate_percentage", [
@@ -179,12 +184,14 @@ def test_deduplicate_with_provided_data(dedup_test_data):
     # Raul Waters and Terrance Weber have duplicates
     duplicate_groups = deduped_df.groupby('cluster_id').size()
     duplicate_groups = duplicate_groups[duplicate_groups > 1]
-    
+
     # We expect 2 duplicate clusters (Raul Waters and Terrance Weber)
     assert len(duplicate_groups) == 2
 
     # Check that the duplicates are correctly identified
-    assert all(deduped_df[deduped_df['cluster_id'].isin(duplicate_groups.index)]['given_name'].isin(['raul', 'terrance']))
+    assert all(
+        deduped_df[deduped_df['cluster_id'].isin(
+            duplicate_groups.index)]['given_name'].isin(['raul', 'terrance']))
 
     # Ensure that non-duplicate records (Arlene Oliver) are not falsely identified as duplicates
     arlene_oliver_cluster = deduped_df[deduped_df['given_name'] == 'arlene']['cluster_id'].unique()
