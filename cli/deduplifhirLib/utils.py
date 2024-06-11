@@ -157,6 +157,8 @@ def use_linker(func):
             train_frame = pd.concat([parse_test_data(data_dir),training_df])
         elif fmt == "TEST":
             train_frame = training_df
+        elif fmt == "DF":
+            train_frame = data_dir
         else:
             raise ValueError('Unrecognized format to parse')
 
