@@ -14,6 +14,7 @@ Currently, ACO health metrics are self-reported and can result in duplicate reco
 
 This project originated from the CMS Open Source Community as a resource ACOs can use when preparing their patient records submission.
 
+The DedupliFHIR project does not include or share any Personally Identifiable Information or Personal Health Information (PII/PHI) in this source code repository. All training and testing data we ship in the source code repository is ‘synthetic’ data, which is artificially generated. The tool itself uses only local data, uploaded by users on their own systems. The tool processes that data locally, and does not share that information over the network. Users control who that data is shared with after processing, and how it is shared, if at all.
 
 
 ### Installation
