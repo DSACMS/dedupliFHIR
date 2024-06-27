@@ -15,7 +15,9 @@ from functools import wraps
 import pandas as pd
 from splink.duckdb.linker import DuckDBLinker
 
-from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
+from deduplifhirLib.settings import (
+    SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, BLOCKING_RULE_STRINGS, read_fhir_data
+)
 
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -159,7 +161,7 @@ def use_linker(func):
             raise ValueError('Unrecognized format to parse')
 
         #check blocking values
-        for rule in SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE['blocking_rules_to_generate_predictions']:
+        for rule in BLOCKING_RULE_STRINGS:
             try:
                 if isinstance(rule, list):
                     for sub_rule in rule:
