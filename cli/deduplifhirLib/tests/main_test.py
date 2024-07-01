@@ -6,8 +6,6 @@ functionality using Splink.
 
 import os
 import tempfile
-from unittest.mock import patch
-from io import StringIO
 import pytest
 import pandas as pd
 from click.testing import CliRunner
