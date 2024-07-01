@@ -38,6 +38,7 @@ SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE.update({
 
 #apply blocking function to translate into sql rules
 blocking_rules = SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE["blocking_rules_to_generate_predictions"]
+BLOCKING_RULE_STRINGS = blocking_rules
 SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE["blocking_rules_to_generate_predictions"] = list(map(block_on,blocking_rules))
 
 
