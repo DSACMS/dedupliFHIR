@@ -144,10 +144,11 @@ def use_linker(func):
 
         print(f"Format is {fmt}")
         print(f"Data dir is {data_dir}")
+        print(os.getcwd())
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        training_df = parse_test_data(dir_path + '/test_data.csv',marked=True)
+        training_df = parse_test_data(dir_path + '/tests/test_data.csv',marked=True)
 
         if fmt == "FHIR":
             train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
@@ -157,6 +158,8 @@ def use_linker(func):
             train_frame = pd.concat([parse_test_data(data_dir),training_df])
         elif fmt == "TEST":
             train_frame = training_df
+        elif fmt == "DF":
+            train_frame = data_dir
         else:
             raise ValueError('Unrecognized format to parse')
 
