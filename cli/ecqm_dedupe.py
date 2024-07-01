@@ -34,7 +34,7 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     blocking_rule_for_training = block_on("birth_date")  # block on year
     linker.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training)
-    
+
     blocking_rule_for_training = block_on(["street_address", "postal_code"])
     linker.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training)

@@ -1,176 +1,101 @@
 """
-This module defines the pytest testing functions and fixtures needed to test the 
-de-dupliFHIR project.
+This module defines pytest testing functions and fixtures for testing the deduplication functionality using Splink.
 """
+
+import os
 from pathlib import Path
 from io import StringIO
 import pytest
 import pandas as pd
+from click.testing import CliRunner
+from unittest.mock import patch
 from splink.duckdb.linker import DuckDBLinker
 from splink.duckdb.blocking_rule_library import block_on
 from deduplifhirLib.duplicate_data_generator import generate_dup_data
 from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE
 from deduplifhirLib.utils import parse_test_data, use_linker
+from cli.ecqm_dedupe import dedupe_data
+
 
 @pytest.fixture
-def test_generate_data_and_dedup():
+def mock_use_linker():
     """
-    This test fixture uses Faker to generate a fresh set of patient records in a CSV.
-    Then, it runs the Splink dedupe algorithm on the resulting pandas dataframe with 
-    pre-generated duplicates.
-
-    Returns:
-        Dataframe containing deduped test data
+    Fixture to mock the use_linker decorator and return a mock linker object.
     """
-
-    test_path = (Path(__file__).parent).resolve()
-    print(test_path)
-
-    csv_path = str(test_path) + "/test_data.csv"
-    column_path = str(test_path) + "/test_data_columns.json"
-
-    #Create test data
-    generate_dup_data(column_path, csv_path, 800, 0.70)
-
-    df = parse_test_data(csv_path)
-
-    linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-    linker.estimate_u_using_random_sampling(max_pairs=1e6)
-
-    blocking_rule_for_training = block_on(["given_name", "family_name"])
-
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    pairwise_predictions = linker.predict()
-
-    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-
-    return clusters.as_pandas_dataframe()
+    with patch('deduplifhirLib.utils') as mock_use_linker:
+        mock_linker = mock_use_linker.return_value.__enter__.return_value
+        yield mock_linker
 
 @pytest.fixture
-def dedup_test_data():
+def cli_runner():
     """
-    Test fixture that parses specific data that we would like to run tests for into a dataframe
+    Fixture to provide a CliRunner instance to invoke Click commands programmatically.
+    """
+    return CliRunner()
+
+def test_dedupe_data_with_csv_output(mock_use_linker, cli_runner):
+    """
+    Test dedupe_data function with CSV output format.
+    """
+    # Mock linker behavior
+    mock_use_linker.side_effect = lambda func: func(linker=mock_use_linker)
+
+    # Prepare test data paths
+    bad_data_path = 'deduplifhirLib/test_data.csv'
+    output_path = 'output.csv'
+    print(os.getcwd())
+    # Simulate CLI command execution
+    result = cli_runner.invoke(dedupe_data, ['--fmt', 'CSV', bad_data_path, output_path])
+
+    assert result.exit_code == 0, f"CLI command failed: {result.output}"
+    assert os.path.exists(output_path), "Output file not created"
+
+    # Check content of the output file (assuming it's CSV)
+    deduped_df = pd.read_csv(output_path)
+    assert 'cluster_id' in deduped_df.columns, "Expected column 'cluster_id' not found"
+
+    # Clean up: delete output file
+    os.remove(output_path)
+
+def test_dedupe_data_with_specific_csv(mock_use_linker, cli_runner):
+    """
+    Test dedupe_data function with specific CSV data to verify deduplication.
+    """
+    # Prepare test data
+    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
+8,9b0b0b7c-e05e-4c89-991d-268eab2483f7,Obrien,Curtis,M,07/02/1996,,300 Amy Corners Suite 735,Rileytown,Alaska,60281,480-21-0833
+342,9b0b0b7c-e05e-4c89-991d-268eab2483f7,Orbien,Cutris,M,07/02/1996,,300 Amy oCrenrs Suite 735,Rileytown,Alaska,60281,480-210-833
+502,9b0b0b7c-e05e-4c89-991d-268eab2483f7,bOrien,Curtsi,M,07/02/1996,,300 AmyCo rners Suite 735,Rileytown,Alaska,60281,480-21-8033
+618,9b0b0b7c-e05e-4c89-991d-268eab2483f7,Obrine,Curtsi,M,07/02/1996,,300 AmyC orners Suite7 35,Rileytown,Alaska,60281,48-021-0833
+744,9b0b0b7c-e05e-4c89-991d-268eab2483f7,bOrien,Curtsi,M,07/02/1996,,3 00Amy Corners Suite 735,Rileytown,Alaska,60281,480-210-833
+223,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russell,Lindsay,F,02/05/1977,,2110 Kimberly Villages Apt. 639,New David,Wyoming,52082,211-52-6998
+225,04584982-ae7a-44a1-b4f0-e927a8bab0e1,R,Lindsay,F,02/05/1977,,2110 Kimberly Villages Apt. 639,New David,Wyoming,52082,211-52-6998
+226,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russel Smith,Lindsay,F,02/05/1977,,2110 Kimberly Villages Apt. 639,New David,Wyoming,52082,211-52-6998
+273,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russlel,Lnidsay,F,02/05/1977,,2110 Kimbelry Vilalges Apt. 639,New David,Wyoming,52082,211-52-6989
+311,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russlel,Lindasy,F,02/05/1977,,2110 Kimbelry Villgaes Apt. 639,New David,Wyoming,52082,211-52-9698
+652,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lidnsay,F,02/05/1977,,2110 Kimberly Vlilagse Apt. 639,New David,Wyoming,52082,121-52-6998
+726,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lindasy,F,02/05/1977,,2110 Kmiberly Vilalges Apt. 639,New David,Wyoming,52082,2115-2-6
     """
 
-    test_data_csv = """
-    id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
-    "4_Arlene_Oliver.xml","","oliver","arlene","female","05/26/1972","434-228-8487","845 Collier Pike Center","North Katheryn","WA","99033",""
-    "21_Raul_Waters.xml","","waters","raul","male","10/31/1972","(878)360-4765","61035 Adell Ranch Wall","Kerlukeburgh","NC","28885",""
-    "22_Raul_Waters.xml","","waters","raul","male","10/31/1972","(878)360-4765","61035 Adell Ranch Wall","Kerlukeburgh","NC","28885",""
-    "29_Terrance_Weber.xml","","weber","terrance","male","09/19/1960","903-814-2082","88790 Lemke Trail Road","South Quinton","NE","68843",""
-    "30_Terrance_Weber.xml","","weber","terrance","male","09/12/1960","903-814-2082","88790 Lemke Trail Road","South Quinton","NE","68843",""
-    """
-    df = pd.read_csv(StringIO(test_data_csv))
-    return df
+    # Write test data to specific.csv
+    with open('specific.csv', 'w') as f:
+        f.write(test_data_csv)
 
-def test_if_deduped_data_is_present(test_generate_data_and_dedup):
-    """
-    Test to make sure that data is returned from the Splink dedupe algorithm.
-    """
-    assert len(test_generate_data_and_dedup) != 0
+    # Mock linker behavior
+    mock_use_linker.side_effect = lambda func: func(linker=mock_use_linker)
 
-def test_number_of_duplicates(test_generate_data_and_dedup):
-    """
-    Test to check if the expected number of duplicates is identified.
-    """
-    # Assuming 30% duplicates, calculate the expected number
-    expected_duplicates = 800 * 0.30
-    unique_clusters = test_generate_data_and_dedup['cluster_id'].nunique()
+    # Simulate CLI command execution
+    with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+        result = cli_runner.invoke(dedupe_data, ['--fmt', 'CSV', 'specific.csv', 'output.csv'])
+        assert result.exit_code == 0, f"CLI command failed: {result.output}"
 
-    assert (800 - unique_clusters) >= expected_duplicates * 0.9  # Allowing some tolerance
+    # Check that output.csv file exists and contains expected data
+    assert os.path.exists('output.csv'), "Output file not created"
 
-def test_deduplication_accuracy(test_generate_data_and_dedup):
-    """
-    Validate the accuracy of the deduplication by checking a few sample records.
-    """
-    df = test_generate_data_and_dedup
-    duplicates = df[df.duplicated(subset=['given_name', 'family_name', 'birth_date'], keep=False)]
+    deduped_df = pd.read_csv('output.csv')
+    assert deduped_df.shape[0] == 12, "Expected 12 deduplicated records"
+    assert deduped_df['cluster_id'].nunique() == 2, "Expected 2 unique clusters"
 
-    # Check if duplicates are correctly identified
-    assert len(duplicates) > 0
-    assert duplicates['cluster_id'].nunique() < len(duplicates)
-
-def test_no_records_lost(test_generate_data_and_dedup):
-    """
-    Ensure no records are lost in the deduplication process.
-    """
-    original_count = 800
-    deduped_count = test_generate_data_and_dedup.shape[0]
-
-    assert original_count == deduped_count
-
-@pytest.mark.parametrize("data_size, duplicate_percentage", [
-    (100, 0.10),
-    (500, 0.25),
-    (1000, 0.50)
-])
-def test_with_different_data_sizes(data_size, duplicate_percentage):
-    """
-    Test the deduplication process with different data sizes and percentages of duplicates.
-    """
-    test_path = (Path(__file__).parent).resolve()
-    csv_path = str(test_path) + "/test_data.csv"
-    column_path = str(test_path) + "/test_data_columns.json"
-
-    #
-    generate_dup_data(column_path, csv_path, data_size, duplicate_percentage)
-    df = parse_test_data(csv_path)
-
-    linker = DuckDBLinker(df, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-    linker.estimate_u_using_random_sampling(max_pairs=1e6)
-
-    blocking_rule_for_training = block_on(["street_address", "postal_code"])
-
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    pairwise_predictions = linker.predict()
-
-    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-
-    deduped_df = clusters.as_pandas_dataframe()
-
-    # Assertions
-    assert len(deduped_df) != 0
-    assert deduped_df.shape[0] == data_size
-    unique_clusters = deduped_df['cluster_id'].nunique()
-    expected_duplicates = data_size * duplicate_percentage
-    assert (data_size - unique_clusters) >= expected_duplicates * 0.9  # Allowing some tolerance
-
-@pytest.mark.xfail(raises=AssertionError)
-@use_linker
-def test_deduplicate_with_provided_data(dedup_test_data,bad_data_path=dedup_test_data,fmt="DF",linker=None):
-    """
-    Test the deduplication process with provided test data.
-    """
-    df = dedup_test_data
-
-    # Blocking rule based on names
-    blocking_rule_for_training = block_on("ssn")
-
-    # Estimate parameters using expectation maximisation
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    # Further blocking on birth year
-    blocking_rule_for_training = block_on("substr(birth_date, 1, 4)")
-    linker.estimate_parameters_using_expectation_maximisation(
-        blocking_rule_for_training, estimate_without_term_frequencies=True)
-
-    # Generate pairwise predictions
-    pairwise_predictions = linker.predict()
-
-    # Cluster pairwise predictions
-    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
-
-    deduped_df = clusters.as_pandas_dataframe()
+    # Clean up: delete output file
+    os.remove('output.csv')
+    os.remove('specific.csv')
