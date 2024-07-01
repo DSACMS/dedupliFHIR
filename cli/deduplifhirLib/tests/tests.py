@@ -11,8 +11,8 @@ from click.testing import CliRunner
 from unittest.mock import patch
 from splink.duckdb.linker import DuckDBLinker
 from splink.duckdb.blocking_rule_library import block_on
-from deduplifhirLib.duplicate_data_generator import generate_dup_data
-from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE
+from cli.deduplifhirLib.tests.duplicate_data_generator import generate_dup_data
+from cli.deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE
 from deduplifhirLib.utils import parse_test_data, use_linker
 from cli.ecqm_dedupe import dedupe_data
 
@@ -20,7 +20,7 @@ from cli.ecqm_dedupe import dedupe_data
 @pytest.fixture
 def mock_use_linker():
     """
-    Fixture to mock the use_linker decorator and return a mock linker object.
+    Fixture to mock051097685555283e the use_linker decorator and return a mock linker object.
     """
     with patch('deduplifhirLib.utils') as mock_use_linker:
         mock_linker = mock_use_linker.return_value.__enter__.return_value
@@ -41,7 +41,7 @@ def test_dedupe_data_with_csv_output(mock_use_linker, cli_runner):
     mock_use_linker.side_effect = lambda func: func(linker=mock_use_linker)
 
     # Prepare test data paths
-    bad_data_path = 'deduplifhirLib/test_data.csv'
+    bad_data_path = 'deduplifhirLib/tests/test_data.csv'
     output_path = 'output.csv'
     print(os.getcwd())
     # Simulate CLI command execution

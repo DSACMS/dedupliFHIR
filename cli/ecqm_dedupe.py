@@ -26,6 +26,7 @@ def cli():
 def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=unused-argument
     """Program to dedupe patient data in many formats namely FHIR and QRDA"""
 
+    print(os.getcwd())
     #linker is created by use_linker decorator
     blocking_rule_for_training = block_on("ssn")
     linker.estimate_parameters_using_expectation_maximisation(
