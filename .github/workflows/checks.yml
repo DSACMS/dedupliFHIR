@@ -22,7 +22,7 @@ jobs:
         run: poetry install --no-interaction
       - name: Run tests
         working-directory: ./cli
-        run: poetry run python -m pytest deduplifhirLib/tests/tests.py
+        run: poetry run python -m pytest deduplifhirLib/tests/
   run-pylint:
     name: runner / pylint
     permissions: write-all
