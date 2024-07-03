@@ -86,9 +86,9 @@ def generate_temp_files(config, fake_gen):
     """
 
     tmp_dir = './temp'
-    
+
     with Pool(config['cpus']) as pool:
-        
+
         create_temp_directory(tmp_dir)
 
         batch_size = config['batch_size']
@@ -97,7 +97,8 @@ def generate_temp_files(config, fake_gen):
 
         for _ in range(num_batches):
             pool.apply_async(
-                create_fake_data_file, args = (config, fake_gen, tmp_dir, batch_size, remaining_rows))
+                create_fake_data_file, args = (
+                    config, fake_gen, tmp_dir, batch_size, remaining_rows))
         pool.close()
         pool.join()
     return tmp_dir

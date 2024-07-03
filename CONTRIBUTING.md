@@ -68,7 +68,7 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 <!--- TODO -->
 This project uses pytest as the main testing framework for the project's cli. 
 
-Python tests can be found in the `cli/deduplifhirLib/tests.py`. Any new testing
+Python tests can be found in the `cli/deduplifhirLib/tests/main_test.py`. Any new testing
 contributions are greatly appreciated and needed to ensure quality of any interpreted
 language project. 
 
