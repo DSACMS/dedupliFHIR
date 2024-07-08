@@ -79,6 +79,9 @@ jobs:
 
       - name: Check code style
         run: npm run prettier
-      
+
+      - name: Install dependencies for tests
+        run: npx playwright install --with-deps chromium
+
       - name: Run frontend tests
-        run: npm test
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm test
