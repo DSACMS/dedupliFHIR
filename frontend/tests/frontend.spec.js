@@ -92,7 +92,7 @@ test("upload file and submit", async () => {
 
   const fileDropper = await window.locator("input[type='file']");
 
-  await fileDropper.setInputFiles("../cli/deduplifhirLib/test_data.csv");
+  await fileDropper.setInputFiles("../cli/deduplifhirLib/tests/test_data.csv");
   // OR, put a custom test file in frontend/tests/
   // await fileDropper.setInputFiles("tests/test_data.csv");
 
