@@ -52,27 +52,27 @@ test("window title", async () => {
 test("UI elements present", async () => {
   // Check for content
   const content = await window.locator("div.content");
-  await expect(content).not.toBeNull();
+  expect(content).not.toBeNull();
   expect(content.locator("h1")).toHaveText("DedupliFHIR");
   await window.waitForSelector("h2");
   expect(content.locator("h2")).toHaveText("Upload Patient Records File");
 
   // Check for file dropper
   const fileDropper = await window.locator("input[type='file']");
-  await expect(fileDropper).not.toBeNull();
-  await expect(fileDropper).toHaveId("file-input-specific");
-  await expect(fileDropper).toHaveAttribute("accept", ".json,.csv");
+  expect(fileDropper).not.toBeNull();
+  expect(fileDropper).toHaveId("file-input-specific");
+  expect(fileDropper).toHaveAttribute("accept", ".json,.csv");
 
   // Check for dropdown
   const dropdown = await window.locator("select");
-  await expect(dropdown).not.toBeNull();
-  await expect(dropdown).toHaveId("options");
-  await expect(dropdown).toHaveClass("usa-select");
+  expect(dropdown).not.toBeNull();
+  expect(dropdown).toHaveId("options");
+  expect(dropdown).toHaveClass("usa-select");
 
   // Check for submit button
   const submitButton = await window.locator("button[type='button']");
-  await expect(submitButton).not.toBeNull();
-  await expect(submitButton).toHaveId("submit");
+  expect(submitButton).not.toBeNull();
+  expect(submitButton).toHaveId("submit");
 });
 
 test("submit without uploading file", async () => {
@@ -80,8 +80,8 @@ test("submit without uploading file", async () => {
   await submitButton.click();
 
   const alert = await window.locator("#file-input-alert");
-  await expect(alert).not.toBeNull();
-  await expect(alert.locator("p")).toHaveText(
+  expect(alert).not.toBeNull();
+  expect(alert.locator("p")).toHaveText(
     "File not found. Please upload a file.",
   );
 });
@@ -101,13 +101,13 @@ test("upload file and submit", async () => {
 
   await window.waitForSelector("div.loader");
   const loader = await window.locator("div.loader");
-  await expect(loader).not.toBeNull();
+  expect(loader).not.toBeNull();
 });
 
 test("finished results present", async () => {
   await window.waitForSelector("div.content");
   const content = await window.locator("div.content");
-  await expect(content).not.toBeNull();
+  expect(content).not.toBeNull();
   expect(content.locator("h1")).toHaveText("DedupliFHIR");
 
   // Wait for results
@@ -124,7 +124,7 @@ test("finished results present", async () => {
 
 test("download file", async () => {
   const downloadButton = await window.locator("#download");
-  await expect(downloadButton).not.toBeNull();
+  expect(downloadButton).not.toBeNull();
 
   // cannot test download per https://github.com/microsoft/playwright/issues/5013
   // https://stackoverflow.com/questions/75100861/electron-e2e-with-playwright-how-to-get-hold-of-the-file-saver-window-unable
@@ -132,8 +132,8 @@ test("download file", async () => {
 
   // await window.waitForSelector("#download-success-alert");
   // const successAlert = await window.locator("#download-success-alert");
-  // await expect(successAlert).not.toBeNull();
-  // await expect(successAlert.locator("p")).toHaveText(
+  // expect(successAlert).not.toBeNull();
+  // expect(successAlert.locator("p")).toHaveText(
   // "Results file downloaded!",
   // );
 
@@ -146,14 +146,14 @@ test("download file", async () => {
 
 test("return home", async () => {
   const homeButton = await window.locator("a[href='../index.html']");
-  await expect(homeButton).not.toBeNull();
+  expect(homeButton).not.toBeNull();
   await homeButton.click();
 
   await window.waitForSelector("div.content");
 
   // Check for content
   const content = await window.locator("div.content");
-  await expect(content).not.toBeNull();
+  expect(content).not.toBeNull();
   expect(content.locator("h1")).toHaveText("DedupliFHIR");
   await window.waitForSelector("h2");
   expect(content.locator("h2")).toHaveText("Upload Patient Records File");
