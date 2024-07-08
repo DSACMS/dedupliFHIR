@@ -91,7 +91,10 @@ test("upload file and submit", async () => {
   await window.setViewportSize({ width: 1000, height: 3000 });
 
   const fileDropper = await window.locator("input[type='file']");
-  await fileDropper.setInputFiles("tests/test_data.csv");
+
+  await fileDropper.setInputFiles("../cli/deduplifhirLib/test_data.csv");
+  // OR, put a custom test file in frontend/tests/
+  // await fileDropper.setInputFiles("tests/test_data.csv");
 
   const submitButton = await window.locator("button[type='button']");
   await submitButton.click();
@@ -108,7 +111,9 @@ test("finished results present", async () => {
   expect(content.locator("h1")).toHaveText("DedupliFHIR");
 
   // Wait for results
-  await window.waitForSelector("h2");
+  await window.waitForSelector("h2", {
+    timeout: 1000 * 60 * 2, // two minutes
+  });
   expect(content.locator("h2")).toHaveText("Results");
   expect(content.locator("a[href='../index.html']")).not.toBeNull();
   expect(content.locator("#download")).not.toBeNull();
