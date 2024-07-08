@@ -79,3 +79,6 @@ jobs:
 
       - name: Check code style
         run: npm run prettier
+      
+      - name: Run frontend tests
+        run: npm test
