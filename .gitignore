@@ -54,6 +54,8 @@ coverage.xml
 .pytest_cache
 *.cover
 .hypothesis/
+frontend/tests/screenshots/
+frontend/test-results/.last-run.json
 
 # pyenv
 .python-version
