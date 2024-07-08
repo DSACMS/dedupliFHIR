@@ -84,4 +84,4 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run frontend tests
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm test
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x9960x24" -- npm test
