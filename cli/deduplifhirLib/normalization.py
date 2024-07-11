@@ -3,6 +3,72 @@ Module of functions that help to normalize fields of parsed patient data.
 """
 import re
 
+abbreviations = {
+    'USA': 'United States',
+    'GB': 'Great Britain',
+    'St.': 'Street',
+    'Ave.': 'Avenue',
+    'Blvd.': 'Boulevard',
+    'Rd.': 'Road',
+    'Dr.': 'Drive',
+    'Ln.': 'Lane',
+    'Ct.': 'Court',
+    'Pl.': 'Place',
+    'Sq.': 'Square',
+    'Pkwy.': 'Parkway',
+    'Cir.': 'Circle',
+    'Terr.': 'Terrace',
+    'Hwy.': 'Highway',
+    'Mt.': 'Mount',
+    'Ft.': 'Fort',
+    'Pk.': 'Park',
+    'Apt.': 'Apartment',
+    'Bldg.': 'Building',
+    'Fl.': 'Floor',
+    'Ste.': 'Suite',
+    'Rte.': 'Route',
+    'N.': 'North',
+    'S.': 'South',
+    'E.': 'East',
+    'W.': 'West',
+    'NE.': 'Northeast',
+    'NW.': 'Northwest',
+    'SE.': 'Southeast',
+    'SW.': 'Southwest',
+    'Co.': 'County',
+    'Jct.': 'Junction',
+    'P.O.': 'Post Office',
+    'dept.': 'department',
+    'bldg.': 'building',
+    'rm.': 'room',
+    'ltd.': 'limited',
+    'co.': 'company',
+    'corp.': 'corporation',
+    'inc.': 'incorporated',
+    'intl.': 'international',
+    'u.k.': 'United Kingdom',
+    'u.s.': 'United States',
+    'apt.': 'apartment',
+    'ph.': 'phone',
+    'fax.': 'fax',
+    'mgr.': 'manager',
+    'asst.': 'assistant',
+    'dept.': 'department',
+    'assoc.': 'association',
+    'edu.': 'education',
+    'univ.': 'university',
+    'inst.': 'institute',
+    'natl.': 'national',
+    'am.': 'american',
+    'eur.': 'european',
+    'intl.': 'international',
+    'org.': 'organization',
+    'conf.': 'conference',
+    'symp.': 'symposium'
+}
+
+
+
 
 
 def remove_punctuation(text):
@@ -47,3 +113,11 @@ if __name__ == "__main__":
     normalized_text = british_to_american(text)
     print(normalized_text)  
     # Output: The rumor about the tumor was unfounded. He had to realize that the catalog was necessary for the defense at the center.
+    # Example usage
+    text = "The address is 123 St. James Ave., Apt. 4B, New York, NY, USA."
+    for abbr, full in abbreviations.items():
+        text = re.sub(r'\b' + re.escape(abbr) + r'\b', full, text)
+
+    print(text)
+    # Output: The address is 123 Street James Avenue, Apartment 4B, New York, NY, United States.
+
