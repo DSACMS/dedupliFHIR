@@ -88,7 +88,7 @@ in particular situations. Further information on PEP8 can be found [here.](https
 
 This project also uses pylint as the main linter for the moment and employs pylint checks upon new pull
 requests into protected branches. Python code quality checks are extremely useful for lowering the
-cost of maintenence of Python projects. Further information on Pylint can be found [here.](https://pylint.readthedocs.io/en/latest/)
+cost of maintenance of Python projects. Further information on Pylint can be found [here.](https://pylint.readthedocs.io/en/latest/)
 
 ### Issues
 
