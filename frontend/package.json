@@ -12,7 +12,7 @@
     "lint:fix": "eslint --quiet --fix \"**.js\"",
     "prettier": "prettier --check ./**.{js,css}",
     "prettier:fix": "prettier --write \"./**.{js,css}\"",
-    "test": "npx playwright test",
+    "test": "playwright test --timeout=120000",
     "pack": "electron-builder --dir",
     "dist": "cd .. && make dist"
   },

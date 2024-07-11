@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const { test, expect, _electron: electron } = require("@playwright/test");
 
 let electronApp;
@@ -11,11 +13,15 @@ test.beforeAll(async () => {
   window = await electronApp.firstWindow();
 
   // Take initial screenshot
-  await window.screenshot({ path: "tests/screenshots/intro.png" });
+  await window.screenshot({
+    path: path.resolve(__dirname, "screenshots", "intro.png"),
+  });
 });
 
 test.afterAll(async () => {
-  await window.screenshot({ path: "tests/screenshots/final.png" });
+  await window.screenshot({
+    path: path.resolve(__dirname, "screenshots", "final.png"),
+  });
   await window.context().close();
   await window.close();
   await electronApp.close();
@@ -36,8 +42,6 @@ test("start app", async () => {
     // the result of the require('electron') in the main app script.
     return app.getAppPath();
   });
-
-  console.log(appPath);
 });
 
 test("window title", async () => {
@@ -92,7 +96,17 @@ test("upload file and submit", async () => {
 
   const fileDropper = await window.locator("input[type='file']");
 
-  await fileDropper.setInputFiles("../cli/deduplifhirLib/tests/test_data.csv");
+  await fileDropper.setInputFiles(
+    path.resolve(
+      __dirname,
+      "..",
+      "..",
+      "cli",
+      "deduplifhirLib",
+      "tests",
+      "test_data.csv",
+    ),
+  );
   // OR, put a custom test file in frontend/tests/
   // await fileDropper.setInputFiles("tests/test_data.csv");
 
@@ -126,22 +140,24 @@ test("download file", async () => {
   const downloadButton = await window.locator("#download");
   expect(downloadButton).not.toBeNull();
 
-  // cannot test download per https://github.com/microsoft/playwright/issues/5013
-  // https://stackoverflow.com/questions/75100861/electron-e2e-with-playwright-how-to-get-hold-of-the-file-saver-window-unable
-  // await downloadButton.click();
+  // https://stackoverflow.com/a/75966734
+  const xlsxPath = path.join(
+    __dirname,
+    "downloads",
+    "deduped_record_mapping.xlsx",
+  );
+  await electronApp.evaluate(async ({ dialog }, xlsxPath) => {
+    dialog.showSaveDialog = () =>
+      Promise.resolve({ filePath: xlsxPath, canceled: false });
+  }, xlsxPath);
+  await downloadButton.click();
 
-  // await window.waitForSelector("#download-success-alert");
-  // const successAlert = await window.locator("#download-success-alert");
-  // expect(successAlert).not.toBeNull();
-  // expect(successAlert.locator("p")).toHaveText(
-  // "Results file downloaded!",
-  // );
+  await window.waitForSelector("#download-success-alert");
+  const successAlert = await window.locator("#download-success-alert");
+  expect(successAlert).not.toBeNull();
+  expect(successAlert.locator("p")).toHaveText("Results file downloaded!");
 
-  // const download = window.waitForEvent("download");
-  // expect(download.suggestedFilename()).toBe("deduped_record_mapping.xlsx");
-  // expect((await fs.promises.stat(await download.path())).size).toBeGreaterThan(
-  // 200,
-  // );
+  expect((await fs.promises.stat(xlsxPath)).size).toBeGreaterThan(100 * 1024); // file size should be > 100 KB
 });
 
 test("return home", async () => {

@@ -55,6 +55,7 @@ coverage.xml
 *.cover
 .hypothesis/
 frontend/tests/screenshots/
+frontend/tests/downloads/
 frontend/test-results/.last-run.json
 
 # pyenv
