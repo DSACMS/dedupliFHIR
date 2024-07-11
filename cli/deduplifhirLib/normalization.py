@@ -3,7 +3,7 @@ Module of functions that help to normalize fields of parsed patient data.
 """
 import re
 
-NAME_ABREVIATION_SYMBOLS = {
+NAME_ABBREVIATION_SYMBOLS = {
     ' Jr. ': 'Junior',
     ' Sr. ': 'Senior',
     ' Dr. ': 'Doctor',
@@ -220,7 +220,7 @@ REPLACE_PLACE_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
 
 REPLACE_PROPER_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
     add_permutations_to_dict_pattern(
-        NAME_ABREVIATION_SYMBOLS
+        NAME_ABBREVIATION_SYMBOLS
     )
 )
 
@@ -304,7 +304,7 @@ def normalize_name_text(input_text):
     text_copy = british_to_american(text_copy)
     #Replace abbreviations that occur in place names
     text_copy = replace_abbreviations(
-        text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN,symbols=NAME_ABREVIATION_SYMBOLS
+        text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN,symbols=NAME_ABBREVIATION_SYMBOLS
         )
     text_copy = remove_punctuation(text_copy)
     return text_copy.lower()
