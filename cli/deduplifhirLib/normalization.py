@@ -225,7 +225,7 @@ REPLACE_PROPER_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
 )
 
 
-def replace_abbreviations(input_text,pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN):
+def replace_abbreviations(input_text,pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN,symbols=PLACE_ABBREVIATION_SYMBOLS):
     """
     Normalizes common abbreviations with a pre-compiled regular expression.
 
@@ -237,7 +237,7 @@ def replace_abbreviations(input_text,pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN)
     """
     # Define a function to use as the replacement argument in re.sub
     def replacer(match):
-        return " " + PLACE_ABBREVIATION_SYMBOLS[match.group(0)] + " "
+        return " " + symbols[match.group(0)] + " "
 
     # Use re.sub with the REPLACE_PLACE_NAME_SYMBOLS_PATTERN
     #  and replacer function to replace abbreviations
@@ -303,7 +303,9 @@ def normalize_name_text(input_text):
     text_copy = input_text
     text_copy = british_to_american(text_copy)
     #Replace abbreviations that occur in place names
-    text_copy = replace_abbreviations(text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN)
+    text_copy = replace_abbreviations(
+        text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN,symbols=NAME_ABREVIATION_SYMBOLS
+        )
     text_copy = remove_punctuation(text_copy)
     return text_copy.lower()
 
