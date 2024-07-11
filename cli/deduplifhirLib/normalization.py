@@ -165,6 +165,20 @@ PLACE_ABBREVIATION_SYMBOLS = {
 }
 
 def add_permutations_to_dict_pattern(symbol_dict):
+    """
+    Add permutations of the keys from a dict and map them to the same value
+    as the original key. 
+
+    For example we make every key also match to its lowercase version,
+    as well as mapping to the version with punctuation and proper spaces. 
+
+
+    Arguments:
+        symbol_dict: dictionary of symbols to add permutations to 
+    
+    Returns:
+        Expanded version of dict input
+    """
     #Add some permutations to the dictionary manually once
     abvs = list(symbol_dict.keys())
     for key in abvs:
@@ -176,13 +190,26 @@ def add_permutations_to_dict_pattern(symbol_dict):
         if key[-1] == '.':
             symbol_dict[key[:-2] + ' '] = symbol_dict[key]
             symbol_dict[key[:-2] + ', '] = symbol_dict[key]
-    
+
     return symbol_dict
 
 
 def compile_abbreviation_map_regex(symbol_dict):
+    """
+    Compile a regular expression that converts the dictionary pattern into a 
+    regex that matches and replaces every instance of the keys found in the dict
+    with their proper normalized values.
 
-    # Create a regex REPLACE_PLACE_NAME_SYMBOLS_PATTERN that matches any of the keys in the abbreviation dictionary
+
+    Arguments:
+        symbol_dict: dictionary of symbols to replace
+    
+    Returns:
+        Regex pattern object.
+    """
+
+    # Create a regex REPLACE_PLACE_NAME_SYMBOLS_PATTERN that matches any of the
+    #  keys in the abbreviation dictionary
     return re.compile('|'.join(re.escape(key) for key in symbol_dict.keys()))
 
 REPLACE_PLACE_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
@@ -198,12 +225,12 @@ REPLACE_PROPER_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
 )
 
 
-def replace_abbreviations(text,pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN):
+def replace_abbreviations(input_text,pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN):
     """
     Normalizes common abbreviations with a pre-compiled regular expression.
 
     Arguments:
-        text: the text to remove the abbreviations from.
+        input_text: the input_text to remove the abbreviations from.
 
     Returns:
         The input string without the abbreviations.
@@ -211,56 +238,98 @@ def replace_abbreviations(text,pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN):
     # Define a function to use as the replacement argument in re.sub
     def replacer(match):
         return " " + PLACE_ABBREVIATION_SYMBOLS[match.group(0)] + " "
-    
-    # Use re.sub with the REPLACE_PLACE_NAME_SYMBOLS_PATTERN and replacer function to replace abbreviations
-    return pattern.sub(replacer, text)
+
+    # Use re.sub with the REPLACE_PLACE_NAME_SYMBOLS_PATTERN
+    #  and replacer function to replace abbreviations
+    return pattern.sub(replacer, input_text)
 
 
-def remove_punctuation(text):
+def remove_punctuation(input_text):
     """
     Removes punctuation from the given string.
 
     Arguments:
-        text: the text to remove the punctuation from
+        input_text: the input_text to remove the punctuation from
     
 
     Returns:
         The input string without punctuation
     """
-    symbols_to_remove = ".?!;:\'\""
-    text_copy = text
+    symbols_to_remove = ".,?!;:\'\""
+    text_copy = input_text
 
     for symbol in symbols_to_remove:
         text_copy = text_copy.replace(symbol,'')
     return text_copy
 
 
-def british_to_american(text):
-    # Convert British "-our" endings to American "-or" endings
-    text = re.sub(r'(\b\w+?)our\b', r'\1or', text)
-    # Convert British "-ise" endings to American "-ize" endings
-    text = re.sub(r'(\b\w+?)ise\b', r'\1ize', text)
-    # Convert British "-yse" endings to American "-yze" endings
-    text = re.sub(r'(\b\w+?)yse\b', r'\1yze', text)
-    # Convert British "-ce" endings to American "-se" endings (e.g., defence to defense)
-    text = re.sub(r'(\b\w+?)ce\b', r'\1se', text)
-    # Convert British "-ogue" endings to American "-og" endings (e.g., catalogue to catalog)
-    text = re.sub(r'(\b\w+?)ogue\b', r'\1og', text)
-    # Convert British "centre" to American "center"
-    text = re.sub(r'\bcentre\b', 'center', text)
-    return text
+def british_to_american(input_text):
+    """
+    Removes punctuation from the given string.
 
+    Arguments:
+        input_text: the input_text to replace british spellings of
+    
+
+    Returns:
+        The input string without british spellings
+    """
+    # Convert British "-our" endings to American "-or" endings
+    input_text = re.sub(r'(\b\w+?)our\b', r'\1or', input_text)
+    # Convert British "-ise" endings to American "-ize" endings
+    input_text = re.sub(r'(\b\w+?)ise\b', r'\1ize', input_text)
+    # Convert British "-yse" endings to American "-yze" endings
+    input_text = re.sub(r'(\b\w+?)yse\b', r'\1yze', input_text)
+    # Convert British "-ce" endings to American "-se" endings (e.g., defence to defense)
+    input_text = re.sub(r'(\b\w+?)ce\b', r'\1se', input_text)
+    # Convert British "-ogue" endings to American "-og" endings (e.g., catalogue to catalog)
+    input_text = re.sub(r'(\b\w+?)ogue\b', r'\1og', input_text)
+    # Convert British "centre" to American "center"
+    input_text = re.sub(r'\bcentre\b', 'center', input_text)
+    return input_text
+
+
+def normalize_name_text(input_text):
+    """
+    Normalizes the given name string
+
+    Arguments:
+        input_text: the input_text to normalize
+    
+
+    Returns:
+        The normalized string
+    """
+    text_copy = input_text
+    text_copy = british_to_american(text_copy)
+    #Replace abbreviations that occur in place names
+    text_copy = replace_abbreviations(text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN)
+    text_copy = remove_punctuation(text_copy)
+    return text_copy.lower()
+
+def normalize_addr_text(input_text):
+    """
+    Normalizes the given address string
+
+    Arguments:
+        input_text: the input_text to normalize
+    
+
+    Returns:
+        The normalized string
+    """
+    text_copy = input_text
+    text_copy = british_to_american(text_copy)
+    text_copy = replace_abbreviations(text_copy)
+    text_copy = remove_punctuation(text_copy)
+
+    return text_copy.lower()
 
 if __name__ == "__main__":
 
-    # Example usage
-    text = "The rumour about the tumour was unfounded. He had to realise that the catalogue was necessary for the defence at the centre."
-    normalized_text = british_to_american(text)
-    print(normalized_text)  
-    # Output: The rumor about the tumor was unfounded. He had to realize that the catalog was necessary for the defense at the center.
-    # Example usage
-    text = "The address is 123 Street James Ave., Apt. 4B, New York, NY, USA. Saint Louis"
+    NAME_TEXT = "Greene,Jacquleine"
+    print(normalize_name_text(NAME_TEXT))
 
-    print(replace_abbreviations(text))
-    # Output: The address is 123 St. James Avenue, Apartment 4B, New York, NY, United States. St. Louis
+    PLACE_TEXT = "7805 Kartina Motorawy Apt. 313,Taylorstad,New Hampshire"
 
+    print(normalize_addr_text(PLACE_TEXT))
