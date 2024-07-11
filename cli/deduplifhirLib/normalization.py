@@ -3,7 +3,7 @@ Module of functions that help to normalize fields of parsed patient data.
 """
 import re
 
-abbreviations = {
+ABREVATION_SYMBOLS = {
     'USA': 'United States',
     'GB': 'Great Britain',
     'St.': 'Street',
@@ -53,7 +53,7 @@ abbreviations = {
     'fax.': 'fax',
     'mgr.': 'manager',
     'asst.': 'assistant',
-    'dept.': 'department',
+    'dept': 'department',
     'assoc.': 'association',
     'edu.': 'education',
     'univ.': 'university',
@@ -61,7 +61,7 @@ abbreviations = {
     'natl.': 'national',
     'am.': 'american',
     'eur.': 'european',
-    'intl.': 'international',
+    'intl': 'international',
     'org.': 'organization',
     'conf.': 'conference',
     'symp.': 'symposium'
@@ -115,8 +115,8 @@ if __name__ == "__main__":
     # Output: The rumor about the tumor was unfounded. He had to realize that the catalog was necessary for the defense at the center.
     # Example usage
     text = "The address is 123 St. James Ave., Apt. 4B, New York, NY, USA."
-    for abbr, full in abbreviations.items():
-        text = re.sub(r'\b' + re.escape(abbr) + r'\b', full, text)
+    for abbr, full in ABREVATION_SYMBOLS.items():
+        text = text.replace(abbr,full)#re.sub(r'\b' + re.escape(abbr) + r'\b', full, text)
 
     print(text)
     # Output: The address is 123 Street James Avenue, Apartment 4B, New York, NY, United States.
