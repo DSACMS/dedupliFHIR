@@ -23,6 +23,7 @@ from splink.duckdb.blocking_rule_library import block_on
 dir_path = os.path.dirname(os.path.realpath(__file__))
 with open(dir_path + '/splink_settings.json',"r",encoding="utf-8") as f:
     SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = json.load(f)
+from deduplifhirLib.normalization import normalize_addr_text, normalize_name_text
 
 
 SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE.update({
@@ -66,14 +67,14 @@ def read_fhir_data(patient_record_path):
 
     patient_dict = {
         "unique_id": uuid.uuid4().int,
-        "family_name": [patient_json_record['entry'][0]['resource']['name'][0]['family']],
-        "given_name": [patient_json_record['entry'][0]['resource']['name'][0]['given'][0]],
+        "family_name": [normalize_name_text(patient_json_record['entry'][0]['resource']['name'][0]['family'])],
+        "given_name": [normalize_name_text(patient_json_record['entry'][0]['resource']['name'][0]['given'][0])],
         "gender": [patient_json_record['entry'][0]['resource']['gender']],
         "birth_date": patient_json_record['entry'][0]['resource']['birthDate'],
         "phone": [patient_json_record['entry'][0]['resource']['telecom'][0]['value']],
-        "street_address": [patient_json_record['entry'][0]['resource']['address'][0]['line'][0]],
-        "city": [patient_json_record['entry'][0]['resource']['address'][0]['city']],
-        "state": [patient_json_record['entry'][0]['resource']['address'][0]['state']],
+        "street_address": [normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['line'][0])],
+        "city": [normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['city'])],
+        "state": [normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['state'])],
         "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']],
         "ssn": [patient_json_record['entry'][0]['resource']['identifier'][1]['value']],
         "path": patient_record_path
