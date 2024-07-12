@@ -45,7 +45,7 @@
     "prettier": "^3.2.5"
   },
   "dependencies": {
-    "@uswds/uswds": "3.7.1",
+    "@uswds/uswds": "3.8.1",
     "fs-extra": "^11.2.0",
     "python-shell": "^5.0.0"
   }
