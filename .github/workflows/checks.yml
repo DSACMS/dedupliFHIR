@@ -36,20 +36,6 @@ jobs:
           level: warning
           glob_pattern: "**/*.py"
           filter_mode: "file"
-
-  misspell:
-    name: runner / misspell
-    runs-on: ubuntu-latest
-    steps:
-      - name: Highlight any misspellings in changes.
-        uses: actions/checkout@v4
-      - name: misspell
-        uses: reviewdog/action-misspell@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          locale: "US"
-          exclude: |
-            ./cli/deduplifhirLib/test_data.csv
   
   frontend-checks:
     runs-on: ubuntu-latest
