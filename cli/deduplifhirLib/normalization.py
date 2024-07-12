@@ -305,7 +305,7 @@ def normalize_name_text(input_text):
         The normalized string
     """
     text_copy = input_text
-    text_copy = british_to_american(text_copy)
+    #text_copy = british_to_american(text_copy) Not needed 
     #Replace abbreviations that occur in place names
     text_copy = replace_abbreviations(
         text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN,symbols=NAME_ABBREVIATION_SYMBOLS
@@ -325,7 +325,7 @@ def normalize_addr_text(input_text):
         The normalized string
     """
     text_copy = input_text
-    text_copy = british_to_american(text_copy)
+    #text_copy = british_to_american(text_copy) not needed
     text_copy = replace_abbreviations(text_copy)
     text_copy = remove_punctuation(text_copy)
 
