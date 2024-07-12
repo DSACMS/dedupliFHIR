@@ -248,7 +248,7 @@ def replace_abbreviations(
     return pattern.sub(replacer, input_text)
 
 
-def remove_punctuation(input_text):
+def remove_non_alphanum(input_text):
     """
     Removes punctuation from the given string.
 
@@ -259,13 +259,9 @@ def remove_punctuation(input_text):
     Returns:
         The input string without punctuation
     """
-    symbols_to_remove = ".,?!;:\'\""
-    text_copy = input_text
+    #symbols_to_remove = ".,?!;:\'\""
 
-    for symbol in symbols_to_remove:
-        text_copy = text_copy.replace(symbol,'')
-    return text_copy
-
+    return re.sub(r'[^a-zA-Z0-9]', '', input_text)
 
 def british_to_american(input_text):
     """
@@ -310,7 +306,7 @@ def normalize_name_text(input_text):
     text_copy = replace_abbreviations(
         text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN,symbols=NAME_ABBREVIATION_SYMBOLS
         )
-    text_copy = remove_punctuation(text_copy)
+    text_copy = remove_non_alphanum(text_copy)
     return text_copy.lower()
 
 def normalize_addr_text(input_text):
@@ -327,7 +323,7 @@ def normalize_addr_text(input_text):
     text_copy = input_text
     #text_copy = british_to_american(text_copy) not needed
     text_copy = replace_abbreviations(text_copy)
-    text_copy = remove_punctuation(text_copy)
+    text_copy = remove_non_alphanum(text_copy)
 
     return text_copy.lower()
 
