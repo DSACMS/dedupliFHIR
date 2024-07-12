@@ -67,14 +67,26 @@ def read_fhir_data(patient_record_path):
 
     patient_dict = {
         "unique_id": uuid.uuid4().int,
-        "family_name": [normalize_name_text(patient_json_record['entry'][0]['resource']['name'][0]['family'])],
-        "given_name": [normalize_name_text(patient_json_record['entry'][0]['resource']['name'][0]['given'][0])],
+        "family_name": [
+            normalize_name_text(patient_json_record['entry'][0]['resource']['name'][0]['family'])
+        ],
+        "given_name": [
+            normalize_name_text(patient_json_record['entry'][0]['resource']['name'][0]['given'][0])
+        ],
         "gender": [patient_json_record['entry'][0]['resource']['gender']],
         "birth_date": patient_json_record['entry'][0]['resource']['birthDate'],
         "phone": [patient_json_record['entry'][0]['resource']['telecom'][0]['value']],
-        "street_address": [normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['line'][0])],
-        "city": [normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['city'])],
-        "state": [normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['state'])],
+        "street_address": [
+            normalize_addr_text(
+                patient_json_record['entry'][0]['resource']['address'][0]['line'][0]
+            )
+        ],
+        "city": [
+            normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['city'])
+        ],
+        "state": [
+            normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['state'])
+        ],
         "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']],
         "ssn": [patient_json_record['entry'][0]['resource']['identifier'][1]['value']],
         "path": patient_record_path
