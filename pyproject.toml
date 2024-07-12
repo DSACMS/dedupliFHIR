@@ -17,7 +17,7 @@ lxml = "^5.2.2"
 pyarrow = "^16.1.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.10.0"
+black = "^24.4.2"
 flake8 = "^5.0.4"
 isort = "^5.10.1"
 
