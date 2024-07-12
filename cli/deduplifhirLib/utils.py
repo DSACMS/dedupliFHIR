@@ -15,10 +15,26 @@ from functools import wraps
 import pandas as pd
 from splink.duckdb.linker import DuckDBLinker
 
-from deduplifhirLib.settings import SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, read_fhir_data
+from deduplifhirLib.settings import (
+    SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, BLOCKING_RULE_STRINGS, read_fhir_data
+)
 
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
+
+
+def check_blocking_uniques(check_df,blocking_field,required_uniques=5):
+    """
+    Function that takes in a dataframe and asserts the required blocking values
+    are present for splink to use. Throws an assertion error if it can't.
+
+    Arguments:
+        check_df: Pandas Dataframe to check
+        blocking_field: Column of the frame to check uniques of
+        required_uniques: Unique values to require for blocking rules
+    """
+    uniques = getattr(check_df, blocking_field).nunique(dropna=True)
+    assert uniques >= required_uniques
 
 
 def parse_qrda_data(path,cpu_cores=4):
@@ -128,10 +144,11 @@ def use_linker(func):
 
         print(f"Format is {fmt}")
         print(f"Data dir is {data_dir}")
+        print(os.getcwd())
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        training_df = parse_test_data(dir_path + '/test_data.csv',marked=True)
+        training_df = parse_test_data(dir_path + '/tests/test_data.csv',marked=True)
 
         if fmt == "FHIR":
             train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
@@ -141,7 +158,22 @@ def use_linker(func):
             train_frame = pd.concat([parse_test_data(data_dir),training_df])
         elif fmt == "TEST":
             train_frame = training_df
+        elif fmt == "DF":
+            train_frame = data_dir
+        else:
+            raise ValueError('Unrecognized format to parse')
 
+        #check blocking values
+        for rule in BLOCKING_RULE_STRINGS:
+            try:
+                if isinstance(rule, list):
+                    for sub_rule in rule:
+                        check_blocking_uniques(train_frame, sub_rule)
+                else:
+                    check_blocking_uniques(train_frame, rule)
+            except AssertionError as e:
+                print(f"Could not assert the proper number of unique records for rule {rule}")
+                raise e
 
         lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
         lnkr.estimate_u_using_random_sampling(max_pairs=5e6)

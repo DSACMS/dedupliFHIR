@@ -11,7 +11,7 @@ const constants = {
     FHIR: "FHIR",
     TEST: "TEST",
   },
-  RESULTS_FILE: "deduped_record_mapping",
+  RESULTS_FILE_NAME: "deduped_record_mapping",
 };
 
 module.exports = constants;

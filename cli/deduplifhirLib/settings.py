@@ -38,7 +38,9 @@ SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE.update({
 
 #apply blocking function to translate into sql rules
 blocking_rules = SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE["blocking_rules_to_generate_predictions"]
-SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE["blocking_rules_to_generate_predictions"] = list(map(block_on,blocking_rules))
+BLOCKING_RULE_STRINGS = blocking_rules
+SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE["blocking_rules_to_generate_predictions"] = list(
+    map(block_on,blocking_rules))
 
 
 #NOTE: The only reason this function is defined outside utils.py is because of a known bug with
@@ -55,8 +57,8 @@ def read_fhir_data(patient_record_path):
         A dataframe holding FHIR data for a single patient.
     """
     try:
-        with open(patient_record_path, "r", encoding="utf-8") as f:
-            patient_json_record = json.load(f)
+        with open(patient_record_path, "r", encoding="utf-8") as fdesc:
+            patient_json_record = json.load(fdesc)
     except Exception as e:
         print(e)
         print(f"File: {patient_record_path}")

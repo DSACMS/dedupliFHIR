@@ -68,7 +68,7 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 <!--- TODO -->
 This project uses pytest as the main testing framework for the project's cli. 
 
-Python tests can be found in the `cli/deduplifhirLib/tests.py`. Any new testing
+Python tests can be found in the `cli/deduplifhirLib/tests/main_test.py`. Any new testing
 contributions are greatly appreciated and needed to ensure quality of any interpreted
 language project. 
 
@@ -88,7 +88,7 @@ in particular situations. Further information on PEP8 can be found [here.](https
 
 This project also uses pylint as the main linter for the moment and employs pylint checks upon new pull
 requests into protected branches. Python code quality checks are extremely useful for lowering the
-cost of maintenence of Python projects. Further information on Pylint can be found [here.](https://pylint.readthedocs.io/en/latest/)
+cost of maintenance of Python projects. Further information on Pylint can be found [here.](https://pylint.readthedocs.io/en/latest/)
 
 ### Issues
 

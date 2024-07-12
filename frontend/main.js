@@ -7,10 +7,26 @@ const {
   COMMANDS,
   OPTIONS,
   FORMAT,
-  RESULTS_FILE,
+  RESULTS_FILE_NAME,
 } = require("./constants.js");
 let mainWindow;
-var fileExtension;
+var resultsFile;
+
+function findPython() {
+  const possibilities = [
+    // In packaged app
+    path.join(process.resourcesPath, "python", "bin", "python3.11"),
+    // In development
+    path.join("..", ".venv", "bin", "python"),
+  ];
+  for (const path of possibilities) {
+    if (fs.existsSync(path)) {
+      return path;
+    }
+  }
+  console.log("Could not find python3, checked", possibilities);
+  app.quit();
+}
 
 function identifyFormat(fileName) {
   const extension = path.extname(fileName).slice(1);
@@ -27,18 +43,20 @@ function identifyFormat(fileName) {
 
 function runProgram(filePath, fileFormat) {
   mainWindow.loadFile("pages/loading.html");
-  fileExtension = fileFormat;
+  resultsFile = RESULTS_FILE_NAME + fileFormat;
 
   const fileName = path.basename(filePath);
   const currentDirectory = path.dirname(__filename);
-  const scriptPath = path.join(currentDirectory, "..", "cli");
-  const pythonPath = path.join(
-    currentDirectory,
-    "..",
-    ".venv",
-    "bin",
-    "python",
-  );
+  let scriptPath;
+  let outputPath;
+
+  if (app.isPackaged) {
+    scriptPath = path.join(process.resourcesPath, "cli");
+    outputPath = path.join(app.getPath("userData"), resultsFile);
+  } else {
+    scriptPath = path.join(currentDirectory, "..", "cli");
+    outputPath = path.join(currentDirectory, resultsFile);
+  }
 
   const script = SCRIPT;
 
@@ -47,13 +65,13 @@ function runProgram(filePath, fileFormat) {
     OPTIONS.FORMAT,
     identifyFormat(fileName),
     filePath,
-    currentDirectory + "/" + RESULTS_FILE + fileFormat,
+    outputPath,
   ];
 
   let options = {
     mode: "text",
     scriptPath: scriptPath,
-    pythonPath: pythonPath,
+    pythonPath: findPython(),
     args: poetryArgs,
   };
 
@@ -72,14 +90,16 @@ async function handleSaveFile() {
   try {
     const result = await dialog.showSaveDialog({
       title: "Select Directory to Save Results",
-      defaultPath:
-        app.getPath("downloads") + "/" + RESULTS_FILE + fileExtension,
+      defaultPath: path.join(app.getPath("downloads"), resultsFile),
       properties: ["openDirectory"],
     });
 
     if (result.canceled || !result.filePath) return null;
 
-    const sourceFile = RESULTS_FILE + fileExtension;
+    const sourceFile = app.isPackaged
+      ? path.join(app.getPath("userData"), resultsFile)
+      : resultsFile;
+
     const destinationFile = result.filePath; // Selected path of new file location
 
     try {
@@ -123,7 +143,6 @@ app.on("activate", () => {
     createWindow();
   }
 });
-
 ipcMain.handle("runProgram", (event, filePath, fileFormat) => {
   return runProgram(filePath, fileFormat);
 });

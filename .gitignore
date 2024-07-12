@@ -54,6 +54,9 @@ coverage.xml
 .pytest_cache
 *.cover
 .hypothesis/
+frontend/tests/screenshots/
+frontend/tests/downloads/
+frontend/test-results/.last-run.json
 
 # pyenv
 .python-version
@@ -81,4 +84,4 @@ learned_settings
 training.json
 app/.data/*
 !app/.data/.keep
-*.xlsx
+deduped_record_mapping.*
