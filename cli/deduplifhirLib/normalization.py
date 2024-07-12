@@ -225,7 +225,11 @@ REPLACE_PROPER_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
 )
 
 
-def replace_abbreviations(input_text,pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN,symbols=PLACE_ABBREVIATION_SYMBOLS):
+def replace_abbreviations(
+    input_text,
+    pattern=REPLACE_PLACE_NAME_SYMBOLS_PATTERN,
+    symbols=PLACE_ABBREVIATION_SYMBOLS
+    ):
     """
     Normalizes common abbreviations with a pre-compiled regular expression.
 
