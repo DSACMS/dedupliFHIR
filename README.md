@@ -34,6 +34,12 @@ make test
 To run the cli (for now) use the command:
 ```
 poetry run python cli/ecqm-dedupe.py <command> [--fmt] [<args>]
+```
+
+To run the desktop app, run the commands in the `frontend` directory:
+```
+npm install
+npm start
 ``` 
 <!-- 
 ### TODO:
