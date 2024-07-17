@@ -4,194 +4,156 @@ Module of functions that help to normalize fields of parsed patient data.
 import re
 
 NAME_ABBREVIATION_SYMBOLS = {
-    ' Jr. ': 'Junior',
-    ' Sr. ': 'Senior',
-    ' Dr. ': 'Doctor',
-    ' Mr. ': 'Mister',
-    ' Mrs. ': 'Miss',
-    ' Ms. ': 'Miss',
-    ' Prof. ': 'Professor',
-    ' Rev. ': 'Reverend',
-    ' Hon. ': 'Honorable',
-    ' St. ': 'Saint',
-    ' Capt. ': 'Captain',
-    ' Lt. ': 'Lieutenant',
-    ' Col. ': 'Colonel',
-    ' Gen. ': 'General',
-    ' Maj. ': 'Major',
-    ' Sgt. ': 'Sergeant',
-    ' Cpl. ': 'Corporal',
-    ' Adm. ': 'Admiral',
-    ' Cmdr. ': 'Commander',
-    ' Ens. ': 'Ensign',
-    ' Pvt. ': 'Private',
-    ' Fr. ': 'Father',
-    ' Br. ': 'Brother',
-    ' Dcn. ': 'Deacon',
-    ' Ven. ': 'Venerable',
-    ' Min. ': 'Minister',
-    ' Pres. ': 'President',
-    ' Gov. ': 'Governor',
-    ' Sen. ': 'Senator',
-    ' Rep. ': 'Representative',
-    ' Amb. ': 'Ambassador',
-    ' Sec. ': 'Secretary',
-    ' Chmn. ': 'Chairman',
-    ' Exec. ': 'Executive',
-    ' Mgr. ': 'Manager',
-    ' Dir. ': 'Director',
-    ' Asst. ': 'Assistant',
-    ' VP ': 'Vice President',
-    ' CEO ': 'Chief Executive Officer',
-    ' COO ': 'Chief Operating Officer',
-    ' CTO ': 'Chief Technology Officer',
-    ' CFO ': 'Chief Financial Officer'
+    ' jr ': 'junior',
+    ' sr ': 'senior',
+    ' dr ': 'doctor',
+    ' mr ': 'mister',
+    ' mrs ': 'miss',
+    ' ms ': 'miss',
+    ' prof. ': 'professor',
+    ' rev. ': 'reverend',
+    ' hon. ': 'honorable',
+    ' st. ': 'saint',
+    ' capt. ': 'captain',
+    ' lt. ': 'lieutenant',
+    ' col. ': 'colonel',
+    ' gen. ': 'general',
+    ' maj. ': 'major',
+    ' sgt. ': 'sergeant',
+    ' cpl. ': 'corporal',
+    ' adm. ': 'admiral',
+    ' cmdr. ': 'commander',
+    ' ens. ': 'ensign',
+    ' pvt. ': 'private',
+    ' fr. ': 'father',
+    ' br. ': 'brother',
+    ' dcn. ': 'deacon',
+    ' ven. ': 'venerable',
+    ' min. ': 'minister',
+    ' pres. ': 'president',
+    ' gov. ': 'governor',
+    ' sen. ': 'senator',
+    ' rep. ': 'representative',
+    ' amb. ': 'ambassador',
+    ' sec. ': 'secretary',
+    ' chmn. ': 'chairman',
+    ' exec. ': 'executive',
+    ' mgr. ': 'manager',
+    ' dir. ': 'director',
+    ' asst. ': 'assistant',
+    ' vp ': 'vice president',
+    ' ceo ': 'chief executive officer',
+    ' coo ': 'chief operating officer',
+    ' cto ': 'chief technology officer',
+    ' cfo ': 'chief financial officer'
 }
 
 PLACE_ABBREVIATION_SYMBOLS = {
-    ' St ' : 'St.',
-    ' USA ': 'United States',
-    ' GB ': 'Great Britain',
-    ' Street ': 'St.',
-    ' Saint ': 'St.',
-    ' Ave. ': 'Avenue',
-    ' Blvd. ': 'Boulevard',
-    ' Rd. ': 'Road',
-    ' Dr. ': 'Drive',
-    ' Ln. ': 'Lane',
-    ' Ct. ': 'Court',
-    ' Pl. ': 'Place',
-    ' Sq. ': 'Square',
-    ' Pkwy. ': 'Parkway',
-    ' Cir. ': 'Circle',
-    ' Terr. ': 'Terrace',
-    ' Hwy. ': 'Highway',
-    ' Mt. ': 'Mount',
-    ' Ft. ': 'Fort',
-    ' Pk. ': 'Park',
-    ' Apt. ': 'Apartment',
-    ' Bldg. ': 'Building',
-    ' Fl. ': 'Floor',
-    ' Ste. ': 'Suite',
-    ' Rte. ': 'Route',
-    ' N. ': 'North',
-    ' S. ': 'South',
-    ' E. ': 'East',
-    ' W. ': 'West',
-    ' NE. ': 'Northeast',
-    ' NW. ': 'Northwest',
-    ' SE. ': 'Southeast',
-    ' SW. ': 'Southwest',
-    ' Co. ': 'County',
-    ' Jct. ': 'Junction',
-    ' P.O. ': 'Post Office',
-    ' dept. ': 'department',
-    ' bldg. ': 'building',
-    ' rm. ': 'room',
-    ' ltd. ': 'limited',
-    ' co. ': 'company',
-    ' corp. ': 'corporation',
-    ' inc. ': 'incorporated',
-    ' intl. ': 'international',
-    ' u.k. ': 'United Kingdom',
-    ' u.s. ': 'United States',
-    ' apt. ': 'apartment',
-    ' ph. ': 'phone',
-    ' fax. ': 'fax',
-    ' mgr. ': 'manager',
-    ' asst. ': 'assistant',
-    ' dept ': 'department',
-    ' assoc. ': 'association',
-    ' edu. ': 'education',
-    ' univ. ': 'university',
-    ' inst. ': 'institute',
-    ' natl. ': 'national',
-    ' am. ': 'american',
-    ' eur. ': 'european',
+    ' st ' : 'st',
+    ' usa ': 'united states',
+    ' gb ': 'great britain',
+    ' street ': 'st',
+    ' saint ': 'st',
+    ' ave ': 'avenue',
+    ' blvd ': 'boulevard',
+    ' rd ': 'road',
+    ' dr ': 'drive',
+    ' ln ': 'lane',
+    ' pl ': 'place',
+    ' sq ': 'square',
+    ' pkwy ': 'parkway',
+    ' cir ': 'circle',
+    ' terr ': 'terrace',
+    ' hwy ': 'highway',
+    ' ft ': 'fort',
+    ' pk ': 'park',
+    ' apt ': 'apartment',
+    ' floor ': 'fl',
+    ' ste ': 'suite',
+    ' rte ': 'route',
+    ' n ': 'north',
+    ' s ': 'south',
+    ' e ': 'east',
+    ' w ': 'west',
+    ' nw ': 'northwest',
+    ' se ': 'southeast',
+    ' sw ': 'southwest',
+    ' jct ': 'junction',
+    ' po ': 'post office',
+    ' bldg ': 'building',
+    ' rm ': 'room',
+    ' ltd ': 'limited',
+    ' corp ': 'corporation',
+    ' inc ': 'incorporated',
     ' intl ': 'international',
-    ' org. ': 'organization',
-    ' conf. ': 'conference',
-    ' symp. ': 'symposium',
-    ' AL ': 'Alabama',
-    ' AK ': 'Alaska',
-    ' AZ ': 'Arizona',
-    ' AR ': 'Arkansas',
-    ' CA ': 'California',
-    ' CO ': 'Colorado',
-    ' CT ': 'Connecticut',
-    ' DE ': 'Delaware',
-    ' FL ': 'Florida',
-    ' GA ': 'Georgia',
-    ' HI ': 'Hawaii',
-    ' ID ': 'Idaho',
-    ' IL ': 'Illinois',
-    ' IN ': 'Indiana',
-    ' IA ': 'Iowa',
-    ' KS ': 'Kansas',
-    ' KY ': 'Kentucky',
-    ' LA ': 'Louisiana',
-    ' ME ': 'Maine',
-    ' MD ': 'Maryland',
-    ' MA ': 'Massachusetts',
-    ' MI ': 'Michigan',
-    ' MN ': 'Minnesota',
-    ' MS ': 'Mississippi',
-    ' MO ': 'Missouri',
-    ' MT ': 'Montana',
-    ' NE ': 'Nebraska',
-    ' NV ': 'Nevada',
-    ' NH ': 'New Hampshire',
-    ' NJ ': 'New Jersey',
-    ' NM ': 'New Mexico',
-    ' NY ': 'New York',
-    ' NC ': 'North Carolina',
-    ' ND ': 'North Dakota',
-    ' OH ': 'Ohio',
-    ' OK ': 'Oklahoma',
-    ' OR ': 'Oregon',
-    ' PA ': 'Pennsylvania',
-    ' RI ': 'Rhode Island',
-    ' SC ': 'South Carolina',
-    ' SD ': 'South Dakota',
-    ' TN ': 'Tennessee',
-    ' TX ': 'Texas',
-    ' UT ': 'Utah',
-    ' VT ': 'Vermont',
-    ' VA ': 'Virginia',
-    ' WA ': 'Washington',
-    ' WV ': 'West Virginia',
-    ' WI ': 'Wisconsin',
-    ' WY ': 'Wyoming'
+    ' uk ': 'united kingdom',
+    ' us ': 'united states',
+    ' ph ': 'phone',
+    ' fax ': 'fax',
+    ' mgr ': 'manager',
+    ' asst ': 'assistant',
+    ' dept ': 'department',
+    ' assoc ': 'association',
+    ' edu ': 'education',
+    ' univ ': 'university',
+    ' inst ': 'institute',
+    ' natl ': 'national',
+    ' am ': 'american',
+    ' eur ': 'european',
+    ' org ': 'organization',
+    ' conf ': 'conference',
+    ' symp ': 'symposium',
+    ' al ': 'alabama',
+    ' ak ': 'alaska',
+    ' az ': 'arizona',
+    ' ar ': 'arkansas',
+    ' ca ': 'california',
+    ' co ': 'colorado',
+    ' ct ': 'connecticut',
+    ' de ': 'delaware',
+    ' fl ': 'florida',
+    ' ga ': 'georgia',
+    ' hi ': 'hawaii',
+    ' id ': 'idaho',
+    ' il ': 'illinois',
+    ' in ': 'indiana',
+    ' ia ': 'iowa',
+    ' ks ': 'kansas',
+    ' ky ': 'kentucky',
+    ' la ': 'louisiana',
+    ' me ': 'maine',
+    ' md ': 'maryland',
+    ' ma ': 'massachusetts',
+    ' mi ': 'michigan',
+    ' mn ': 'minnesota',
+    ' ms ': 'mississippi',
+    ' mo ': 'missouri',
+    ' mt ': 'montana',
+    ' ne ': 'nebraska',
+    ' nv ': 'nevada',
+    ' nh ': 'new hampshire',
+    ' nj ': 'new jersey',
+    ' nm ': 'new mexico',
+    ' ny ': 'new york',
+    ' nc ': 'north carolina',
+    ' nd ': 'north dakota',
+    ' oh ': 'ohio',
+    ' ok ': 'oklahoma',
+    ' or ': 'oregon',
+    ' pa ': 'pennsylvania',
+    ' ri ': 'rhode island',
+    ' sc ': 'south carolina',
+    ' sd ': 'south dakota',
+    ' tn ': 'tennessee',
+    ' tx ': 'texas',
+    ' ut ': 'utah',
+    ' vt ': 'vermont',
+    ' va ': 'virginia',
+    ' wa ': 'washington',
+    ' wv ': 'west virginia',
+    ' wi ': 'wisconsin',
+    ' wy ': 'wyoming'
 }
-
-def add_permutations_to_dict_pattern(symbol_dict):
-    """
-    Add permutations of the keys from a dict and map them to the same value
-    as the original key. 
-
-    For example we make every key also match to its lowercase version,
-    as well as mapping to the version with punctuation and proper spaces. 
-
-
-    Arguments:
-        symbol_dict: dictionary of symbols to add permutations to 
-    
-    Returns:
-        Expanded version of dict input
-    """
-    #Add some permutations to the dictionary manually once
-    abvs = list(symbol_dict.keys())
-    for key in abvs:
-        symbol_dict[key.lower()] = symbol_dict[key]
-        symbol_dict[key[:-1] + ','] = symbol_dict[key]
-        symbol_dict[key[:-1] + '.'] = symbol_dict[key]
-
-
-        if key[-1] == '.':
-            symbol_dict[key[:-2] + ' '] = symbol_dict[key]
-            symbol_dict[key[:-2] + ', '] = symbol_dict[key]
-
-    return symbol_dict
 
 
 def compile_abbreviation_map_regex(symbol_dict):
@@ -213,15 +175,11 @@ def compile_abbreviation_map_regex(symbol_dict):
     return re.compile('|'.join(re.escape(key) for key in symbol_dict.keys()))
 
 REPLACE_PLACE_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
-    add_permutations_to_dict_pattern(
-        PLACE_ABBREVIATION_SYMBOLS
-    )
+    PLACE_ABBREVIATION_SYMBOLS
 )
 
 REPLACE_PROPER_NAME_SYMBOLS_PATTERN = compile_abbreviation_map_regex(
-    add_permutations_to_dict_pattern(
-        NAME_ABBREVIATION_SYMBOLS
-    )
+    NAME_ABBREVIATION_SYMBOLS
 )
 
 
@@ -261,7 +219,7 @@ def remove_non_alphanum(input_text):
     """
     #symbols_to_remove = ".,?!;:\'\""
 
-    return re.sub(r'[^a-zA-Z0-9]', '', input_text)
+    return re.sub(r'[^a-zA-Z0-9 ]', '', input_text.replace(',', ' '))
 
 def british_to_american(input_text):
     """
@@ -303,10 +261,12 @@ def normalize_name_text(input_text):
     text_copy = input_text
     #text_copy = british_to_american(text_copy) Not needed
     #Replace abbreviations that occur in place names
-    text_copy = replace_abbreviations(
-        text_copy,pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN,symbols=NAME_ABBREVIATION_SYMBOLS
-        )
     text_copy = remove_non_alphanum(text_copy)
+    text_copy = replace_abbreviations(
+        text_copy.lower(),
+        pattern=REPLACE_PROPER_NAME_SYMBOLS_PATTERN,
+        symbols=NAME_ABBREVIATION_SYMBOLS
+        )
     return text_copy.lower()
 
 def normalize_addr_text(input_text):
@@ -322,8 +282,9 @@ def normalize_addr_text(input_text):
     """
     text_copy = input_text
     #text_copy = british_to_american(text_copy) not needed
-    text_copy = replace_abbreviations(text_copy)
     text_copy = remove_non_alphanum(text_copy)
+    print(text_copy)
+    text_copy = replace_abbreviations(text_copy.lower())
 
     return text_copy.lower()
 
