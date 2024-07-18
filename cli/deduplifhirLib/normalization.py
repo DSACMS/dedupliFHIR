@@ -3,6 +3,7 @@ Module of functions that help to normalize fields of parsed patient data.
 """
 import re
 from dateutil import parser as date_parser
+from dateutil.parser import ParserError
 
 NAME_ABBREVIATION_SYMBOLS = {
     ' jr ': 'junior',
