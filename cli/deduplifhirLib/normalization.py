@@ -262,6 +262,8 @@ def normalize_date_text(input_text):
     try:
         d = date_parser.parse(input_text)
     except ParserError as e:
+        print(f"Error when trying to parse date {input_text}")
+        print(f"Error: {e}")
         return ""
     return d.strftime("%Y-%m-%d")
 
