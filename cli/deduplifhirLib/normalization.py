@@ -249,6 +249,15 @@ def british_to_american(input_text):
 
 
 def normalize_date_text(input_text):
+    """
+    Normalizes the given date string
+
+    Arguments:
+        input_text: the input date text to normalize
+    
+    Returns:
+        The normalized date string
+    """
     d = date_parser.parse(input_text)
     return d.strftime("%Y-%m-%d")
 

@@ -18,8 +18,9 @@ from splink.duckdb.linker import DuckDBLinker
 from deduplifhirLib.settings import (
     SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, BLOCKING_RULE_STRINGS, read_fhir_data
 )
-from deduplifhirLib.normalization import normalize_addr_text, normalize_name_text, normalize_date_text
-
+from deduplifhirLib.normalization import (
+    normalize_addr_text, normalize_name_text, normalize_date_text
+)
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 

@@ -18,7 +18,9 @@ import pandas as pd
 import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
-from deduplifhirLib.normalization import normalize_addr_text, normalize_name_text, normalize_date_text
+from deduplifhirLib.normalization import (
+    normalize_addr_text, normalize_name_text, normalize_date_text
+)
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
