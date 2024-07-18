@@ -265,6 +265,10 @@ def normalize_date_text(input_text):
         print(f"Error when trying to parse date {input_text}")
         print(f"Error: {e}")
         return ""
+    except OverflowError as e:
+        print("Overflow error when trying to parse date!")
+        print("Input string too long!")
+        print(f"Error: {e}")
     return d.strftime("%Y-%m-%d")
 
 def normalize_name_text(input_text):
