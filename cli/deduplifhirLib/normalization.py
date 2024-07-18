@@ -258,7 +258,10 @@ def normalize_date_text(input_text):
     Returns:
         The normalized date string
     """
-    d = date_parser.parse(input_text)
+    try:
+        d = date_parser.parse(input_text)
+    except ParserError as e:
+        return ""
     return d.strftime("%Y-%m-%d")
 
 def normalize_name_text(input_text):
