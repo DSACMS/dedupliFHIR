@@ -18,7 +18,7 @@ import pandas as pd
 import splink.duckdb.comparison_library as cl
 import splink.duckdb.comparison_template_library as ctl
 from splink.duckdb.blocking_rule_library import block_on
-from deduplifhirLib.normalization import normalize_addr_text, normalize_name_text
+from deduplifhirLib.normalization import normalize_addr_text, normalize_name_text, normalize_date_text
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -74,7 +74,9 @@ def read_fhir_data(patient_record_path):
             normalize_name_text(patient_json_record['entry'][0]['resource']['name'][0]['given'][0])
         ],
         "gender": [patient_json_record['entry'][0]['resource']['gender']],
-        "birth_date": patient_json_record['entry'][0]['resource']['birthDate'],
+        "birth_date": normalize_date_text(
+            patient_json_record['entry'][0]['resource']['birthDate']
+        ),
         "phone": [patient_json_record['entry'][0]['resource']['telecom'][0]['value']],
         "street_address": [
             normalize_addr_text(
