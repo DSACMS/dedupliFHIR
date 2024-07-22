@@ -2,6 +2,8 @@
 Module of functions that help to normalize fields of parsed patient data.
 """
 import re
+from dateutil import parser as date_parser
+from dateutil.parser import ParserError
 
 NAME_ABBREVIATION_SYMBOLS = {
     ' jr ': 'junior',
@@ -247,6 +249,29 @@ def british_to_american(input_text):
     return input_text
 
 
+def normalize_date_text(input_text):
+    """
+    Normalizes the given date string
+
+    Arguments:
+        input_text: the input date text to normalize
+    
+    Returns:
+        The normalized date string
+    """
+    try:
+        d = date_parser.parse(input_text)
+    except ParserError as e:
+        print(f"Error when trying to parse date {input_text}")
+        print(f"Error: {e}")
+        return input_text
+    except OverflowError as e:
+        print("Overflow error when trying to parse date!")
+        print("Input string too long!")
+        print(f"Error: {e}")
+        return input_text
+    return d.strftime("%Y-%m-%d")
+
 def normalize_name_text(input_text):
     """
     Normalizes the given name string
@@ -296,3 +321,6 @@ if __name__ == "__main__":
     PLACE_TEXT = "7805 Kartina Motorawy Apt. 313,Taylorstad,New Hampshire"
 
     print(normalize_addr_text(PLACE_TEXT))
+
+    DATE_TEXT = "December 10, 1999"
+    print(normalize_date_text(DATE_TEXT))
