@@ -18,7 +18,9 @@ from splink.duckdb.linker import DuckDBLinker
 from deduplifhirLib.settings import (
     SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, BLOCKING_RULE_STRINGS, read_fhir_data
 )
-
+from deduplifhirLib.normalization import (
+    normalize_addr_text, normalize_name_text, normalize_date_text
+)
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -100,17 +102,17 @@ def parse_test_data(path,marked=False):
         for row in csvreader:
             #print(row[2])
             try:
-                dob = datetime.datetime.strptime(row[5], '%m/%d/%Y').strftime('%Y-%m-%d')
+                #dob = datetime.datetime.strptime(row[5], '%m/%d/%Y').strftime('%Y-%m-%d')
                 patient_dict = {
                     "unique_id": uuid.uuid4().int,
-                    "family_name": [row[2]],
-                    "given_name": [row[3]],
+                    "family_name": [normalize_name_text(row[2])],
+                    "given_name": [normalize_name_text(row[3])],
                     "gender": [row[4]],
-                    "birth_date": [dob],
+                    "birth_date": [normalize_date_text(row[5])],
                     "phone": [row[6]],
-                    "street_address": [row[7]],
-                    "city": [row[8]],
-                    "state": [row[9]],
+                    "street_address": [normalize_addr_text(row[7])],
+                    "city": [normalize_addr_text(row[8])],
+                    "state": [normalize_addr_text(row[9])],
                     "postal_code": [row[10]],
                     "ssn": [row[11]],
                     "path": ["TRAINING" if marked else ""]

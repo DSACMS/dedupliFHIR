@@ -18,6 +18,15 @@
   },
   "build": {
     "appId": "gov.cms.deduplifhir",
+    "mac": {
+      "icon": "assets/DedupliFHIR-Icon-MacOS.icns"
+    },
+    "win": {
+      "icon": "assets/DedupliFHIR-Icon-Windows.ico"
+    },
+    "linux": {
+      "icon": "assets/DedupliFHIR-Icon-Linux.png"
+    },
     "extraResources": [
       {
         "from": "../python",
