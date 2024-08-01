@@ -13,7 +13,8 @@ import uuid
 from multiprocessing import Pool
 from functools import wraps
 import pandas as pd
-from splink.duckdb.linker import DuckDBLinker
+#from splink.duckdb.linker import DuckDBLinker
+from splink import DuckDBAPI, Linker
 
 from deduplifhirLib.settings import (
     SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, BLOCKING_RULE_STRINGS, read_fhir_data
@@ -177,8 +178,9 @@ def use_linker(func):
                 print(f"Could not assert the proper number of unique records for rule {rule}")
                 raise e
 
-        lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-        lnkr.estimate_u_using_random_sampling(max_pairs=5e6)
+        #lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
+        lnkr = Linker(train_frame,SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE,db_api=DuckDBAPI())
+        lnkr.training.estimate_u_using_random_sampling(max_pairs=5e6)
 
         kwargs['linker'] = lnkr
         return func(*args,**kwargs)
