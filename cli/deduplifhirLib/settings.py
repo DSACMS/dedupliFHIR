@@ -28,9 +28,16 @@ with open(dir_path + '/splink_settings.json',"r",encoding="utf-8") as f:
 
 
 #apply blocking function to translate into sql rules
-blocking_rules = splink_settings_dict["blocking_rules_to_generate_predictions"]
-blocking_rules = list(
-    map(block_on,blocking_rules))
+BLOCKING_RULE_STRINGS = splink_settings_dict["blocking_rules_to_generate_predictions"]
+#blocking_rules = list(
+#    map(block_on,blocking_rules))
+
+blocking_rules = []
+for rule in BLOCKING_RULE_STRINGS:
+    if isinstance(rule, list):
+        blocking_rules.append(block_on(*rule))
+    else:
+        blocking_rules.append(block_on(rule))
 
 
 comparison_rules = [
