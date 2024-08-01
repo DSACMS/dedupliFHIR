@@ -4,6 +4,7 @@ Module of functions that help to normalize fields of parsed patient data.
 import re
 from dateutil import parser as date_parser
 from dateutil.parser import ParserError
+from text_to_num import alpha2digit
 
 NAME_ABBREVIATION_SYMBOLS = {
     ' jr ': 'junior',
@@ -307,6 +308,10 @@ def normalize_addr_text(input_text):
     """
     text_copy = input_text
     #text_copy = british_to_american(text_copy) not needed
+    try:
+        text_copy = alpha2digit(text_copy,"en")
+    except ValueError:
+        ...
     text_copy = remove_non_alphanum(text_copy)
     print(text_copy)
     text_copy = replace_abbreviations(text_copy.lower())
@@ -318,9 +323,12 @@ if __name__ == "__main__":
     NAME_TEXT = "Greene,Jacquleine"
     print(normalize_name_text(NAME_TEXT))
 
-    PLACE_TEXT = "7805 Kartina Motorawy Apt. 313,Taylorstad,New Hampshire"
+    PLACE_TEXT = "7805 Kartina Motorawy Apt. three hundred thirteen ,Taylorstad,New Hampshire"
 
     print(normalize_addr_text(PLACE_TEXT))
 
     DATE_TEXT = "December 10, 1999"
     print(normalize_date_text(DATE_TEXT))
+
+    NUM_TEXT = "I have one hundred twenty three apples and forty-five oranges. Valetnine"
+    print(alpha2digit(NUM_TEXT,'en'))
