@@ -158,6 +158,43 @@ PLACE_ABBREVIATION_SYMBOLS = {
 }
 
 
+def text_to_num(text):
+    num_words = {
+        'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 
+        'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9,
+        'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13, 
+        'fourteen': 14, 'fifteen': 15, 'sixteen': 16, 'seventeen': 17, 
+        'eighteen': 18, 'nineteen': 19, 'twenty': 20, 'thirty': 30, 
+        'forty': 40, 'fifty': 50, 'sixty': 60, 'seventy': 70, 
+        'eighty': 80, 'ninety': 90, 'hundred': 100, 'thousand': 1000, 
+        'million': 1000000
+    }
+
+    # Match whole number patterns
+    num_pattern = re.compile(r'\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million)[-\s]*)+\b', re.IGNORECASE)
+
+    def replace_num(match):
+        words = match.group(0).lower().replace('-', ' ').split()
+        total = 0
+        current = 0
+        for word in words:
+            if word in num_words:
+                scale = num_words[word]
+                if scale == 100 or scale == 1000 or scale == 1000000:
+                    current *= scale
+                else:
+                    current += scale
+            if word == "hundred" or word == "thousand" or word == "million":
+                if current == 0:
+                    current = 1
+                total += current
+                current = 0
+        total += current
+        return str(total) + " "
+    
+    return num_pattern.sub(replace_num, text)
+
+
 def compile_abbreviation_map_regex(symbol_dict):
     """
     Compile a regular expression that converts the dictionary pattern into a 
@@ -324,3 +361,6 @@ if __name__ == "__main__":
 
     DATE_TEXT = "December 10, 1999"
     print(normalize_date_text(DATE_TEXT))
+
+    NUM_TEXT = "I have one hundred and twenty three apples and forty-five oranges. Valetnine"
+    print(text_to_num(NUM_TEXT))
