@@ -1106,6 +1106,17 @@ dev = ["duckdb (>=0.6)", "maturin (>=1.4,<2.0)", "mypy", "pandas", "pandas-stubs
 rs = ["sqlglotrs (==0.2.8)"]
 
 [[package]]
+name = "text2num"
+version = "2.5.1"
+description = "Parse and convert numbers written in French, Spanish, English, Portuguese, German, Catalan or Russion into their digit representation."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "text2num-2.5.1-py3-none-any.whl", hash = "sha256:6d55daee015399db2833d55966f3ff6d7c773fa652f99b0d6b06e619e1363462"},
+    {file = "text2num-2.5.1.tar.gz", hash = "sha256:c060201fa24b7b97f3190045e95e6f2b283ae7ac172cbe482a3a4ef06eb208c4"},
+]
+
+[[package]]
 name = "texttable"
 version = "1.7.0"
 description = "module to create simple ASCII tables"
@@ -1163,4 +1174,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "099c7f0674196da624ba9e2fe824c4fc71f4252ef7359c0aef9ed85166124acc"
+content-hash = "74d733346b8dd9cd74dec5d8f8c4890a8df0e9d863096dc2b6c2d6200a9f44c4"
