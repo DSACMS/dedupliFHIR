@@ -13,7 +13,6 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-poetry.lock
 .Python
 env/
 build/
