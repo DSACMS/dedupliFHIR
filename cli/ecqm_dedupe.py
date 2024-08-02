@@ -3,10 +3,9 @@ Module to define cli for ecqm-deduplifhir library.
 """
 import os
 import os.path
-import difflib
 import pandas as pd
 import click
-from splink.duckdb.blocking_rule_library import block_on
+from splink import block_on
 from deduplifhirLib.utils import use_linker
 
 
@@ -29,21 +28,23 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     print(os.getcwd())
     #linker is created by use_linker decorator
     blocking_rule_for_training = block_on("ssn")
-    linker.estimate_parameters_using_expectation_maximisation(
+    linker.training.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training)
 
     blocking_rule_for_training = block_on("birth_date")  # block on year
-    linker.estimate_parameters_using_expectation_maximisation(
+    linker.training.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training)
 
-    blocking_rule_for_training = block_on(["street_address", "postal_code"])
-    linker.estimate_parameters_using_expectation_maximisation(
+    blocking_rule_for_training = block_on("street_address", "postal_code")
+    linker.training.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training)
 
 
-    pairwise_predictions = linker.predict()
+    pairwise_predictions = linker.inference.predict()
 
-    clusters = linker.cluster_pairwise_predictions_at_threshold(pairwise_predictions, 0.95)
+    clusters = linker.clustering.cluster_pairwise_predictions_at_threshold(
+        pairwise_predictions, 0.95
+    )
 
     deduped_record_mapping = clusters.as_pandas_dataframe()
 

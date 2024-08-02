@@ -15,9 +15,8 @@ import os
 import json
 import uuid
 import pandas as pd
-import splink.duckdb.comparison_library as cl
-import splink.duckdb.comparison_template_library as ctl
-from splink.duckdb.blocking_rule_library import block_on
+import splink.comparison_library as cl
+from splink import SettingsCreator, block_on
 from deduplifhirLib.normalization import (
     normalize_addr_text, normalize_name_text, normalize_date_text
 )
@@ -25,25 +24,49 @@ from deduplifhirLib.normalization import (
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 with open(dir_path + '/splink_settings.json',"r",encoding="utf-8") as f:
-    SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = json.load(f)
+    splink_settings_dict = json.load(f)
 
-
-SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE.update({
-    "comparisons": [
-        ctl.name_comparison("given_name", term_frequency_adjustments=True),
-        ctl.name_comparison("family_name", term_frequency_adjustments=True),
-        ctl.date_comparison("birth_date", cast_strings_to_date=True, invalid_dates_as_null=True),
-        ctl.postcode_comparison("postal_code"),
-        cl.exact_match("street_address", term_frequency_adjustments=True),
-        cl.exact_match("phone",  term_frequency_adjustments=True),
-    ]
-})
 
 #apply blocking function to translate into sql rules
-blocking_rules = SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE["blocking_rules_to_generate_predictions"]
-BLOCKING_RULE_STRINGS = blocking_rules
-SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE["blocking_rules_to_generate_predictions"] = list(
-    map(block_on,blocking_rules))
+BLOCKING_RULE_STRINGS = splink_settings_dict["blocking_rules_to_generate_predictions"]
+#blocking_rules = list(
+#    map(block_on,blocking_rules))
+
+blocking_rules = []
+for rule in BLOCKING_RULE_STRINGS:
+    if isinstance(rule, list):
+        blocking_rules.append(block_on(*rule))
+    else:
+        blocking_rules.append(block_on(rule))
+
+
+comparison_rules = [
+    cl.ExactMatch("street_address").configure(
+        term_frequency_adjustments=True
+    ),
+    cl.ExactMatch("phone").configure(
+        term_frequency_adjustments=True
+    ),
+    cl.NameComparison("given_name").configure(
+        term_frequency_adjustments=True
+    ),
+    cl.NameComparison("family_name").configure(
+        term_frequency_adjustments=True
+    ),
+    cl.DateOfBirthComparison("birth_date",input_is_string=True),
+    cl.PostcodeComparison("postal_code")
+]
+
+
+SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = SettingsCreator(
+    link_type=splink_settings_dict["link_type"],
+    blocking_rules_to_generate_predictions=blocking_rules,
+    comparisons=comparison_rules,
+    max_iterations=splink_settings_dict["max_iterations"],
+    em_convergence=splink_settings_dict["em_convergence"])
+
+
+
 
 
 #NOTE: The only reason this function is defined outside utils.py is because of a known bug with
