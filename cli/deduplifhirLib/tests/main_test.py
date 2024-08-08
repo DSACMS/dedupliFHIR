@@ -66,7 +66,7 @@ def test_dedupe_data_with_specific_csv(cli_runner):
     Test dedupe_data function with specific CSV data to verify deduplication.
     """
     # Prepare test data
-    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
+    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address0,city0,state0,postal_code0,SSN
 8,9b0b0b7c-e05e-4c89-991d-268eab2483f7,Obrien,Curtis,M,07/02/1996,,300 Amy Corners Suite 735,Rileytown,Alaska,60281,480-21-0833
 342,9b0b0b7c-e05e-4c89-991d-268eab2483f7,Orbien,Cutris,M,07/02/1996,,300 Amy oCrenrs Suite 735,Rileytown,Alaska,60281,480-210-833
 502,9b0b0b7c-e05e-4c89-991d-268eab2483f7,bOrien,Curtsi,M,07/02/1996,,300 AmyCo rners Suite 735,Rileytown,Alaska,60281,480-21-8033
@@ -153,7 +153,7 @@ def test_dedupe_accuracy(cli_runner):
     Test dedupe_data function for deduplication accuracy using a dataset with known duplicates.
     """
     # Prepare test data
-    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
+    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address0,city0,state0,postal_code0,SSN
     1,duplicate,Smith,John,M,01/01/1990,,123 Elm St,Springfield,IL,62701,123-45-6789
     2,duplicate,Smyth,John,M,01/01/1990,,123 Elm St.,Springfield,IL,62701,123-45-6789
     3,unique,Doe,Jane,F,02/02/1992,,456 Oak St,Springfield,IL,62702,987-65-4321

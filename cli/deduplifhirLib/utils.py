@@ -111,10 +111,10 @@ def parse_test_data(path,marked=False):
                     "gender": [row[4]],
                     "birth_date": [normalize_date_text(row[5])],
                     "phone": [row[6]],
-                    "street_address": [normalize_addr_text(row[7])],
-                    "city": [normalize_addr_text(row[8])],
-                    "state": [normalize_addr_text(row[9])],
-                    "postal_code": [row[10]],
+                    "street_address0": [normalize_addr_text(row[7])],
+                    "city0": [normalize_addr_text(row[8])],
+                    "state0": [normalize_addr_text(row[9])],
+                    "postal_code0": [row[10]],
                     "ssn": [row[11]],
                     "path": ["TRAINING" if marked else ""]
                 }

@@ -41,7 +41,7 @@ for rule in BLOCKING_RULE_STRINGS:
 
 
 comparison_rules = [
-    cl.ExactMatch("street_address").configure(
+    cl.ExactMatch("street_address0").configure(
         term_frequency_adjustments=True
     ),
     cl.ExactMatch("phone").configure(
@@ -54,7 +54,7 @@ comparison_rules = [
         term_frequency_adjustments=True
     ),
     cl.DateOfBirthComparison("birth_date",input_is_string=True),
-    cl.PostcodeComparison("postal_code")
+    cl.PostcodeComparison("postal_code0")
 ]
 
 
@@ -64,6 +64,20 @@ SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = SettingsCreator(
     comparisons=comparison_rules,
     max_iterations=splink_settings_dict["max_iterations"],
     em_convergence=splink_settings_dict["em_convergence"])
+
+
+
+def parse_fhir_dates(fhir_json_obj):
+
+    addresses = fhir_json_obj['entry'][0]['resource']['address']
+
+    for addr,n in enumerate(addresses):
+        yield {
+            f"street_address{n}": [normalize_addr_text(''.join(addr['line']))],
+            f"city{n}": [normalize_addr_text(addr['city'])],
+            f"state{n}": [normalize_addr_text(addr['state'])],
+            f"postal_code{n}": [normalize_addr_text(addr['postalCode'])]
+        }
 
 
 
@@ -103,21 +117,17 @@ def read_fhir_data(patient_record_path):
             patient_json_record['entry'][0]['resource']['birthDate']
         ),
         "phone": [patient_json_record['entry'][0]['resource']['telecom'][0]['value']],
-        "street_address": [
-            normalize_addr_text(
-                patient_json_record['entry'][0]['resource']['address'][0]['line'][0]
-            )
-        ],
-        "city": [
-            normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['city'])
-        ],
-        "state": [
-            normalize_addr_text(patient_json_record['entry'][0]['resource']['address'][0]['state'])
-        ],
-        "postal_code": [patient_json_record['entry'][0]['resource']['address'][0]['postalCode']],
         "ssn": [patient_json_record['entry'][0]['resource']['identifier'][1]['value']],
         "path": patient_record_path
     }
-    #print(patient_dict)
+
+    try:
+        patient_dict["middle_name"] = [normalize_name_text(patient_json_record['entry'][0]['resouce']['name'][0]['given'][1])]
+    except IndexError:
+        patient_dict["middle_name"] = [""]
+        print("no middle name found!")
+    
+    for date in parse_fhir_dates(patient_json_record):
+        patient_dict.update(date)
 
     return pd.DataFrame(patient_dict)
