@@ -80,6 +80,27 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
 
     return pd.concat(df_list,axis=0,ignore_index=True)
 
+
+def parse_csv_dict_row_addresses(row):
+    parsed = row
+
+    address_keys = ["street_address","city","state","postal_code"]
+
+    for k,v in row.items():
+        if any(match in k.lower() for match in address_keys):
+            parsed[k] = normalize_addr_text(v)
+    
+    return parsed
+
+def parse_csv_dict_row_names(row):
+    parsed = row
+
+    for k,v in row.items():
+        if '_name' in k.lower():
+            parsed[k] = normalize_name_text(v)
+    
+    return parsed
+
 def parse_test_data(path,marked=False):
     """
     This function parses a csv file in a given path structure as patient data. It
@@ -103,8 +124,15 @@ def parse_test_data(path,marked=False):
                     "unique_id": uuid.uuid4().int,
                     "path": ["TRAINING" if marked else ""]
                 }
+
+                normal_row = parse_csv_dict_row_addresses(row)
+                normal_row = parse_csv_dict_row_names(normal_row)
+                normal_row["birth_date"] = normalize_date_text(normal_row["birth_date"])
+
                 patient_dict.update({k.lower():[v] for k,v in row.items()})
                 #print(len(row))
+                
+                #print(patient_dict)
                 df_list.append(pd.DataFrame(patient_dict))
             except IndexError:
                 print("could not read row")
