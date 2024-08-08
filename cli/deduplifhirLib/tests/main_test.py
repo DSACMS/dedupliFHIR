@@ -78,8 +78,7 @@ def test_dedupe_data_with_specific_csv(cli_runner):
 273,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russlel,Lnidsay,F,02/05/1977,,2110 Kimbelry Vilalges Apt. 639,New David,Wyoming,52082,211-52-6989
 311,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russlel,Lindasy,F,02/05/1977,,2110 Kimbelry Villgaes Apt. 639,New David,Wyoming,52082,211-52-9698
 652,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lidnsay,F,02/05/1977,,2110 Kimberly Vlilagse Apt. 639,New David,Wyoming,52082,121-52-6998
-726,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lindasy,F,02/05/1977,,2110 Kmiberly Vilalges Apt. 639,New David,Wyoming,52082,2115-2-6
-    """
+726,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lindasy,F,02/05/1977,,2110 Kmiberly Vilalges Apt. 639,New David,Wyoming,52082,2115-2-6S"""
 
     # Write test data to specific.csv
     with open('specific.csv', 'w',encoding='utf-8') as f:
@@ -156,8 +155,8 @@ def test_dedupe_accuracy(cli_runner):
     test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address0,city0,state0,postal_code0,SSN
     1,duplicate,Smith,John,M,01/01/1990,,123 Elm St,Springfield,IL,62701,123-45-6789
     2,duplicate,Smyth,John,M,01/01/1990,,123 Elm St.,Springfield,IL,62701,123-45-6789
-    3,unique,Doe,Jane,F,02/02/1992,,456 Oak St,Springfield,IL,62702,987-65-4321
-    """
+    3,unique,Doe,Jane,F,02/02/1992,,456 Oak St,Springfield,IL,62702,987-65-4321"""
+    
     with open('accuracy.csv', 'w',encoding='utf-8') as f:
         f.write(test_data_csv)
 

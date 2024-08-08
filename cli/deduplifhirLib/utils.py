@@ -94,35 +94,17 @@ def parse_test_data(path,marked=False):
     df_list = []
     # reading csv file
     with open(path, 'r',encoding="utf-8") as csvfile:
-        # creating a csv reader object
-        csvreader = csv.reader(csvfile)
 
-        _ = next(csvreader)
-
-
-        for row in csvreader:
+        for row in csv.DictReader(csvfile,skipinitialspace=True):
             #print(row[2])
             try:
                 #dob = datetime.datetime.strptime(row[5], '%m/%d/%Y').strftime('%Y-%m-%d')
                 patient_dict = {
                     "unique_id": uuid.uuid4().int,
-                    "family_name": [normalize_name_text(row[2])],
-                    "given_name": [normalize_name_text(row[3])],
-                    "gender": [row[4]],
-                    "birth_date": [normalize_date_text(row[5])],
-                    "phone": [row[6]],
-                    "street_address0": [normalize_addr_text(row[7])],
-                    "city0": [normalize_addr_text(row[8])],
-                    "state0": [normalize_addr_text(row[9])],
-                    "postal_code0": [row[10]],
-                    "street_address1": [normalize_addr_text(row[11])],
-                    "city1": [normalize_addr_text(row[12])],
-                    "state1": [normalize_addr_text(row[13])],
-                    "postal_code1": [row[14]],
-                    "ssn": [row[15]],
                     "path": ["TRAINING" if marked else ""]
                 }
-
+                patient_dict.update({k.lower():[v] for k,v in row.items()})
+                #print(len(row))
                 df_list.append(pd.DataFrame(patient_dict))
             except IndexError:
                 print("could not read row")
