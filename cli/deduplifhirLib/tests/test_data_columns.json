@@ -43,6 +43,24 @@
                 "type" : "postcode"
             },
             {
+                "name" : "street_address1",
+                "type" : "street_address",
+                "transposition_chars": 1,
+                "mistype_chars": 1
+            },
+            {
+                "name" : "city1",
+                "type" : "city"
+            },
+            {
+                "name" : "state1",
+                "type" : "state"
+            }, 
+            {
+                "name" : "postal_code1",
+                "type" : "postcode"
+            },
+            {
                 "name" : "SSN",
                 "type" : "ssn",
                 "transposition_chars": 1

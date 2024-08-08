@@ -78,7 +78,7 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
     print(f"Read fhir data in {time.time() - start} seconds")
     print("Done parsing fhir data.")
 
-    return pd.concat(df_list)
+    return pd.concat(df_list,axis=0,ignore_index=True)
 
 def parse_test_data(path,marked=False):
     """
@@ -115,7 +115,11 @@ def parse_test_data(path,marked=False):
                     "city0": [normalize_addr_text(row[8])],
                     "state0": [normalize_addr_text(row[9])],
                     "postal_code0": [row[10]],
-                    "ssn": [row[11]],
+                    "street_address1": [normalize_addr_text(row[11])],
+                    "city1": [normalize_addr_text(row[12])],
+                    "state1": [normalize_addr_text(row[13])],
+                    "postal_code1": [row[14]],
+                    "ssn": [row[15]],
                     "path": ["TRAINING" if marked else ""]
                 }
 
@@ -154,11 +158,11 @@ def use_linker(func):
         training_df = parse_test_data(dir_path + '/tests/test_data.csv',marked=True)
 
         if fmt == "FHIR":
-            train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
+            train_frame = pd.concat([parse_fhir_data(data_dir),training_df],axis=0,ignore_index=True)
         elif fmt == "QRDA":
-            train_frame = pd.concat([parse_qrda_data(data_dir),training_df])
+            train_frame = pd.concat([parse_qrda_data(data_dir),training_df],axis=0,ignore_index=True)
         elif fmt == "CSV":
-            train_frame = pd.concat([parse_test_data(data_dir),training_df])
+            train_frame = pd.concat([parse_test_data(data_dir),training_df],axis=0,ignore_index=True)
         elif fmt == "TEST":
             train_frame = training_df
         elif fmt == "DF":
