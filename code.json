@@ -1,10 +1,10 @@
 {
-    "project_type": "Tools",
-    "user_input": "Yes",
-    "project_fisma_level": "Moderate",
+    "projectType": "Tools",
+    "userInput": "Yes",
+    "fismaLevel": "Moderate",
     "group": "CMS/OA/DSAC",
-    "subset_in_healthcare": "Operational",
-    "user_type": "Providers",
-    "repository_host": "Github.com",
-    "maturity_model_tier": "3"
+    "subsetInHealthcare": "Operational",
+    "userType": "Providers",
+    "repositoryHost": "Github.com",
+    "maturityModelTier": "3"
 }
