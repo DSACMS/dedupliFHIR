@@ -17,7 +17,7 @@ import pandas as pd
 from splink import DuckDBAPI, Linker
 
 from deduplifhirLib.settings import (
-    SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, BLOCKING_RULE_STRINGS, read_fhir_data
+    create_settings, BLOCKING_RULE_STRINGS, read_fhir_data
 )
 from deduplifhirLib.normalization import (
     normalize_addr_text, normalize_name_text, normalize_date_text
@@ -193,10 +193,11 @@ def use_linker(func):
                 raise e
 
         #lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-        lnkr = Linker(train_frame,SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE,db_api=DuckDBAPI())
+        lnkr = Linker(train_frame,create_settings(train_frame),db_api=DuckDBAPI())
         lnkr.training.estimate_u_using_random_sampling(max_pairs=5e6)
 
         kwargs['linker'] = lnkr
         return func(*args,**kwargs)
 
     return wrapper
+SPLINK_LINKER_STTINGS_PATIENT_DEDUPE

@@ -32,38 +32,45 @@ BLOCKING_RULE_STRINGS = splink_settings_dict["blocking_rules_to_generate_predict
 #blocking_rules = list(
 #    map(block_on,blocking_rules))
 
-blocking_rules = []
-for rule in BLOCKING_RULE_STRINGS:
-    if isinstance(rule, list):
-        blocking_rules.append(block_on(*rule))
-    else:
-        blocking_rules.append(block_on(rule))
+def get_additional_comparison_rules(parsed_data_df):
+    
+    parsed_data_columns = parsed_data_df.columns
+
+    for col in parsed_data_columns:
+        if 'street_address' in col:
+            yield cl.ExactMatch(col).configure(term_frequency_adjustments=True)
+        elif 'postal_code' in col:
+            yield cl.PostcodeComparison(col)
+
+def create_settings(parsed_data_df):
+    blocking_rules = []
+    for rule in BLOCKING_RULE_STRINGS:
+        if isinstance(rule, list):
+            blocking_rules.append(block_on(*rule))
+        else:
+            blocking_rules.append(block_on(rule))
+
+    comparison_rules = [item for item in get_additional_comparison_rules(parsed_data_df)]
+    comparison_rules.extend([
+        cl.ExactMatch("phone").configure(
+            term_frequency_adjustments=True
+        ),
+        cl.NameComparison("given_name").configure(
+            term_frequency_adjustments=True
+        ),
+        cl.NameComparison("family_name").configure(
+            term_frequency_adjustments=True
+        ),
+        cl.DateOfBirthComparison("birth_date",input_is_string=True)]
+    )
 
 
-comparison_rules = [
-    cl.ExactMatch("street_address0").configure(
-        term_frequency_adjustments=True
-    ),
-    cl.ExactMatch("phone").configure(
-        term_frequency_adjustments=True
-    ),
-    cl.NameComparison("given_name").configure(
-        term_frequency_adjustments=True
-    ),
-    cl.NameComparison("family_name").configure(
-        term_frequency_adjustments=True
-    ),
-    cl.DateOfBirthComparison("birth_date",input_is_string=True),
-    cl.PostcodeComparison("postal_code0")
-]
-
-
-SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE = SettingsCreator(
-    link_type=splink_settings_dict["link_type"],
-    blocking_rules_to_generate_predictions=blocking_rules,
-    comparisons=comparison_rules,
-    max_iterations=splink_settings_dict["max_iterations"],
-    em_convergence=splink_settings_dict["em_convergence"])
+    return SettingsCreator(
+        link_type=splink_settings_dict["link_type"],
+        blocking_rules_to_generate_predictions=blocking_rules,
+        comparisons=comparison_rules,
+        max_iterations=splink_settings_dict["max_iterations"],
+        em_convergence=splink_settings_dict["em_convergence"])
 
 
 
