@@ -156,7 +156,7 @@ def test_dedupe_accuracy(cli_runner):
     1,duplicate,Smith,John,M,01/01/1990,,123 Elm St,Springfield,IL,62701,123-45-6789
     2,duplicate,Smyth,John,M,01/01/1990,,123 Elm St.,Springfield,IL,62701,123-45-6789
     3,unique,Doe,Jane,F,02/02/1992,,456 Oak St,Springfield,IL,62702,987-65-4321"""
-    
+
     with open('accuracy.csv', 'w',encoding='utf-8') as f:
         f.write(test_data_csv)
 

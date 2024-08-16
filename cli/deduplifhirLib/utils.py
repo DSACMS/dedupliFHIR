@@ -8,7 +8,6 @@ generation for Splink.
 import os
 import time
 import csv
-import datetime
 import uuid
 from multiprocessing import Pool
 from functools import wraps
@@ -82,6 +81,16 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
 
 
 def parse_csv_dict_row_addresses(row):
+    """
+    This function parses a row of patient data and normalizes any
+    address data that is found
+
+    Arguments:
+        row: The row that is being parsed taken as a dictionary
+    
+    Returns:
+        The row object with address data normalized and returned as a dict
+    """
     parsed = row
 
     address_keys = ["street_address","city","state","postal_code"]
@@ -89,16 +98,26 @@ def parse_csv_dict_row_addresses(row):
     for k,v in row.items():
         if any(match in k.lower() for match in address_keys):
             parsed[k] = normalize_addr_text(v)
-    
+
     return parsed
 
 def parse_csv_dict_row_names(row):
+    """
+    This function parses a row of patient data and normalizes any
+    name data that is found
+
+    Arguments:
+        row: The row that is being parsed taken as a dictionary
+    
+    Returns:
+        The row object with name data normalized and returned as a dict
+    """
     parsed = row
 
     for k,v in row.items():
         if '_name' in k.lower():
             parsed[k] = normalize_name_text(v)
-    
+
     return parsed
 
 def parse_test_data(path,marked=False):
@@ -131,7 +150,7 @@ def parse_test_data(path,marked=False):
 
                 patient_dict.update({k.lower():[v] for k,v in row.items()})
                 #print(len(row))
-                
+
                 #print(patient_dict)
                 df_list.append(pd.DataFrame(patient_dict))
             except IndexError:
@@ -168,11 +187,17 @@ def use_linker(func):
         training_df = parse_test_data(dir_path + '/tests/test_data.csv',marked=True)
 
         if fmt == "FHIR":
-            train_frame = pd.concat([parse_fhir_data(data_dir),training_df],axis=0,ignore_index=True)
+            train_frame = pd.concat(
+                [parse_fhir_data(data_dir),training_df],axis=0,ignore_index=True
+            )
         elif fmt == "QRDA":
-            train_frame = pd.concat([parse_qrda_data(data_dir),training_df],axis=0,ignore_index=True)
+            train_frame = pd.concat(
+                [parse_qrda_data(data_dir),training_df],axis=0,ignore_index=True
+            )
         elif fmt == "CSV":
-            train_frame = pd.concat([parse_test_data(data_dir),training_df],axis=0,ignore_index=True)
+            train_frame = pd.concat(
+                [parse_test_data(data_dir),training_df],axis=0,ignore_index=True
+            )
         elif fmt == "TEST":
             train_frame = training_df
         elif fmt == "DF":
