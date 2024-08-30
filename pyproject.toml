@@ -19,7 +19,7 @@ python-dateutil = "^2.9.0.post0"
 text2num = "^2.5.1"
 
 [tool.poetry.dev-dependencies]
-black = "^24.4.2"
+black = "^24.8.0"
 flake8 = "^7.1.0"
 isort = "^5.13.2"
 
