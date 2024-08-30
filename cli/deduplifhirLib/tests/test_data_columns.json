@@ -25,21 +25,39 @@
                 "mistype_chars": 1
             },
             {
-                "name" : "street_address",
+                "name" : "street_address0",
                 "type" : "street_address",
                 "transposition_chars": 1,
                 "mistype_chars": 1
             },
             {
-                "name" : "city",
+                "name" : "city0",
                 "type" : "city"
             },
             {
-                "name" : "state",
+                "name" : "state0",
                 "type" : "state"
             }, 
             {
-                "name" : "postal_code",
+                "name" : "postal_code0",
+                "type" : "postcode"
+            },
+            {
+                "name" : "street_address1",
+                "type" : "street_address",
+                "transposition_chars": 1,
+                "mistype_chars": 1
+            },
+            {
+                "name" : "city1",
+                "type" : "city"
+            },
+            {
+                "name" : "state1",
+                "type" : "state"
+            }, 
+            {
+                "name" : "postal_code1",
                 "type" : "postcode"
             },
             {
