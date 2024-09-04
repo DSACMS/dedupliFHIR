@@ -3,13 +3,14 @@ Module to define cli for ecqm-deduplifhir library.
 """
 import os
 import os.path
+import tempfile
 import pandas as pd
 import click
 from splink import block_on
 from deduplifhirLib.utils import use_linker
 
 
-CACHE_DIR = "/tmp/"
+CACHE_DIR = tempfile.gettempdir()
 
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
 @click.group()
