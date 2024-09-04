@@ -27,7 +27,8 @@ h2,
   width: 100%;
 }
 
-.usa-alert {
+.usa-alert,
+#results-spreadsheet-instructions {
   display: none;
 }
 
