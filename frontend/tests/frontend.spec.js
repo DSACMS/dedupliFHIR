@@ -158,7 +158,9 @@ test("download file", async () => {
   expect(successAlert).not.toBeNull();
   expect(successAlert.locator("p")).toHaveText("Results file downloaded!");
 
-  const instructions = await window.locator("#results-spreadsheet-instructions");
+  const instructions = await window.locator(
+    "#results-spreadsheet-instructions",
+  );
   expect(instructions).not.toBeNull();
 
   expect((await fs.promises.stat(xlsxPath)).size).toBeGreaterThan(100 * 1024); // file size should be > 100 KB

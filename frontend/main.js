@@ -117,7 +117,7 @@ async function handleSaveFile() {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900, 
+    width: 900,
     height: 700,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
