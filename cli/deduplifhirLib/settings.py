@@ -23,7 +23,7 @@ from deduplifhirLib.normalization import (
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-with open(dir_path + '/splink_settings.json',"r",encoding="utf-8") as f:
+with open(os.path.join(dir_path,'splink_settings.json'),"r",encoding="utf-8") as f:
     splink_settings_dict = json.load(f)
 
 
