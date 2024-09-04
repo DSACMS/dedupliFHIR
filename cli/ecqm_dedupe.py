@@ -57,8 +57,12 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     unique_records = deduped_record_mapping.drop_duplicates(subset=['cluster_id'])
     #cache results
     #TODO: make platform agnostic
-    deduped_record_mapping.to_csv(CACHE_DIR + "dedupe-cache.csv")
-    unique_records.to_csv(CACHE_DIR + "unique-records-cache.csv")
+    deduped_record_mapping.to_csv(
+        os.path.join(CACHE_DIR, "dedupe-cache.csv")
+    )
+    unique_records.to_csv(
+        os.path.join(CACHE_DIR, "unique-records-cache.csv")
+    )
 
 
     _, extension = os.path.splitext(output_path)
@@ -86,8 +90,8 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
 @click.command()
 def clear_cache():
     """Clear cache of dedupliFHIED patient data"""
-    os.remove(CACHE_DIR + "unique-records-cache.csv")
-    os.remove(CACHE_DIR + "dedupe-cache.csv")
+    os.remove(os.path.join(CACHE_DIR, "unique-records-cache.csv"))
+    os.remove(os.path.join(CACHE_DIR, "dedupe-cache.csv"))
     print("Cache cleared.")
 
 @click.command()
@@ -96,7 +100,7 @@ def status():
 
     try:
         #Print amount of duplicates found in cache if found
-        cache_df = pd.read_csv(CACHE_DIR + "dedupe-cache.csv")
+        cache_df = pd.read_csv(os.path.join(CACHE_DIR, "dedupe-cache.csv"))
     except FileNotFoundError:
         print("Cache is empty")
         return
