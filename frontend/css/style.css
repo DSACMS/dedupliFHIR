@@ -27,6 +27,10 @@ h2,
   width: 100%;
 }
 
+.usa-button-group {
+  justify-content: center;
+}
+
 .usa-alert,
 #results-spreadsheet-instructions {
   display: none;
