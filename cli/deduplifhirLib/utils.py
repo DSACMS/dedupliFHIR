@@ -12,7 +12,6 @@ import uuid
 from multiprocessing import Pool
 from functools import wraps
 import pandas as pd
-#from splink.duckdb.linker import DuckDBLinker
 from splink import DuckDBAPI, Linker
 
 from deduplifhirLib.settings import (

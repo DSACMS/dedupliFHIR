@@ -56,7 +56,6 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     #Calculate only uniques
     unique_records = deduped_record_mapping.drop_duplicates(subset=['cluster_id'])
     #cache results
-    #TODO: make platform agnostic
     deduped_record_mapping.to_csv(
         os.path.join(CACHE_DIR, "dedupe-cache.csv")
     )
