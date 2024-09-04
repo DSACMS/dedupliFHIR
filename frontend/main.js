@@ -16,6 +16,7 @@ function findPython() {
   const possibilities = [
     // In packaged app
     path.join(process.resourcesPath, "python", "bin", "python3.11"),
+    path.join(process.resourcesPath, "python", "bin", "python3.12"),
     // In development
     path.join("..", ".venv", "bin", "python"),
   ];
