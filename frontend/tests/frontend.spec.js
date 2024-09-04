@@ -133,6 +133,7 @@ test("finished results present", async () => {
   expect(content.locator("#download")).not.toBeNull();
 
   expect(content.locator("#download-success-alert")).toBeHidden();
+  expect(content.locator("#results-spreadsheet-instructions")).toBeHidden();
   expect(content.locator("#download-fail-alert")).toBeHidden();
 });
 
@@ -156,6 +157,9 @@ test("download file", async () => {
   const successAlert = await window.locator("#download-success-alert");
   expect(successAlert).not.toBeNull();
   expect(successAlert.locator("p")).toHaveText("Results file downloaded!");
+
+  const instructions = await window.locator("#results-spreadsheet-instructions");
+  expect(instructions).not.toBeNull();
 
   expect((await fs.promises.stat(xlsxPath)).size).toBeGreaterThan(100 * 1024); // file size should be > 100 KB
 });
