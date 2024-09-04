@@ -23,8 +23,12 @@ def generate_mock_data_fixture(request):
     """
     with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as temp_file:
         temp_file.close()
-        generate_dup_data('deduplifhirLib/tests/test_data_columns.json',
-         temp_file.name, rows=request.param, duprate=0.2)
+        generate_dup_data(
+            os.path.join(
+                'deduplifhirLib','tests','test_data_columns.json'
+            ),
+            temp_file.name, rows=request.param, duprate=0.2
+        )
         sample_df = pd.read_csv(temp_file.name)
         assert sample_df.shape[0] == request.param, f"Expected {request.param} deduplicated records"
         print(sample_df)
@@ -45,7 +49,7 @@ def test_dedupe_data_with_csv_output(cli_runner):
     """
 
     # Prepare test data paths
-    bad_data_path = 'deduplifhirLib/tests/test_data.csv'
+    bad_data_path = os.path.join('deduplifhirLib','tests','test_data.csv')
     output_path = 'output.csv'
     print(os.getcwd())
     # Simulate CLI command execution
@@ -107,7 +111,7 @@ def test_dedupe_data_with_json_output(cli_runner):
     """
 
     # Prepare test data paths
-    bad_data_path = 'deduplifhirLib/tests/test_data.csv'
+    bad_data_path = os.path.join('deduplifhirLib','tests','test_data.csv')
     output_path = 'output.json'
 
     # Simulate CLI command execution
@@ -129,7 +133,7 @@ def test_dedupe_data_with_invalid_format(cli_runner):
     """
 
     # Prepare invalid test data paths
-    bad_data_path = 'deduplifhirLib/tests/test_data_invalid.txt'
+    bad_data_path = os.path.join('deduplifhirLib','tests','test_data_invalid.txt')
     output_path = 'output.csv'
 
     # Write some invalid content to the test file

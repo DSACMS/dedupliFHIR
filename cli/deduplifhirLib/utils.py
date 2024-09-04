@@ -12,7 +12,6 @@ import uuid
 from multiprocessing import Pool
 from functools import wraps
 import pandas as pd
-#from splink.duckdb.linker import DuckDBLinker
 from splink import DuckDBAPI, Linker
 
 from deduplifhirLib.settings import (
@@ -184,7 +183,12 @@ def use_linker(func):
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        training_df = parse_test_data(dir_path + '/tests/test_data.csv',marked=True)
+        training_df = parse_test_data(
+            os.path.join(
+                dir_path, 'tests','test_data.csv'
+            ),
+            marked=True
+        )
 
         if fmt == "FHIR":
             train_frame = pd.concat(
