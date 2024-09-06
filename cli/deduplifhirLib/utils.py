@@ -13,9 +13,10 @@ from multiprocessing import Pool
 from functools import wraps
 import pandas as pd
 from splink import DuckDBAPI, Linker
+from splink.blocking_analysis import cumulative_comparisons_to_be_scored_from_blocking_rules_data
 
 from deduplifhirLib.settings import (
-    create_settings, BLOCKING_RULE_STRINGS, read_fhir_data
+    create_settings, BLOCKING_RULE_STRINGS, read_fhir_data, create_blocking_rules
 )
 from deduplifhirLib.normalization import (
     normalize_addr_text, normalize_name_text, normalize_date_text
@@ -92,7 +93,7 @@ def parse_csv_dict_row_addresses(row):
     """
     parsed = row
 
-    address_keys = ["street_address","city","state","postal_code"]
+    address_keys = ["address","city","state","postal_code"]
 
     for k,v in row.items():
         if any(match in k.lower() for match in address_keys):
@@ -147,7 +148,7 @@ def parse_test_data(path,marked=False):
                 normal_row = parse_csv_dict_row_names(normal_row)
                 normal_row["birth_date"] = normalize_date_text(normal_row["birth_date"])
 
-                patient_dict.update({k.lower():[v] for k,v in row.items()})
+                patient_dict.update({k.lower():[v] for k,v in normal_row.items()})
                 #print(len(row))
 
                 #print(patient_dict)
@@ -222,6 +223,17 @@ def use_linker(func):
                 raise e
 
         #lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
+
+        preprocessing_metadata = cumulative_comparisons_to_be_scored_from_blocking_rules_data(
+            table_or_tables=train_frame,
+            blocking_rules=create_blocking_rules(),
+            link_type="dedupe_only",
+            db_api=DuckDBAPI()
+        )
+
+        print("Stats for nerds:")
+        print(preprocessing_metadata.to_string())
+
         lnkr = Linker(train_frame,create_settings(train_frame),db_api=DuckDBAPI())
         lnkr.training.estimate_u_using_random_sampling(max_pairs=5e6)
 
