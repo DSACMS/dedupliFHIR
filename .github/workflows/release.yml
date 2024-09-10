@@ -90,4 +90,4 @@ jobs:
         with:
           name: DedupliFHIR-macOS
           path: |
-            dist/DedupliFHIR-linux.zip
+            frontend/dist/DedupliFHIR-linux.zip
