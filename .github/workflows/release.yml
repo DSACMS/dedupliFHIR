@@ -57,7 +57,6 @@ jobs:
         run: |
           poetry install --no-interaction
 
-
       - name: Install Node dependencies
         run: npm install
 
@@ -73,11 +72,15 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           cd dist
-          ditto -c -k --keepParent DedupliFHIR*.AppImage DedupliFHIR.app.zip
+          sudo apt-get install zip
+          mkdir DedupliFHIR-linux
+          mv DedupliFHIR*.AppImage DedupliFHIR-linux
+          mv deduplifhir-app*.snap DedupliFHIR-linux
+          zip -r DedupliFHIR-linux.zip DedupliFHIR-linux
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: DedupliFHIR-macOS
           path: |
-            dist/DedupliFHIR.app.zip
+            dist/DedupliFHIR-linux.zip
