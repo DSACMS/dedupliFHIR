@@ -69,9 +69,9 @@ jobs:
         run: npm run dist
 
       - name: Create zip file
+        working-directory: ./frontend/dist
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          cd dist
           sudo apt-get install zip
           mkdir DedupliFHIR-linux
           mv DedupliFHIR*.AppImage DedupliFHIR-linux
