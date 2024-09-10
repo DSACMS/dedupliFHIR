@@ -73,10 +73,17 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt-get install zip
+          pwd
+          ls
           mkdir DedupliFHIR-linux
           mv DedupliFHIR*.AppImage DedupliFHIR-linux
           mv deduplifhir-app*.snap DedupliFHIR-linux
           zip -r DedupliFHIR-linux.zip DedupliFHIR-linux
+
+      - name: Check contents
+        run: |
+          ls
+          pwd
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
