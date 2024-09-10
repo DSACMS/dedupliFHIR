@@ -8,16 +8,15 @@ generation for Splink.
 import os
 import time
 import csv
-import datetime
 import uuid
 from multiprocessing import Pool
 from functools import wraps
 import pandas as pd
-#from splink.duckdb.linker import DuckDBLinker
 from splink import DuckDBAPI, Linker
+from splink.blocking_analysis import cumulative_comparisons_to_be_scored_from_blocking_rules_data
 
 from deduplifhirLib.settings import (
-    SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE, BLOCKING_RULE_STRINGS, read_fhir_data
+    create_settings, BLOCKING_RULE_STRINGS, read_fhir_data, create_blocking_rules
 )
 from deduplifhirLib.normalization import (
     normalize_addr_text, normalize_name_text, normalize_date_text
@@ -78,7 +77,48 @@ def parse_fhir_data(path, cpu_cores=4,parse_function=read_fhir_data):
     print(f"Read fhir data in {time.time() - start} seconds")
     print("Done parsing fhir data.")
 
-    return pd.concat(df_list)
+    return pd.concat(df_list,axis=0,ignore_index=True)
+
+
+def parse_csv_dict_row_addresses(row):
+    """
+    This function parses a row of patient data and normalizes any
+    address data that is found
+
+    Arguments:
+        row: The row that is being parsed taken as a dictionary
+    
+    Returns:
+        The row object with address data normalized and returned as a dict
+    """
+    parsed = row
+
+    address_keys = ["address","city","state","postal_code"]
+
+    for k,v in row.items():
+        if any(match in k.lower() for match in address_keys):
+            parsed[k] = normalize_addr_text(v)
+
+    return parsed
+
+def parse_csv_dict_row_names(row):
+    """
+    This function parses a row of patient data and normalizes any
+    name data that is found
+
+    Arguments:
+        row: The row that is being parsed taken as a dictionary
+    
+    Returns:
+        The row object with name data normalized and returned as a dict
+    """
+    parsed = row
+
+    for k,v in row.items():
+        if '_name' in k.lower():
+            parsed[k] = normalize_name_text(v)
+
+    return parsed
 
 def parse_test_data(path,marked=False):
     """
@@ -94,31 +134,24 @@ def parse_test_data(path,marked=False):
     df_list = []
     # reading csv file
     with open(path, 'r',encoding="utf-8") as csvfile:
-        # creating a csv reader object
-        csvreader = csv.reader(csvfile)
 
-        _ = next(csvreader)
-
-
-        for row in csvreader:
+        for row in csv.DictReader(csvfile,skipinitialspace=True):
             #print(row[2])
             try:
                 #dob = datetime.datetime.strptime(row[5], '%m/%d/%Y').strftime('%Y-%m-%d')
                 patient_dict = {
                     "unique_id": uuid.uuid4().int,
-                    "family_name": [normalize_name_text(row[2])],
-                    "given_name": [normalize_name_text(row[3])],
-                    "gender": [row[4]],
-                    "birth_date": [normalize_date_text(row[5])],
-                    "phone": [row[6]],
-                    "street_address": [normalize_addr_text(row[7])],
-                    "city": [normalize_addr_text(row[8])],
-                    "state": [normalize_addr_text(row[9])],
-                    "postal_code": [row[10]],
-                    "ssn": [row[11]],
                     "path": ["TRAINING" if marked else ""]
                 }
 
+                normal_row = parse_csv_dict_row_addresses(row)
+                normal_row = parse_csv_dict_row_names(normal_row)
+                normal_row["birth_date"] = normalize_date_text(normal_row["birth_date"])
+
+                patient_dict.update({k.lower():[v] for k,v in normal_row.items()})
+                #print(len(row))
+
+                #print(patient_dict)
                 df_list.append(pd.DataFrame(patient_dict))
             except IndexError:
                 print("could not read row")
@@ -151,14 +184,25 @@ def use_linker(func):
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        training_df = parse_test_data(dir_path + '/tests/test_data.csv',marked=True)
+        training_df = parse_test_data(
+            os.path.join(
+                dir_path, 'tests','test_data.csv'
+            ),
+            marked=True
+        )
 
         if fmt == "FHIR":
-            train_frame = pd.concat([parse_fhir_data(data_dir),training_df])
+            train_frame = pd.concat(
+                [parse_fhir_data(data_dir),training_df],axis=0,ignore_index=True
+            )
         elif fmt == "QRDA":
-            train_frame = pd.concat([parse_qrda_data(data_dir),training_df])
+            train_frame = pd.concat(
+                [parse_qrda_data(data_dir),training_df],axis=0,ignore_index=True
+            )
         elif fmt == "CSV":
-            train_frame = pd.concat([parse_test_data(data_dir),training_df])
+            train_frame = pd.concat(
+                [parse_test_data(data_dir),training_df],axis=0,ignore_index=True
+            )
         elif fmt == "TEST":
             train_frame = training_df
         elif fmt == "DF":
@@ -179,7 +223,18 @@ def use_linker(func):
                 raise e
 
         #lnkr = DuckDBLinker(train_frame, SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE)
-        lnkr = Linker(train_frame,SPLINK_LINKER_SETTINGS_PATIENT_DEDUPE,db_api=DuckDBAPI())
+
+        preprocessing_metadata = cumulative_comparisons_to_be_scored_from_blocking_rules_data(
+            table_or_tables=train_frame,
+            blocking_rules=create_blocking_rules(),
+            link_type="dedupe_only",
+            db_api=DuckDBAPI()
+        )
+
+        print("Stats for nerds:")
+        print(preprocessing_metadata.to_string())
+
+        lnkr = Linker(train_frame,create_settings(train_frame),db_api=DuckDBAPI())
         lnkr.training.estimate_u_using_random_sampling(max_pairs=5e6)
 
         kwargs['linker'] = lnkr

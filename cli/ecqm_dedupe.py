@@ -3,13 +3,14 @@ Module to define cli for ecqm-deduplifhir library.
 """
 import os
 import os.path
+import tempfile
 import pandas as pd
 import click
 from splink import block_on
 from deduplifhirLib.utils import use_linker
 
 
-CACHE_DIR = "/tmp/"
+CACHE_DIR = tempfile.gettempdir()
 
 #Register cli as a group of commands invoked in the format ecqm_dededuplifhir <bad_data> <output>
 @click.group()
@@ -35,7 +36,7 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     linker.training.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training)
 
-    blocking_rule_for_training = block_on("street_address", "postal_code")
+    blocking_rule_for_training = block_on("street_address0", "postal_code0")
     linker.training.estimate_parameters_using_expectation_maximisation(
         blocking_rule_for_training)
 
@@ -55,9 +56,12 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
     #Calculate only uniques
     unique_records = deduped_record_mapping.drop_duplicates(subset=['cluster_id'])
     #cache results
-    #TODO: make platform agnostic
-    deduped_record_mapping.to_csv(CACHE_DIR + "dedupe-cache.csv")
-    unique_records.to_csv(CACHE_DIR + "unique-records-cache.csv")
+    deduped_record_mapping.to_csv(
+        os.path.join(CACHE_DIR, "dedupe-cache.csv")
+    )
+    unique_records.to_csv(
+        os.path.join(CACHE_DIR, "unique-records-cache.csv")
+    )
 
 
     _, extension = os.path.splitext(output_path)
@@ -85,8 +89,8 @@ def dedupe_data(fmt,bad_data_path, output_path,linker=None): #pylint: disable=un
 @click.command()
 def clear_cache():
     """Clear cache of dedupliFHIED patient data"""
-    os.remove(CACHE_DIR + "unique-records-cache.csv")
-    os.remove(CACHE_DIR + "dedupe-cache.csv")
+    os.remove(os.path.join(CACHE_DIR, "unique-records-cache.csv"))
+    os.remove(os.path.join(CACHE_DIR, "dedupe-cache.csv"))
     print("Cache cleared.")
 
 @click.command()
@@ -95,7 +99,7 @@ def status():
 
     try:
         #Print amount of duplicates found in cache if found
-        cache_df = pd.read_csv(CACHE_DIR + "dedupe-cache.csv")
+        cache_df = pd.read_csv(os.path.join(CACHE_DIR, "dedupe-cache.csv"))
     except FileNotFoundError:
         print("Cache is empty")
         return

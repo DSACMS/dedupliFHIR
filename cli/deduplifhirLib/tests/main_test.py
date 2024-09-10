@@ -23,8 +23,12 @@ def generate_mock_data_fixture(request):
     """
     with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as temp_file:
         temp_file.close()
-        generate_dup_data('deduplifhirLib/tests/test_data_columns.json',
-         temp_file.name, rows=request.param, duprate=0.2)
+        generate_dup_data(
+            os.path.join(
+                'deduplifhirLib','tests','test_data_columns.json'
+            ),
+            temp_file.name, rows=request.param, duprate=0.2
+        )
         sample_df = pd.read_csv(temp_file.name)
         assert sample_df.shape[0] == request.param, f"Expected {request.param} deduplicated records"
         print(sample_df)
@@ -45,7 +49,7 @@ def test_dedupe_data_with_csv_output(cli_runner):
     """
 
     # Prepare test data paths
-    bad_data_path = 'deduplifhirLib/tests/test_data.csv'
+    bad_data_path = os.path.join('deduplifhirLib','tests','test_data.csv')
     output_path = 'output.csv'
     print(os.getcwd())
     # Simulate CLI command execution
@@ -66,7 +70,7 @@ def test_dedupe_data_with_specific_csv(cli_runner):
     Test dedupe_data function with specific CSV data to verify deduplication.
     """
     # Prepare test data
-    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
+    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address0,city0,state0,postal_code0,SSN
 8,9b0b0b7c-e05e-4c89-991d-268eab2483f7,Obrien,Curtis,M,07/02/1996,,300 Amy Corners Suite 735,Rileytown,Alaska,60281,480-21-0833
 342,9b0b0b7c-e05e-4c89-991d-268eab2483f7,Orbien,Cutris,M,07/02/1996,,300 Amy oCrenrs Suite 735,Rileytown,Alaska,60281,480-210-833
 502,9b0b0b7c-e05e-4c89-991d-268eab2483f7,bOrien,Curtsi,M,07/02/1996,,300 AmyCo rners Suite 735,Rileytown,Alaska,60281,480-21-8033
@@ -78,8 +82,7 @@ def test_dedupe_data_with_specific_csv(cli_runner):
 273,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russlel,Lnidsay,F,02/05/1977,,2110 Kimbelry Vilalges Apt. 639,New David,Wyoming,52082,211-52-6989
 311,04584982-ae7a-44a1-b4f0-e927a8bab0e1,Russlel,Lindasy,F,02/05/1977,,2110 Kimbelry Villgaes Apt. 639,New David,Wyoming,52082,211-52-9698
 652,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lidnsay,F,02/05/1977,,2110 Kimberly Vlilagse Apt. 639,New David,Wyoming,52082,121-52-6998
-726,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lindasy,F,02/05/1977,,2110 Kmiberly Vilalges Apt. 639,New David,Wyoming,52082,2115-2-6
-    """
+726,04584982-ae7a-44a1-b4f0-e927a8bab0e1,uRssell,Lindasy,F,02/05/1977,,2110 Kmiberly Vilalges Apt. 639,New David,Wyoming,52082,2115-2-6S"""
 
     # Write test data to specific.csv
     with open('specific.csv', 'w',encoding='utf-8') as f:
@@ -108,7 +111,7 @@ def test_dedupe_data_with_json_output(cli_runner):
     """
 
     # Prepare test data paths
-    bad_data_path = 'deduplifhirLib/tests/test_data.csv'
+    bad_data_path = os.path.join('deduplifhirLib','tests','test_data.csv')
     output_path = 'output.json'
 
     # Simulate CLI command execution
@@ -130,7 +133,7 @@ def test_dedupe_data_with_invalid_format(cli_runner):
     """
 
     # Prepare invalid test data paths
-    bad_data_path = 'deduplifhirLib/tests/test_data_invalid.txt'
+    bad_data_path = os.path.join('deduplifhirLib','tests','test_data_invalid.txt')
     output_path = 'output.csv'
 
     # Write some invalid content to the test file
@@ -153,11 +156,11 @@ def test_dedupe_accuracy(cli_runner):
     Test dedupe_data function for deduplication accuracy using a dataset with known duplicates.
     """
     # Prepare test data
-    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address,city,state,postal_code,SSN
+    test_data_csv = """id,truth_value,family_name,given_name,gender,birth_date,phone,street_address0,city0,state0,postal_code0,SSN
     1,duplicate,Smith,John,M,01/01/1990,,123 Elm St,Springfield,IL,62701,123-45-6789
     2,duplicate,Smyth,John,M,01/01/1990,,123 Elm St.,Springfield,IL,62701,123-45-6789
-    3,unique,Doe,Jane,F,02/02/1992,,456 Oak St,Springfield,IL,62702,987-65-4321
-    """
+    3,unique,Doe,Jane,F,02/02/1992,,456 Oak St,Springfield,IL,62702,987-65-4321"""
+
     with open('accuracy.csv', 'w',encoding='utf-8') as f:
         f.write(test_data_csv)
 

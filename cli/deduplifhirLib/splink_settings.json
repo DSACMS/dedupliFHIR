@@ -3,7 +3,6 @@
     "blocking_rules_to_generate_predictions": [
          "birth_date",
         ["ssn", "birth_date"],
-        ["ssn", "street_address"],
         "phone"
     ],
     "max_iterations": 20,

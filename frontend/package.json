@@ -52,6 +52,7 @@
     "electron-builder": "^24.13.3",
     "eslint": "^8.57.0",
     "prettier": "^3.3.3"
+
   },
   "dependencies": {
     "@uswds/uswds": "3.8.2",

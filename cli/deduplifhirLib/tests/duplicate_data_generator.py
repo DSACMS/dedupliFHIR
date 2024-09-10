@@ -85,7 +85,7 @@ def generate_temp_files(config, fake_gen):
         fake_gen: Faker generation object
     """
 
-    tmp_dir = './temp'
+    tmp_dir = os.path.join(os.getcwd(), 'temp')
 
     with Pool(config['cpus']) as pool:
 
@@ -116,7 +116,7 @@ def combine_temp_files(tmp_dir, output_file):
     if os.path.isfile(output_file):
         os.remove(output_file)
     with open(output_file, 'wb') as outfile:
-        for filename in glob.glob(tmp_dir + '/*'):
+        for filename in glob.glob(os.path.join(tmp_dir, '*')):
             with open(filename, 'rb') as readfile:
                 shutil.copyfileobj(readfile, outfile)
 
@@ -144,7 +144,7 @@ def create_fake_data_file(config, fake_gen, tmp_dir, batch_size, remaining_rows)
     try:
         fake_data = get_fake_data(
             num_of_initial_rows, num_duplicated_rows, config['columns'], fake_gen)
-        temp_file_name = tmp_dir + '/' + str(uuid.uuid4())
+        temp_file_name = os.path.join(tmp_dir, str(uuid.uuid4()))
         print(f"Writing {rows_to_process} rows to file")
         fake_data.to_csv(temp_file_name, header=False)
     except Exception as e:
