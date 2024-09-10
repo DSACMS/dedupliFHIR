@@ -33,6 +33,20 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      - name: Install poetry
+        working-directory: .
+        run: pipx install poetry
+        
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+          
+      - name: Install dependencies
+        working-directory: .
+        run: poetry install --no-interaction
+
       - name: Install Node dependencies
         run: npm install
 
