@@ -51,7 +51,7 @@ jobs:
           ditto -c -k --keepParent DedupliFHIR*.AppImage DedupliFHIR.app.zip
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: DedupliFHIR-macOS
           path: |
