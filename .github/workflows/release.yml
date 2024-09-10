@@ -40,12 +40,23 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
+          working-directory: .
           python-version: ${{ matrix.python-version }}
           cache: 'poetry'
-          
+
+      - name: Set up and create virtual environment 
+        working-directory: .
+        run: |
+          poetry config --list
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+          poetry config --list
+
       - name: Install dependencies
         working-directory: .
-        run: poetry install --no-interaction
+        run: |
+          poetry install --no-interaction
+
 
       - name: Install Node dependencies
         run: npm install
