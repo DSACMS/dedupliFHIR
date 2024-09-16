@@ -1,7 +1,7 @@
 # Examples of using cluster_id to find possible duplicates
 
 ## What are cluster_id and unique_id?
-When you open a spreadsheet downloaded from DedupliFHIR in Microsoft Excel, you'll notice **2 new columns** not in your original file of patient data:
+When you open a spreadsheet saved from DedupliFHIR in Microsoft Excel, you'll notice **2 new columns** not in your original file of patient data:
 - **unique_id:** Identifies a specific patient record
 - **cluster_id:** Identifies a cluster of possible duplicates  
 
