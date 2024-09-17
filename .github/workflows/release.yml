@@ -94,6 +94,7 @@ jobs:
           path: |
             ./frontend/dist/deduplifhir-app*.snap
   release:
+    permissions: write-all
     name: Release ${{ github.ref_name }}
     needs: build
     runs-on: ubuntu-latest
