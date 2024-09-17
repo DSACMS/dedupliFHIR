@@ -83,14 +83,14 @@ jobs:
         with:
           name: DedupliFHIR-${{ github.ref_name }}.AppImage
           path: |
-            'frontend/dist/DedupliFHIR*.AppImage'
+            ./frontend/dist/DedupliFHIR*.AppImage
       - name: Upload Snap
         uses: actions/upload-artifact@v4
         if: startsWith(matrix.os, 'ubuntu')
         with:
           name: DedupliFHIR-${{ github.ref_name }}.snap
           path: |
-            'frontend/dist/deduplifhir-app*.snap'
+            ./frontend/dist/deduplifhir-app*.snap
   release:
     name: Release ${{ github.ref_name }}
     needs: build
