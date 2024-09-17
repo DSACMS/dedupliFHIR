@@ -14,7 +14,7 @@ jobs:
           base: CHANGELOG.md
           token: ${{ secrets.GITHUB_TOKEN }} 
 
-  publish:
+  build:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -77,26 +77,44 @@ jobs:
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
         run: npm run dist
 
-      - name: Create zip file
-        working-directory: ./frontend/dist
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          sudo apt-get install zip
-          pwd
-          ls
-          mkdir DedupliFHIR-linux
-          mv DedupliFHIR*.AppImage DedupliFHIR-linux
-          mv deduplifhir-app*.snap DedupliFHIR-linux
-          zip -r DedupliFHIR-linux.zip DedupliFHIR-linux
-
-      - name: Check contents
-        run: |
-          ls
-          pwd
-
-      - name: Upload artifact
+      - name: Upload AppImage
         uses: actions/upload-artifact@v4
+        if: startsWith(matrix.os, 'ubuntu')
         with:
-          name: DedupliFHIR-macOS
+          name: DedupliFHIR-${{ github.ref_name }}.AppImage
           path: |
-            frontend/dist/DedupliFHIR-linux.zip
+            'frontend/dist/DedupliFHIR*.AppImage'
+      - name: Upload Snap
+        uses: actions/upload-artifact@v4
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          name: DedupliFHIR-${{ github.ref_name }}.snap
+          path: |
+            'frontend/dist/deduplifhir-app*.snap'
+  release:
+    name: Release ${{ github.ref_name }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download DedupliFHIR-${{ github.ref_name }}.AppImage artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: DedupliFHIR-${{ github.ref_name }}.AppImage
+    - name: Download DedupliFHIR-${{ github.ref_name }}.snap artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: DedupliFHIR-${{ github.ref_name }}.snap
+    - name: Upload DedupliFHIR-${{ github.ref_name }}.AppImage to release
+      uses: svenstaro/upload-release-action@2.5.0
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref_name }}
+        file: DedupliFHIR-${{ github.ref_name }}.AppImage
+        overwrite: false
+    - name: Upload DedupliFHIR-${{ github.ref_name }}.snap to release
+      uses: svenstaro/upload-release-action@2.5.0
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref_name }}
+        file: DedupliFHIR-${{ github.ref_name }}.snap
+        overwrite: false
