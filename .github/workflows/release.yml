@@ -97,11 +97,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download DedupliFHIR-${{ github.ref_name }}.AppImage artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: DedupliFHIR-${{ github.ref_name }}.AppImage
     - name: Download DedupliFHIR-${{ github.ref_name }}.snap artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: DedupliFHIR-${{ github.ref_name }}.snap
     - name: Upload DedupliFHIR-${{ github.ref_name }}.AppImage to release
