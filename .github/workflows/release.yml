@@ -19,8 +19,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        # windows-latest, macos-latest
+        os: [ubuntu-latest, windows-latest]
+        # macos-latest
 
     defaults:
       run:
@@ -56,7 +56,6 @@ jobs:
       - name: Set up and create virtual environment 
         working-directory: .
         run: |
-          poetry config --list
           poetry config virtualenvs.create true --local
           poetry config virtualenvs.in-project true --local
           poetry config --list
@@ -77,7 +76,7 @@ jobs:
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
         run: npm run dist
 
-      - name: Create zip file
+      - name: Create zip file (ubuntu)
         working-directory: ./frontend/dist
         if: startsWith(matrix.os, 'ubuntu')
         run: |
@@ -88,15 +87,28 @@ jobs:
           mv DedupliFHIR*.AppImage DedupliFHIR-linux
           mv deduplifhir-app*.snap DedupliFHIR-linux
           zip -r DedupliFHIR-linux.zip DedupliFHIR-linux
+    
+      - name: Create zip file (windows)
+        working-directory: ./frontend/dist
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          sudo apt-get install zip
+          pwd
+          ls
+          mkdir DedupliFHIR-windows
+          mv DedupliFHIR*.AppImage DedupliFHIR-linux
+          mv deduplifhir-app*.snap DedupliFHIR-linux
+          zip -r DedupliFHIR-linux.zip DedupliFHIR-linux
 
       - name: Check contents
         run: |
           ls
           pwd
 
-      - name: Upload artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: DedupliFHIR-macOS
+          name: DedupliFHIR
           path: |
             frontend/dist/DedupliFHIR-linux.zip
+            frontend/dist/DedupliFHIR-windows.zip
