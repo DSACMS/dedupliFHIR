@@ -121,5 +121,5 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
-        file: DedupliFHIR-${{ github.ref_name }}.snap
+        file: deduplifhir-app_${{ github.ref_name }}_amd64.snap
         overwrite: false
