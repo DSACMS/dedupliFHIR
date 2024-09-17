@@ -63,6 +63,7 @@ jobs:
       - name: Install dependencies
         working-directory: .
         run: |
+          poetry lock [--no-update]
           poetry install --no-interaction
 
       - name: Install Node dependencies
