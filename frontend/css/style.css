@@ -70,7 +70,8 @@ img {
   animation: spin 2s linear infinite;
 }
 
-ul, ol {
+ul,
+ol {
   padding-left: 15px;
 }
 
