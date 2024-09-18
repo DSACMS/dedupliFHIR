@@ -12,7 +12,7 @@ body {
 }
 
 .form {
-  max-width: 400px;
+  max-width: 450px;
   width: 100%;
   margin: 0 auto;
 }
@@ -20,15 +20,24 @@ body {
 h1,
 h2,
 #file-input-copy {
-  text-align: center;
+  text-align: flex-start;
 }
 
 .usa-button {
   width: 100%;
 }
 
-.usa-alert {
+.usa-button-group {
+  justify-content: center;
+}
+
+.usa-alert,
+#results-spreadsheet-instructions {
   display: none;
+}
+
+#save-file-fail-alert {
+  margin-bottom: 10px;
 }
 
 #deduplication-error-alert {
@@ -38,7 +47,7 @@ h2,
 .footer {
   position: fixed;
   bottom: 0;
-  width: 95%;
+  width: 70%;
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
@@ -59,6 +68,11 @@ img {
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
+}
+
+.security-info {
+  padding-inline-start: 0;
+  list-style-position: inside;
 }
 
 @keyframes spin {
