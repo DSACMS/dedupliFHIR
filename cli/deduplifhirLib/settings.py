@@ -48,9 +48,20 @@ def get_additional_comparison_rules(parsed_data_df):
 
     for col in parsed_data_columns:
         if 'street_address' in col:
-            yield cl.ExactMatch(col).configure(term_frequency_adjustments=True)
+            yield cl.ExactMatch(col)
         elif 'postal_code' in col:
             yield cl.PostcodeComparison(col)
+
+def create_blocking_rules():
+    blocking_rules = []
+    for rule in BLOCKING_RULE_STRINGS:
+        if isinstance(rule, list):
+            blocking_rules.append(block_on(*rule))
+        else:
+            blocking_rules.append(block_on(rule))
+    
+    return blocking_rules
+
 
 def create_settings(parsed_data_df):
     """
@@ -65,12 +76,7 @@ def create_settings(parsed_data_df):
         A splink SettingsCreator object to be used with a splink linker object
     """
 
-    blocking_rules = []
-    for rule in BLOCKING_RULE_STRINGS:
-        if isinstance(rule, list):
-            blocking_rules.append(block_on(*rule))
-        else:
-            blocking_rules.append(block_on(rule))
+    blocking_rules = create_blocking_rules()
 
     comparison_rules = [item for item in get_additional_comparison_rules(parsed_data_df)]
     comparison_rules.extend([
@@ -109,7 +115,7 @@ def parse_fhir_dates(fhir_json_obj):
     """
     addresses = fhir_json_obj['entry'][0]['resource']['address']
 
-    for addr,n in enumerate(addresses):
+    for addr,n in enumerate(sorted(addresses)):
         yield {
             f"street_address{n}": [normalize_addr_text(''.join(addr['line']))],
             f"city{n}": [normalize_addr_text(addr['city'])],
