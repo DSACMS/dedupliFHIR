@@ -1,4 +1,4 @@
-# Use cluster_id to find possible duplicates
+# How to find possible duplicates when using DedupliFHIR
 
 ## What are cluster_id and unique_id?
 When you open a spreadsheet saved from DedupliFHIR in Microsoft Excel, you'll notice **2 new columns** not in your original file of patient data:
@@ -7,7 +7,7 @@ When you open a spreadsheet saved from DedupliFHIR in Microsoft Excel, you'll no
 
 DedupliFHIR identifies records about the same fundamental source of information (for example, a patient).
 
-## How to find possible duplicates 
+## Use cluster_id to find possible duplicates 
 **Records with exactly the same cluster_id could be duplicates.** Below are 2 ways to view them in Excel. 
 
 ### To sort by cluster_id: 
