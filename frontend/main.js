@@ -30,7 +30,7 @@ function findPython() {
     path.join(process.resourcesPath, "python", "Scripts", "python3.10.exe"),
     path.join(process.resourcesPath, "python", "Scripts", "python3.11.exe"),
     path.join(process.resourcesPath, "python", "Scripts", "python3.12.exe"),
-    
+
     // In development (windows)
     path.join("..", ".venv", "Scripts", "python.exe"),
   ];
