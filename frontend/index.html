@@ -8,17 +8,15 @@
     <title>DedupliFHIR</title>
   </head>
   <body>
-    <div class="content" style="width: 100%">
+    <div class="content">
       <h1>DedupliFHIR</h1>
-      <h2>Upload Patient Records File</h2>
       <div class="form">
         <label class="usa-label" id="file-input-copy" for="file-input-specific"
-          >Select file to undergo deduplication</label
+          >To start deduplication, load your file into DedupliFHIR.</label
         >
         <div class="usa-form-group">
           <span class="usa-hint" id="file-input-specific-hint"
-            >Accepted Types: FHIR, CSV</span
-          >
+            >FHIR or CSV file only</span>
           <input
             id="file-input-specific"
             class="usa-file-input"
@@ -29,7 +27,7 @@
           />
         </div>
         <div class="usa-form-group">
-        <label class="usa-label" for="options">Select file format for results data</label>
+        <label class="usa-label" for="options">Select file format for your results data</label>
         <select class="usa-select" name="options" id="options">
           <option value=".xlsx" selected="selected" >.xlsx</option>
           <option value=".csv">.csv</option>
@@ -44,12 +42,21 @@
           <div class="usa-alert__body">
             <h4 class="usa-alert__heading">Error</h4>
             <p class="usa-alert__text">
-              File not found. Please upload a file.
+              File not found. Please load a file.
             </p>
           </div>
         </div> 
         <br>       
-        <button type="button" class="usa-button" id="submit" >Submit</button>
+        <button type="button" class="usa-button" id="submit" >Find the possible duplicates</button>
+        <div class="security-section" id="security-section">
+        <p><strong>DedupliFHIR is secure.</strong></p>
+        <ul class="security-info">
+          <li>After you download DedupliFHIR, it works locally on your computer, just like other software applications.</li>
+          <li>Any files you load into DedupliFHIR stay on your computer.</li>
+          <li>No information is shared.</li>
+        </ul>
+        <a href="https://github.com/DSACMS/dedupliFHIR" target="_blank">Learn about DedupliFHIR</a>
+      </div>
       </div>
       <div class="footer">
         <img src="./assets/logo-cms.svg" alt="CMS.gov Logo">

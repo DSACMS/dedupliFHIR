@@ -58,8 +58,10 @@ test("UI elements present", async () => {
   const content = await window.locator("div.content");
   expect(content).not.toBeNull();
   expect(content.locator("h1")).toHaveText("DedupliFHIR");
-  await window.waitForSelector("h2");
-  expect(content.locator("h2")).toHaveText("Upload Patient Records File");
+  const instructionText = await window.locator("#file-input-copy");
+  expect(instructionText).toHaveText(
+    "To start deduplication, load your file into DedupliFHIR.",
+  );
 
   // Check for file dropper
   const fileDropper = await window.locator("input[type='file']");
@@ -77,23 +79,22 @@ test("UI elements present", async () => {
   const submitButton = await window.locator("button[type='button']");
   expect(submitButton).not.toBeNull();
   expect(submitButton).toHaveId("submit");
+
+  // Check for security section
+  const securityText = await window.locator("#security-section");
+  expect(securityText).not.toBeNull();
 });
 
-test("submit without uploading file", async () => {
+test("submit without loading file", async () => {
   const submitButton = await window.locator("button[type='button']");
   await submitButton.click();
 
   const alert = await window.locator("#file-input-alert");
   expect(alert).not.toBeNull();
-  expect(alert.locator("p")).toHaveText(
-    "File not found. Please upload a file.",
-  );
+  expect(alert.locator("p")).toHaveText("File not found. Please load a file.");
 });
 
-test("upload file and submit", async () => {
-  // TODO: remove this when height bug is fixed
-  await window.setViewportSize({ width: 1000, height: 3000 });
-
+test("load file and submit", async () => {
   const fileDropper = await window.locator("input[type='file']");
 
   await fileDropper.setInputFiles(
@@ -125,20 +126,23 @@ test("finished results present", async () => {
   expect(content.locator("h1")).toHaveText("DedupliFHIR");
 
   // Wait for results
-  await window.waitForSelector("h2", {
+  await window.waitForSelector("p", {
     timeout: 1000 * 60 * 2, // two minutes
   });
-  expect(content.locator("h2")).toHaveText("Results");
+  expect(content.locator("#results-ready-text")).toHaveText(
+    "Your results are ready.",
+  );
   expect(content.locator("a[href='../index.html']")).not.toBeNull();
-  expect(content.locator("#download")).not.toBeNull();
+  expect(content.locator("#save-file")).not.toBeNull();
 
-  expect(content.locator("#download-success-alert")).toBeHidden();
-  expect(content.locator("#download-fail-alert")).toBeHidden();
+  expect(content.locator("#save-file-success-alert")).toBeHidden();
+  expect(content.locator("#results-spreadsheet-instructions")).toBeHidden();
+  expect(content.locator("#save-file-fail-alert")).toBeHidden();
 });
 
-test("download file", async () => {
-  const downloadButton = await window.locator("#download");
-  expect(downloadButton).not.toBeNull();
+test("save file", async () => {
+  const saveButton = await window.locator("#save-file");
+  expect(saveButton).not.toBeNull();
 
   // https://stackoverflow.com/a/75966734
   const xlsxPath = path.join(
@@ -150,12 +154,22 @@ test("download file", async () => {
     dialog.showSaveDialog = () =>
       Promise.resolve({ filePath: xlsxPath, canceled: false });
   }, xlsxPath);
-  await downloadButton.click();
+  await saveButton.click();
 
-  await window.waitForSelector("#download-success-alert");
-  const successAlert = await window.locator("#download-success-alert");
+  await window.waitForSelector("#save-file-success-alert");
+  const successAlert = await window.locator("#save-file-success-alert");
   expect(successAlert).not.toBeNull();
-  expect(successAlert.locator("p")).toHaveText("Results file downloaded!");
+  expect(successAlert.locator("p")).toHaveText(
+    "Results file saved to your computer.",
+  );
+
+  const instructions = await window.locator(
+    "#results-spreadsheet-instructions",
+  );
+  expect(instructions).not.toBeNull();
+
+  const homeLink = await window.locator("a[href='../index.html']");
+  expect(homeLink).not.toBeNull();
 
   expect((await fs.promises.stat(xlsxPath)).size).toBeGreaterThan(100 * 1024); // file size should be > 100 KB
 });
@@ -171,6 +185,8 @@ test("return home", async () => {
   const content = await window.locator("div.content");
   expect(content).not.toBeNull();
   expect(content.locator("h1")).toHaveText("DedupliFHIR");
-  await window.waitForSelector("h2");
-  expect(content.locator("h2")).toHaveText("Upload Patient Records File");
+  const instructionText = await window.locator("#file-input-copy");
+  expect(instructionText).toHaveText(
+    "To start deduplication, load your file into DedupliFHIR.",
+  );
 });

@@ -10,60 +10,37 @@
   <body>
     <div class="content">
       <h1>DedupliFHIR</h1>
-
-      <h2>Results</h2>
-      <!-- TODO: Add result data to table -->
-      <!-- <table class="usa-table">
-        <caption>
-          Deduplication Results
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">Metric</th>
-            <th scope="col">Value</th>
-          </tr>
-        </thead>
-        <tbody>
-           TODO: Add number of total records
-          <tr>
-            <th scope="row">Total Records</th>
-            <td>
-            </td>
-          </tr>
-            TODO: Add number of duplicate records
-          <tr>
-            <th scope="row">Duplicate Records</th>
-            <td>
-            </td>
-          </tr>
-        </tbody>
-      </table> -->
-      <div class="usa-alert usa-alert--success" id="download-success-alert" role="alert">
+      <p id="results-ready-text">Your results are ready.</p>
+      <div class="usa-alert usa-alert--success" id="save-file-success-alert" role="alert">
         <div class="usa-alert__body">
           <h4 class="usa-alert__heading">Success</h4>
           <p class="usa-alert__text">
-            Results file downloaded!
+            Results file saved to your computer.
           </p>
         </div>
       </div>
-      <div class="usa-alert usa-alert--error" id="download-fail-alert" role="alert">
+      <div class="usa-alert usa-alert--error" id="save-file-fail-alert" role="alert">
         <div class="usa-alert__body">
           <h4 class="usa-alert__heading">Error</h4>
           <p class="usa-alert__text">
-            Unable to download file. Please try again.
+            Unable to save file to your computer. Please try again.
           </p>
         </div>
+      </div>
+      <div class="results-spreadsheet-instructions" id="results-spreadsheet-instructions">
+        <p>
+          <b>To find possible duplicates:</b>
+          <ol>
+            <li>Open your results file.</li>
+            <li>Find the records with the same <b>cluster_id</b>.</li>
+          </ol>
+          <a href="https://github.com/DSACMS/dedupliFHIR/blob/main/research/sept-2024/examples-use-clusterid-to-find-possible-duplicates.md" target="_blank">(See examples.)</a>
+        </p>
       </div> 
-      <br>
-      <ul class="usa-button-group">
-        <li class="usa-button-group__item">
-          <a href="../index.html" class="usa-button usa-button--outline"> Return to Home </a>
-        </li>
-        <li class="usa-button-group__item">
-          <button type="button" class="usa-button" id="download">Download File</button>
-        </li>
-      </ul>
-     
+      <button type="button" class="usa-button" id="save-file">Save the results file</button>
+      <p>
+      <a class="usa-link" href="../index.html" id="return-to-home">Back to home</a>
+      </p>
       <script src="../renderer/renderer-success.js"></script>
       <script src="../node_modules/@uswds/uswds/dist/js/uswds.min.js"></script>
     </div>

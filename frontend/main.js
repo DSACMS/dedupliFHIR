@@ -14,15 +14,25 @@ var resultsFile;
 
 function findPython() {
   const possibilities = [
-    // In packaged app
+    // In packaged app (mac / linux)
     path.join(process.resourcesPath, "python", "bin", "python"),
     path.join(process.resourcesPath, "python", "bin", "python3"),
     path.join(process.resourcesPath, "python", "bin", "python3.10"),
     path.join(process.resourcesPath, "python", "bin", "python3.11"),
     path.join(process.resourcesPath, "python", "bin", "python3.12"),
 
-    // In development
+    // In development (mac / linux)
     path.join("..", ".venv", "bin", "python"),
+
+    // In packaged app (windows)
+    path.join(process.resourcesPath, "python", "Scripts", "python.exe"),
+    path.join(process.resourcesPath, "python", "Scripts", "python3.exe"),
+    path.join(process.resourcesPath, "python", "Scripts", "python3.10.exe"),
+    path.join(process.resourcesPath, "python", "Scripts", "python3.11.exe"),
+    path.join(process.resourcesPath, "python", "Scripts", "python3.12.exe"),
+
+    // In development (windows)
+    path.join("..", ".venv", "Scripts", "python.exe"),
   ];
   for (const path of possibilities) {
     if (fs.existsSync(path)) {
@@ -122,6 +132,8 @@ async function handleSaveFile() {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
+    width: 900,
+    height: 750,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
       contextIsolation: true,
