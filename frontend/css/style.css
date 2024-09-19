@@ -27,6 +27,11 @@ h2,
   width: 100%;
 }
 
+#submit {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .usa-button-group {
   justify-content: center;
 }
@@ -70,9 +75,13 @@ img {
   animation: spin 2s linear infinite;
 }
 
-.security-info {
-  padding-inline-start: 0;
-  list-style-position: inside;
+ul,
+ol {
+  padding-left: 15px;
+}
+
+ol {
+  margin-bottom: 0px;
 }
 
 @keyframes spin {
