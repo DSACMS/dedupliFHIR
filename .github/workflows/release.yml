@@ -167,35 +167,35 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R
     - name: Upload DedupliFHIR-${{ github.ref_name }}.AppImage to release
-      uses: svenstaro/upload-release-action@2.5.0
+      uses: svenstaro/upload-release-action@2.9.0
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
         file: DedupliFHIR-${{ github.ref_name }}.AppImage
         overwrite: false
     - name: Upload DedupliFHIR-${{ github.ref_name }}.snap to release
-      uses: svenstaro/upload-release-action@2.5.0
+      uses: svenstaro/upload-release-action@2.9.0
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
         file: deduplifhir-app_${{ github.ref_name }}_amd64.snap
         overwrite: false
     - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64.dmg.blockmap to release
-      uses: svenstaro/upload-release-action@2.5.0
+      uses: svenstaro/upload-release-action@2.9.0
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
         file: DedupliFHIR-${{ github.ref_name }}-arm64.dmg.blockmap
         overwrite: false
     - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64.dmg to release
-      uses: svenstaro/upload-release-action@2.5.0
+      uses: svenstaro/upload-release-action@2.9.0
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
         file: DedupliFHIR-${{ github.ref_name }}-arm64.dmg
         overwrite: false
     - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip to release
-      uses: svenstaro/upload-release-action@2.5.0
+      uses: svenstaro/upload-release-action@2.9.0
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
@@ -203,7 +203,7 @@ jobs:
         overwrite: false
 
     - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip.blockmap to release
-      uses: svenstaro/upload-release-action@2.5.0
+      uses: svenstaro/upload-release-action@2.9.0
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
