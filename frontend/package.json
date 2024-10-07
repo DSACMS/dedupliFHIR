@@ -55,7 +55,7 @@
 
   },
   "dependencies": {
-    "@uswds/uswds": "3.8.2",
+    "@uswds/uswds": "3.9.0",
     "fs-extra": "^11.2.0",
     "python-shell": "^5.0.0"
   }
