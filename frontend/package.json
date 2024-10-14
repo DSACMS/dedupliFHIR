@@ -47,7 +47,7 @@
   "repository": "https://github.com/DSACMS/dedupliFHIR",
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
-    "@playwright/test": "^1.45.0",
+    "@playwright/test": "^1.48.0",
     "electron": "^28.0.0",
     "electron-builder": "^24.13.3",
     "eslint": "^8.57.0",
