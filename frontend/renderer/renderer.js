@@ -12,7 +12,7 @@ submitButton.addEventListener("click", () => {
     var selectedFile = fileInput.files[0];
 
     if (selectedFile) {
-      const filePath = window.electronAPI.pathForFile(selectedFile)
+      const filePath = window.electronAPI.pathForFile(selectedFile);
 
       console.log("File Name:", selectedFile.name);
       console.log("File Path:", filePath);
