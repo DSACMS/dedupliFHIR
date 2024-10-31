@@ -76,7 +76,8 @@ img {
 }
 
 ul,
-ol {
+ol,
+#find-duplicates-link {
   padding-left: 15px;
 }
 
