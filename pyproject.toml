@@ -7,7 +7,7 @@ authors = ["Pat Sier <patrick.sier@cms.hhs.gov>",
 
 [tool.poetry.dependencies]
 python = "^3.10"
-splink = "^4.0.1"
+splink = "^4.0.4"
 click = "^8.1.7"
 pandas = "^2.2.2"
 pytest = "^8.3.3"
