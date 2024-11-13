@@ -7,7 +7,7 @@ authors = ["Pat Sier <patrick.sier@cms.hhs.gov>",
 
 [tool.poetry.dependencies]
 python = "^3.10"
-splink = "^4.0.1"
+splink = "^4.0.4"
 click = "^8.1.7"
 pandas = "^2.2.2"
 pytest = "^8.3.3"
@@ -16,16 +16,16 @@ lxml = "^5.3.0"
 pyarrow = "^17.0.0"
 python-dateutil = "^2.9.0.post0"
 text2num = "^2.5.1"
-faker = "^28.4.1"
+faker = "^30.8.2"
 
 [tool.poetry.dev-dependencies]
-black = "^24.4.2"
-flake8 = "^7.1.0"
+black = "^24.10.0"
+flake8 = "^7.1.1"
 isort = "^5.13.2"
 
 
 [tool.poetry.group.dev.dependencies]
-pylint = "^3.2.6"
+pylint = "^3.3.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
