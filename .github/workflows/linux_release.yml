@@ -31,8 +31,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest,macos-latest]
-        # windows-latest
+        os: [ubuntu-latest]
+        # windows-latest, macos-latest
 
     defaults:
       run:
@@ -90,36 +90,7 @@ jobs:
           APPLEID: ${{ secrets.APPLEID }}
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
         run: npm run dist
-      - name: Display structure of files
-        run: ls -R
-      - name: Upload MacOS DMG Blockmap
-        uses: actions/upload-artifact@v4
-        if: startsWith(matrix.os, 'macos')
-        with:
-          name: DedupliFHIR-${{ github.ref_name }}-arm64.dmg.blockmap
-          path: |
-            ./frontend/dist/DedupliFHIR-*-arm64.dmg.blockmap
-      - name: Upload MacOS DMG
-        uses: actions/upload-artifact@v4
-        if: startsWith(matrix.os, 'macos')
-        with:
-          name: DedupliFHIR-${{ github.ref_name }}-arm64.dmg
-          path: |
-            ./frontend/dist/DedupliFHIR-*-arm64.dmg
-      - name: Upload MacOS Zip
-        uses: actions/upload-artifact@v4
-        if: startsWith(matrix.os, 'macos')
-        with:
-          name: DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip
-          path: |
-            ./frontend/dist/DedupliFHIR-*-arm64-mac.zip
-      - name: Upload MacOS Zip Blockmap
-        uses: actions/upload-artifact@v4
-        if: startsWith(matrix.os, 'macos')
-        with:
-          name: DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip.blockmap
-          path: |
-            ./frontend/dist/DedupliFHIR-*-arm64-mac.zip.blockmap
+
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         if: startsWith(matrix.os, 'ubuntu')
@@ -148,22 +119,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: DedupliFHIR-${{ github.ref_name }}.snap
-    - name: Download DedupliFHIR-${{ github.ref_name }}-arm64.dmg.blockmap artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: DedupliFHIR-${{ github.ref_name }}-arm64.dmg.blockmap
-    - name: Download DedupliFHIR-${{ github.ref_name }}-arm64.dmg artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: DedupliFHIR-${{ github.ref_name }}-arm64.dmg
-    - name: Download DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip
-    - name: Download DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip.blockmap artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip.blockmap
     - name: Display structure of downloaded files
       run: ls -R
     - name: Upload DedupliFHIR-${{ github.ref_name }}.AppImage to release
@@ -179,33 +134,4 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ github.ref_name }}
         file: deduplifhir-app_${{ github.ref_name }}_amd64.snap
-        overwrite: false
-    - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64.dmg.blockmap to release
-      uses: svenstaro/upload-release-action@2.5.0
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref_name }}
-        file: DedupliFHIR-${{ github.ref_name }}-arm64.dmg.blockmap
-        overwrite: false
-    - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64.dmg to release
-      uses: svenstaro/upload-release-action@2.5.0
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref_name }}
-        file: DedupliFHIR-${{ github.ref_name }}-arm64.dmg
-        overwrite: false
-    - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip to release
-      uses: svenstaro/upload-release-action@2.5.0
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref_name }}
-        file: DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip
-        overwrite: false
-
-    - name: Upload DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip.blockmap to release
-      uses: svenstaro/upload-release-action@2.5.0
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref_name }}
-        file: DedupliFHIR-${{ github.ref_name }}-arm64-mac.zip.blockmap
         overwrite: false
