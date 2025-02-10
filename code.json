@@ -1,10 +1,52 @@
 {
-    "projectType": "Tools",
-    "userInput": "Yes",
-    "fismaLevel": "Moderate",
-    "group": "CMS/OA/DSAC",
-    "subsetInHealthcare": "Operational",
-    "userType": "Providers",
-    "repositoryHost": "Github.com",
-    "maturityModelTier": "3"
+  "name": "dedupliFHIR",
+  "description": "Prototype for basic deduplication and aggregation of eCQM data",
+  "longDescription": "",
+  "status": "",
+  "permissions": {
+    "license": [
+      {
+        "name": "",
+        "URL": ""
+      }
+    ],
+    "usageType": "",
+    "exemptionText": ""
+  },
+  "organization": "",
+  "repositoryURL": "https://github.com/DSACMS/dedupliFHIR",
+  "vcs": "git",
+  "laborHours": 4252,
+  "platforms": [],
+  "categories": [],
+  "softwareType": "",
+  "languages": [
+    "Python",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "Shell",
+    "Makefile"
+  ],
+  "maintenance": "",
+  "date": {
+    "created": "2023-06-22T17:08:19Z",
+    "lastModified": "2025-02-10T19:13:19Z",
+    "metaDataLastUpdated": "2025-02-10T19:14:29.970Z"
+  },
+  "tags": [],
+  "contact": {
+    "email": "",
+    "name": ""
+  },
+  "localisation": false,
+  "repositoryType": "",
+  "userInput": "Yes",
+  "fismaLevel": "Moderate",
+  "group": "CMS/OA/DSAC",
+  "subsetInHealthcare": "Operational",
+  "userType": "Providers",
+  "repositoryHost": "Github.com",
+  "maturityModelTier": "3",
+  "projectType": "Tools"
 }
