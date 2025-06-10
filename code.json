@@ -73,7 +73,11 @@
   "projects": [],
   "systems": [],
   "upstream": "https://github.com/DSACMS/dedupliFHIR/network/dependencies",
-  "subsetInHealthcare": "Operational",
-  "userType": "Providers",
+  "subsetInHealthcare": [
+    "Operational"
+  ],
+  "userType": [
+    "Providers"
+  ],
   "maturityModelTier": "3"
 }
