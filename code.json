@@ -15,10 +15,25 @@
   },
   "organization": "Centers for Medicare & Medicaid Services",
   "repositoryURL": "https://github.com/DSACMS/dedupliFHIR",
+  "projectURL": "",
+  "repositoryHost": "github.com/DSACMS",
+  "repositoryVisibility": "public",
   "vcs": "git",
-  "laborHours": 4252,
-  "platforms": ["windows", "mac", "linux"],
-  "categories": ["data-analytics", "application-development", "data-collection"],
+  "laborHours": 4271,
+  "reuseFrequency": {
+    "forks": 3,
+    "clones": 0
+  },
+  "platforms": [
+    "windows",
+    "mac",
+    "linux"
+  ],
+  "categories": [
+    "data-analytics",
+    "application-development",
+    "data-collection"
+  ],
   "softwareType": "standalone/desktop",
   "languages": [
     "Python",
@@ -29,24 +44,40 @@
     "Makefile"
   ],
   "maintenance": "internal",
+  "contractNumber": "",
   "date": {
     "created": "2023-06-22T17:08:19Z",
-    "lastModified": "2025-02-10T19:13:19Z",
-    "metaDataLastUpdated": "2025-02-10T19:14:29.970Z"
+    "lastModified": "2025-02-13T18:44:26Z",
+    "metaDataLastUpdated": "2025-06-10T14:55:32.836Z"
   },
-  "tags": ["AI", "deduplication", "data", "ACA", "FHIR"],
+  "tags": [
+    "AI",
+    "deduplication",
+    "data",
+    "ACA",
+    "FHIR",
+    "featured"
+  ],
   "contact": {
     "email": "opensource@cms.hhs.gov",
     "name": "CMS Open Source Team"
   },
+  "feedbackMechanisms": [
+    "https://github.com/DSACMS/dedupliFHIR/issues"
+  ],
   "localisation": false,
   "repositoryType": "application",
-  "userInput": "Yes",
+  "userInput": "true",
   "fismaLevel": "Moderate",
   "group": "CMS/OA/DSAC",
-  "subsetInHealthcare": "Operational",
-  "userType": "Providers",
-  "repositoryHost": "Github.com",
-  "maturityModelTier": "3",
-  "projectType": "Tools"
+  "projects": [],
+  "systems": [],
+  "upstream": "https://github.com/DSACMS/dedupliFHIR/network/dependencies",
+  "subsetInHealthcare": [
+    "Operational"
+  ],
+  "userType": [
+    "Providers"
+  ],
+  "maturityModelTier": "3"
 }
