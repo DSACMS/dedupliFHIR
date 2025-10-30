@@ -1,17 +1,17 @@
 {
   "name": "dedupliFHIR",
-  "version": "",
+  "version": "1.1.0",
   "description": "Prototype for basic deduplication and aggregation of eCQM data",
-  "longDescription": "A CLI bundled with an electron front-end that provides data-linkage and AI deduplication for reported ACO data at scale.",
+  "longDescription": "A CLI bundled with an Electron.js front-end that provides data-linkage and AI deduplication for reported Affordable Care Organization data at scale, streamlining reporting workflows.",
   "status": "Production",
   "permissions": {
-    "license": [
+    "licenses": [
       {
-        "name": "CC0 1.0 Universal",
+        "name": "CC0-1.0",
         "URL": "https://github.com/DSACMS/dedupliFHIR/blob/main/LICENSE"
       }
     ],
-    "usageType": "openSource",
+    "usageType": ["openSource"],
     "exemptionText": ""
   },
   "organization": "Centers for Medicare & Medicaid Services",
@@ -77,16 +77,16 @@
   "AIUseCaseID": "0",
   "localisation": false,
   "repositoryType": "application",
-  "userInput": "true",
-  "fismaLevel": "Moderate",
+  "userInput": true,
+  "fismaLevel": "moderate",
   "group": "CMS/OA/DSAC",
   "projects": [],
   "systems": [],
   "subsetInHealthcare": [
-    "Operational"
+    "operational"
   ],
   "userType": [
-    "Providers"
+    "providers"
   ],
-  "maturityModelTier": "3"
+  "maturityModelTier": 3
 }
