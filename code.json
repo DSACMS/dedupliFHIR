@@ -11,7 +11,9 @@
         "URL": "https://github.com/DSACMS/dedupliFHIR/blob/main/LICENSE"
       }
     ],
-    "usageType": ["openSource"],
+    "usageType": [
+      "openSource"
+    ],
     "exemptionText": ""
   },
   "organization": "Centers for Medicare & Medicaid Services",
@@ -23,7 +25,7 @@
   "disclaimerURL": "",
   "disclaimerText": "",
   "vcs": "git",
-  "laborHours": 4286,
+  "laborHours": 4290,
   "reuseFrequency": {
     "forks": 3,
     "clones": 0
@@ -55,8 +57,8 @@
   "partners": [],
   "date": {
     "created": "2023-06-22T17:08:19Z",
-    "lastModified": "2025-06-18T18:56:05Z",
-    "metadataLastUpdated": "2025-10-30T21:30:51.640Z"
+    "lastModified": "2025-11-07T19:11:28Z",
+    "metadataLastUpdated": "2025-12-01T02:21:50.898Z"
   },
   "tags": [
     "ai",
