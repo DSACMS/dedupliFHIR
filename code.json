@@ -25,7 +25,7 @@
   "disclaimerURL": "",
   "disclaimerText": "",
   "vcs": "git",
-  "laborHours": 4290,
+  "laborHours": 4291,
   "reuseFrequency": {
     "forks": 3,
     "clones": 0
@@ -57,8 +57,8 @@
   "partners": [],
   "date": {
     "created": "2023-06-22T17:08:19Z",
-    "lastModified": "2025-11-07T19:11:28Z",
-    "metadataLastUpdated": "2025-12-01T02:21:50.898Z"
+    "lastModified": "2025-12-12T19:25:24Z",
+    "metadataLastUpdated": "2026-08-01T03:26:28.023Z"
   },
   "tags": [
     "ai",
@@ -66,11 +66,11 @@
     "data-science",
     "deduplication",
     "electron",
+    "featured",
     "government",
     "healthcare",
     "poetry",
-    "python",
-    "featured"
+    "python"
   ],
   "contact": {
     "email": "opensource@cms.hhs.gov",
